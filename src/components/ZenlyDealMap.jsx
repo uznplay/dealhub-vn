@@ -213,47 +213,30 @@ export default function ZenlyDealMap({ onSelectDeal, onSaveDeal, selectedCity = 
 
     filteredDeals.forEach(deal => {
       const isSelected = selectedMapDeal?.id === deal.id;
+      const borderCol = isSelected ? '#16a34a' : '#ffffff';
+      const shadowStyle = isSelected ? 'box-shadow: 0 0 0 3px rgba(22,163,74,0.45), 0 4px 12px rgba(0,0,0,0.3);' : 'box-shadow: 0 3px 8px rgba(0,0,0,0.25);';
+      const scale = isSelected ? 'transform: scale(1.15);' : '';
 
       const markerHtml = `
-        <div class="relative cursor-pointer select-none flex flex-col items-center group">
-          {/* Discount Pill on top */}
-          <div class="px-1.5 py-0.5 rounded-full text-[9px] font-black shadow-md border mb-0.5 transition-transform ${
-            isSelected 
-              ? 'bg-red-600 text-white border-white scale-110 shadow-lg' 
-              : 'bg-red-600 text-white border-white'
-          }">
+        <div style="display:flex; flex-direction:column; align-items:center; cursor:pointer; user-select:none; width:52px; ${scale} transition:transform 0.2s;">
+          <div style="background:#dc2626; color:white; font-size:9px; font-weight:900; padding:1px 6px; border-radius:9999px; box-shadow:0 2px 5px rgba(0,0,0,0.3); border:1px solid #ffffff; margin-bottom:2px; white-space:nowrap;">
             ${deal.badge}
           </div>
-
-          {/* Deal Avatar Photo Circle (Zenly style) */}
-          <div class="relative w-10 h-10 rounded-full border-2 transition-all ${
-            isSelected 
-              ? 'border-noti-500 ring-4 ring-noti-400/50 scale-115 shadow-xl' 
-              : 'border-white shadow-md hover:scale-110'
-          } bg-white overflow-hidden">
-            <img 
-              src="${deal.image}" 
-              alt="${deal.title}" 
-              class="w-full h-full object-cover" 
-              onerror="this.src='https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=100&auto=format&fit=crop&q=80'"
-            />
+          <div style="width:38px; height:38px; border-radius:50%; border:2.5px solid ${borderCol}; overflow:hidden; background:#ffffff; ${shadowStyle}">
+            <img src="${deal.image}" alt="" style="width:100%; height:100%; object-fit:cover; display:block;" />
           </div>
-
-          {/* Pin Pointer dot */}
-          <div class="w-2 h-2 rounded-full ${isSelected ? 'bg-noti-600 ring-2 ring-white' : 'bg-gray-800'} -mt-1 shadow-sm"></div>
-
-          {/* Distance tag */}
-          <span class="bg-gray-900/80 text-white text-[8px] font-bold px-1.5 py-0.2 rounded mt-0.5 whitespace-nowrap shadow">
+          <div style="width:6px; height:6px; background:${isSelected ? '#16a34a' : '#1f2937'}; border-radius:50%; margin-top:-3px; border:1px solid #ffffff;"></div>
+          <div style="background:rgba(15,23,42,0.85); color:#ffffff; font-size:8px; font-weight:700; padding:1px 5px; border-radius:4px; margin-top:2px; white-space:nowrap; box-shadow:0 1px 3px rgba(0,0,0,0.3);">
             ${deal.distance}
-          </span>
+          </div>
         </div>
       `;
 
       const dealIcon = L.divIcon({
         className: 'custom-deal-marker',
         html: markerHtml,
-        iconSize: [60, 68],
-        iconAnchor: [30, 60]
+        iconSize: [52, 68],
+        iconAnchor: [26, 60]
       });
 
       const marker = L.marker([deal.lat, deal.lng], { icon: dealIcon });
