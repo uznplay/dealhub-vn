@@ -188,11 +188,14 @@ export default function DealFeed({ onSaveDeal, onSelectDeal, savedDealIds = [] }
 
               {/* Post Image */}
               {post.image && (
-                <div className="relative overflow-hidden bg-gray-100 max-h-72">
+                <div 
+                  onClick={() => post.deal && onSelectDeal && onSelectDeal(post.deal)}
+                  className="relative overflow-hidden bg-gray-100 max-h-72 cursor-pointer group"
+                >
                   <img
                     src={post.image}
                     alt="Hình ảnh ưu đãi"
-                    className="w-full h-auto object-cover max-h-72"
+                    className="w-full h-auto object-cover max-h-72 group-hover:scale-102 transition-transform"
                     loading="lazy"
                   />
                   {post.deal?.discount && (
@@ -200,22 +203,36 @@ export default function DealFeed({ onSaveDeal, onSelectDeal, savedDealIds = [] }
                       {post.deal.discount} OFF
                     </div>
                   )}
+                  <span className="absolute bottom-2 right-2 bg-black/60 text-white text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 backdrop-blur-xs">
+                    <MapPin className="w-2.5 h-2.5 text-yellow-300" />
+                    <span>Xem vị trí & bản đồ</span>
+                  </span>
                 </div>
               )}
 
-              {/* Attached Deal Box (Lưu vào Kho Voucher) */}
+              {/* Attached Deal Box (Đi kèm địa chỉ & link xem map chi tiết) */}
               {post.deal && (
-                <div className="p-2.5 bg-[#f4faf4] border-t border-b border-green-100 flex items-center justify-between gap-2">
-                  <div className="flex-1 min-w-0">
-                    <span className="text-[9px] font-bold text-noti-700 uppercase tracking-wide flex items-center gap-1">
-                      <Store className="w-2.5 h-2.5" />
-                      {post.deal.storeName}
-                    </span>
-                    <p className="font-bold text-xs text-gray-900 truncate mt-0.5">
-                      {post.deal.title}
-                    </p>
-                    <div className="flex items-baseline space-x-1.5 mt-0.5">
-                      <span className="text-red-600 font-black text-xs">
+                <div className="p-2.5 bg-[#f4faf4] border-t border-b border-green-100 flex flex-col gap-1.5">
+                  <div 
+                    onClick={() => onSelectDeal && onSelectDeal(post.deal)}
+                    className="cursor-pointer group flex items-start justify-between gap-2"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <span className="text-[9px] font-bold text-noti-700 uppercase tracking-wide flex items-center gap-1">
+                        <Store className="w-2.5 h-2.5" />
+                        {post.deal.storeName}
+                      </span>
+                      <p className="font-bold text-xs text-gray-900 truncate mt-0.5 group-hover:text-noti-600">
+                        {post.deal.title}
+                      </p>
+                      <p className="text-[10px] text-gray-500 truncate flex items-center gap-1 mt-0.5">
+                        <MapPin className="w-2.5 h-2.5 text-noti-600 flex-shrink-0" />
+                        <span>{post.deal.address || post.location}</span>
+                      </p>
+                    </div>
+
+                    <div className="text-right flex-shrink-0">
+                      <span className="text-red-600 font-black text-xs block">
                         {post.deal.salePrice?.toLocaleString('vi-VN')}₫
                       </span>
                       <span className="line-through text-gray-400 text-[10px]">
@@ -224,19 +241,29 @@ export default function DealFeed({ onSaveDeal, onSelectDeal, savedDealIds = [] }
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => {
-                      if (onSaveDeal) onSaveDeal(post.deal);
-                    }}
-                    className={`px-3 py-1.5 rounded-xl text-[11px] font-black shadow-2xs flex items-center space-x-1 transition-all active:scale-95 flex-shrink-0 ${
-                      isDealSaved
-                        ? 'bg-noti-500 text-white'
-                        : 'bg-yellow-400 hover:bg-yellow-300 text-gray-950'
-                    }`}
-                  >
-                    <Ticket className="w-3.5 h-3.5" />
-                    <span>{isDealSaved ? 'ĐÃ LƯU KHO' : 'LƯU VOUCHER'}</span>
-                  </button>
+                  <div className="flex items-center justify-end space-x-2 pt-1 border-t border-green-200/60">
+                    <button
+                      onClick={() => onSelectDeal && onSelectDeal(post.deal)}
+                      className="px-2.5 py-1 bg-white hover:bg-gray-100 text-gray-700 rounded-lg text-[10px] font-bold border border-gray-200 flex items-center gap-1"
+                    >
+                      <MapPin className="w-3 h-3 text-noti-600" />
+                      <span>Chi tiết & Bản đồ</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        if (onSaveDeal) onSaveDeal(post.deal);
+                      }}
+                      className={`px-3 py-1 rounded-lg text-[10px] font-black shadow-2xs flex items-center space-x-1 transition-all active:scale-95 ${
+                        isDealSaved
+                          ? 'bg-noti-500 text-white'
+                          : 'bg-yellow-400 hover:bg-yellow-300 text-gray-950'
+                      }`}
+                    >
+                      <Ticket className="w-3.5 h-3.5" />
+                      <span>{isDealSaved ? 'ĐÃ LƯU KHO' : 'LƯU VOUCHER'}</span>
+                    </button>
+                  </div>
                 </div>
               )}
 

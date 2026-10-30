@@ -350,6 +350,9 @@ export default function App() {
                 deal={selectedDeal}
                 isSaved={savedDeals.some(d => d.dealId === selectedDeal.id || d.id === selectedDeal.id)}
                 onSaveDeal={handleSaveDeal}
+                onViewOnMap={(d) => {
+                  setUserTab('map');
+                }}
                 onClose={() => setSelectedDeal(null)}
               />
             )}

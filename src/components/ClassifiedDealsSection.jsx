@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Heart, Store, Filter, Bookmark, Check } from 'lucide-react';
+import { MapPin, Heart, Store, Filter, Bookmark, Check, Ticket } from 'lucide-react';
 import { CITIES } from '../data/mockData';
 
 export default function ClassifiedDealsSection({
@@ -14,15 +14,6 @@ export default function ClassifiedDealsSection({
 }) {
   const [priceFilter, setPriceFilter] = useState('all');
   const [sortBy, setSortBy] = useState('popular');
-  const [likedDeals, setLikedDeals] = useState({});
-
-  const toggleLike = (dealId, e) => {
-    e.stopPropagation();
-    setLikedDeals(prev => ({
-      ...prev,
-      [dealId]: !prev[dealId]
-    }));
-  };
 
   const filteredDeals = deals.filter(deal => {
     if (selectedCity !== 'Toàn quốc' && deal.city !== selectedCity) {
@@ -38,8 +29,8 @@ export default function ClassifiedDealsSection({
       const matchAddress = deal.address.toLowerCase().includes(q);
       if (!matchTitle && !matchStore && !matchAddress) return false;
     }
-    if (priceFilter === 'under50k' && deal.salePrice > 50000) return false;
-    if (priceFilter === '50k-200k' && (deal.salePrice < 50000 || deal.salePrice > 200000)) return false;
+    if (priceFilter === 'under100k' && deal.salePrice > 100000) return false;
+    if (priceFilter === '100k-300k' && (deal.salePrice < 100000 || deal.salePrice > 300000)) return false;
     if (priceFilter === 'deepDiscount' && parseInt(deal.discount.replace(/[^0-9]/g, '')) < 50) return false;
 
     return true;
@@ -54,213 +45,118 @@ export default function ClassifiedDealsSection({
   });
 
   return (
-    <section id="deals-section" className="max-w-7xl mx-auto px-4 mt-12 mb-16">
-      {/* Filter Header Box */}
-      <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 mb-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-gray-100">
-          <div>
-            <h2 className="text-xl sm:text-2xl font-black text-gray-900 flex items-center gap-2">
-              <Store className="w-5 h-5 text-noti-500" />
-              <span>Ưu Đãi & Khuyến Mãi Mới Nhất</span>
-              <span className="text-xs bg-noti-50 text-noti-700 font-bold px-2.5 py-1 rounded-full border border-noti-200">
-                {filteredDeals.length} Deal
-              </span>
-            </h2>
-            <p className="text-xs text-gray-500 mt-1">
-              Các chương trình giảm giá được cập nhật mới nhất từ các cửa hàng uy tín
-            </p>
-          </div>
-
-          {/* Quick City Filters */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full text-xs">
-            {CITIES.map(city => (
-              <button
-                key={city}
-                onClick={() => setSelectedCity(city)}
-                className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-all ${
-                  selectedCity === city
-                    ? 'bg-noti-500 text-white shadow-sm'
-                    : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-                }`}
-              >
-                {city}
-              </button>
-            ))}
-          </div>
+    <section className="px-3 mt-4 space-y-3">
+      {/* Section Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-sm font-black text-gray-900 tracking-tight flex items-center gap-1.5">
+            <Store className="w-4 h-4 text-noti-600" />
+            <span>Ưu Đãi Làm Đẹp Mới Nhất</span>
+          </h2>
+          <p className="text-[10px] text-gray-400">
+            {filteredDeals.length} dịch vụ áp dụng voucher tại tiệm
+          </p>
         </div>
 
-        {/* Filter Controls Bar */}
-        <div className="pt-4 flex flex-wrap items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-bold text-gray-500 flex items-center gap-1">
-              <Filter className="w-3.5 h-3.5 text-noti-600" /> Mức giá:
-            </span>
-            <button
-              onClick={() => setPriceFilter('all')}
-              className={`px-3 py-1 rounded-lg font-semibold transition-colors ${
-                priceFilter === 'all' ? 'bg-noti-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              Tất cả
-            </button>
-            <button
-              onClick={() => setPriceFilter('under50k')}
-              className={`px-3 py-1 rounded-lg font-semibold transition-colors ${
-                priceFilter === 'under50k' ? 'bg-noti-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              Dưới 50.000₫
-            </button>
-            <button
-              onClick={() => setPriceFilter('50k-200k')}
-              className={`px-3 py-1 rounded-lg font-semibold transition-colors ${
-                priceFilter === '50k-200k' ? 'bg-noti-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              50.000₫ - 200.000₫
-            </button>
-            <button
-              onClick={() => setPriceFilter('deepDiscount')}
-              className={`px-3 py-1 rounded-lg font-semibold transition-colors ${
-                priceFilter === 'deepDiscount' ? 'bg-noti-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              Giảm từ 50%
-            </button>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="text-gray-500 font-semibold">Sắp xếp:</span>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="bg-gray-50 border border-gray-200 text-gray-800 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-noti-500 font-medium"
-            >
-              <option value="popular">Phổ biến nhất</option>
-              <option value="lowestPrice">Giá thấp đến cao</option>
-              <option value="highestDiscount">Mức giảm nhiều nhất</option>
-            </select>
-          </div>
-        </div>
+        {/* Quick price filter */}
+        <select
+          value={priceFilter}
+          onChange={(e) => setPriceFilter(e.target.value)}
+          className="bg-gray-100 text-gray-700 text-[10px] font-bold py-1 px-2 rounded-lg border-0 focus:ring-1 focus:ring-noti-500"
+        >
+          <option value="all">Mức giá: Tất cả</option>
+          <option value="under100k">Dưới 100k</option>
+          <option value="100k-300k">100k - 300k</option>
+          <option value="deepDiscount">Giảm trên 50%</option>
+        </select>
       </div>
 
-      {/* Grid */}
+      {/* Grid of Deal Cards: EXACTLY 2 COLUMNS FOR MOBILE (NEVER SQUISHED) */}
       {filteredDeals.length === 0 ? (
-        <div className="bg-white rounded-3xl p-12 text-center shadow-sm">
-          <div className="w-14 h-14 mx-auto mb-3 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 text-2xl">
-            🔍
-          </div>
-          <h3 className="text-base font-bold text-gray-800">Không tìm thấy ưu đãi phù hợp</h3>
-          <p className="text-xs text-gray-500 mt-1">
-            Vui lòng thử thay đổi tiêu chí lọc hoặc chọn khu vực khác.
-          </p>
-          <button
-            onClick={() => {
-              setSelectedCity('Toàn quốc');
-              setPriceFilter('all');
-            }}
-            className="mt-3 px-4 py-2 bg-noti-500 text-white rounded-xl text-xs font-bold hover:bg-noti-600"
-          >
-            Xem tất cả ưu đãi
-          </button>
+        <div className="text-center py-8 bg-white rounded-2xl border border-gray-100 p-4">
+          <p className="font-bold text-xs text-gray-600">Không tìm thấy ưu đãi phù hợp</p>
+          <p className="text-[10px] text-gray-400 mt-1">Hãy thử chọn lại khu vực hoặc mức giá khác</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-2.5">
           {filteredDeals.map((deal) => {
-            const isLiked = likedDeals[deal.id];
             const isSaved = savedDealIds.includes(deal.id);
 
             return (
               <div
                 key={deal.id}
-                onClick={() => onSelectDeal(deal)}
-                className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 flex flex-col group cursor-pointer hover:-translate-y-1"
+                onClick={() => onSelectDeal && onSelectDeal(deal)}
+                className="bg-white rounded-2xl overflow-hidden shadow-2xs border border-gray-100 flex flex-col justify-between group cursor-pointer hover:shadow-md transition-all active:scale-98"
               >
-                {/* Image */}
-                <div className="relative h-48 overflow-hidden bg-gray-100">
+                {/* Image & Discount Badge */}
+                <div className="relative h-28 overflow-hidden bg-gray-100 flex-shrink-0">
                   <img
                     src={deal.image}
                     alt={deal.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    loading="lazy"
                   />
-                  <span className="absolute top-2.5 left-2.5 bg-red-600 text-white font-black text-xs px-2.5 py-0.5 rounded-md shadow-sm">
+                  <span className="absolute top-1.5 left-1.5 bg-red-600 text-white font-black text-[9px] px-1.5 py-0.2 rounded shadow">
                     {deal.discount}
                   </span>
 
-                  <span className="absolute top-2.5 right-2.5 bg-gray-900/70 backdrop-blur-sm text-white font-bold text-[10px] px-2 py-0.5 rounded shadow-sm">
+                  <span className="absolute top-1.5 right-1.5 bg-gray-900/70 text-white font-bold text-[8px] px-1.5 py-0.2 rounded">
                     {deal.city}
                   </span>
 
-                  <div className="absolute bottom-2.5 right-2.5 flex items-center gap-1.5">
-                      {/* Bookmark into Kho Voucher */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (onSaveDeal) onSaveDeal(deal);
-                        }}
-                        className={`w-7 h-7 rounded-full flex items-center justify-center shadow-xs transition-all ${
-                          isSaved 
-                            ? 'bg-noti-500 text-white' 
-                            : 'bg-white/90 text-gray-700 hover:bg-white hover:text-noti-600'
-                        }`}
-                        title="Lưu vào Kho Voucher"
-                      >
-                        {isSaved ? <Check className="w-3.5 h-3.5" /> : <Bookmark className="w-3.5 h-3.5" />}
-                      </button>
-
-                    {/* Like button */}
-                    <button
-                      onClick={(e) => toggleLike(deal.id, e)}
-                      className="w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow hover:bg-white text-gray-500"
-                    >
-                      <Heart className={`w-4 h-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
-                    </button>
-                  </div>
+                  {/* Bookmark directly into Kho Voucher */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (onSaveDeal) onSaveDeal(deal);
+                    }}
+                    className={`absolute bottom-1.5 right-1.5 w-6 h-6 rounded-full flex items-center justify-center shadow transition-all ${
+                      isSaved 
+                        ? 'bg-noti-500 text-white' 
+                        : 'bg-white/90 text-gray-700 hover:bg-white hover:text-noti-600'
+                    }`}
+                    title="Lưu vào Kho Voucher"
+                  >
+                    {isSaved ? <Check className="w-3 h-3" /> : <Bookmark className="w-3 h-3" />}
+                  </button>
                 </div>
 
                 {/* Content */}
-                <div className="p-4 flex-1 flex flex-col justify-between">
+                <div className="p-2.5 flex-1 flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center justify-between text-[11px] text-gray-500 mb-1.5">
-                      <span className="truncate max-w-[150px] font-semibold text-gray-700 flex items-center gap-1">
-                        <Store className="w-3.5 h-3.5 text-noti-600" />
+                    <div className="flex items-center justify-between text-[9px] text-gray-500 mb-0.5">
+                      <span className="truncate font-semibold text-noti-700">
                         {deal.storeName}
                       </span>
-                      <span className="text-gray-500 text-[10px]">
+                      <span className="text-[9px] text-gray-400">
                         {deal.distance}
                       </span>
                     </div>
 
-                    <h3 className="font-bold text-gray-900 text-xs sm:text-sm line-clamp-2 leading-snug group-hover:text-noti-600 transition-colors">
+                    <h3 className="font-bold text-[11px] text-gray-900 line-clamp-2 leading-snug group-hover:text-noti-600 transition-colors">
                       {deal.title}
                     </h3>
                   </div>
 
-                  <div className="mt-3 pt-3 border-t border-gray-100">
-                    <div className="flex items-end justify-between">
+                  <div className="mt-2 pt-1.5 border-t border-gray-100">
+                    <div className="flex items-baseline justify-between">
                       <div>
-                        <div className="text-xs text-gray-400 line-through">
-                          {deal.originalPrice.toLocaleString('vi-VN')}₫
-                        </div>
-                        <div className="text-base sm:text-lg font-black text-red-600 leading-none mt-0.5">
+                        <div className="text-[11px] font-black text-red-600 leading-none">
                           {deal.salePrice.toLocaleString('vi-VN')}₫
+                        </div>
+                        <div className="text-[9px] text-gray-400 line-through">
+                          {deal.originalPrice.toLocaleString('vi-VN')}₫
                         </div>
                       </div>
 
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onSelectDeal(deal);
-                        }}
-                        className="px-3 py-1.5 bg-noti-500 group-hover:bg-noti-600 text-white rounded-xl text-xs font-bold shadow-sm transition-colors"
-                      >
-                        Xem chi tiết
-                      </button>
+                      <span className="text-[9px] font-bold text-noti-700 bg-green-50 px-1.5 py-0.5 rounded">
+                        Xem tin
+                      </span>
                     </div>
 
-                    <div className="mt-2 text-[10px] text-gray-400 truncate flex items-center gap-1">
-                      <MapPin className="w-3 h-3 flex-shrink-0" />
-                      <span>{deal.address}</span>
+                    <div className="mt-1 text-[9px] text-gray-400 truncate flex items-center gap-0.5">
+                      <MapPin className="w-2.5 h-2.5 text-gray-400 flex-shrink-0" />
+                      <span className="truncate">{deal.address}</span>
                     </div>
                   </div>
                 </div>

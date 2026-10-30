@@ -13,7 +13,7 @@ import {
   Bookmark
 } from 'lucide-react';
 
-export default function DealDetailModal({ deal, onClose, onSaveDeal, isSaved = false }) {
+export default function DealDetailModal({ deal, onClose, onSaveDeal, onViewOnMap, isSaved = false }) {
   const [copied, setCopied] = useState(false);
   const [justSaved, setJustSaved] = useState(false);
 
@@ -133,12 +133,25 @@ export default function DealDetailModal({ deal, onClose, onSaveDeal, isSaved = f
             </div>
 
             {/* Direct Connect Buttons */}
-            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-200 text-xs">
+            <div className="grid grid-cols-3 gap-1.5 pt-2 border-t border-gray-200 text-xs">
+              {onViewOnMap ? (
+                <button
+                  onClick={() => {
+                    onViewOnMap(deal);
+                    onClose();
+                  }}
+                  className="flex items-center justify-center space-x-1 py-1.5 px-2 bg-green-50 hover:bg-green-100 text-noti-700 rounded-lg font-bold border border-green-200 text-[10px]"
+                >
+                  <MapPin className="w-3 h-3 text-noti-600" />
+                  <span>Bản đồ</span>
+                </button>
+              ) : null}
+
               <a
                 href={`https://maps.google.com/?q=${encodeURIComponent(deal.address)}`}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center justify-center space-x-1 py-1.5 px-2 bg-white text-blue-700 rounded-lg font-bold border border-blue-200 text-[11px]"
+                className="flex items-center justify-center space-x-1 py-1.5 px-2 bg-white text-blue-700 rounded-lg font-bold border border-blue-200 text-[10px]"
               >
                 <Navigation className="w-3 h-3" />
                 <span>Chỉ đường</span>
@@ -146,7 +159,7 @@ export default function DealDetailModal({ deal, onClose, onSaveDeal, isSaved = f
 
               <a
                 href="tel:19001234"
-                className="flex items-center justify-center space-x-1 py-1.5 px-2 bg-white text-emerald-700 rounded-lg font-bold border border-emerald-200 text-[11px]"
+                className="flex items-center justify-center space-x-1 py-1.5 px-2 bg-white text-emerald-700 rounded-lg font-bold border border-emerald-200 text-[10px]"
               >
                 <Phone className="w-3 h-3" />
                 <span>Gọi điện</span>

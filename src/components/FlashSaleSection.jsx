@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Flame, Clock, MapPin } from 'lucide-react';
+import { Flame, Clock, MapPin, Ticket } from 'lucide-react';
 import { FLASH_DEALS } from '../data/mockData';
 
 export default function FlashSaleSection({ onSelectDeal }) {
@@ -27,102 +27,90 @@ export default function FlashSaleSection({ onSelectDeal }) {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 mt-10">
-      <div className="bg-gradient-to-r from-red-600 via-orange-500 to-noti-600 rounded-3xl p-4 sm:p-6 shadow-md text-white">
+    <div className="px-3 mt-4">
+      <div className="bg-gradient-to-r from-red-600 via-orange-500 to-noti-600 rounded-3xl p-3.5 shadow-md text-white">
         
         {/* Flash Sale Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/20">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-yellow-400 text-red-600 rounded-xl shadow-inner">
-              <Flame className="w-6 h-6 fill-red-600" />
+        <div className="flex items-center justify-between pb-2.5 border-b border-white/20">
+          <div className="flex items-center space-x-2">
+            <div className="p-1 bg-yellow-400 text-red-600 rounded-lg">
+              <Flame className="w-4 h-4 fill-red-600" />
             </div>
             <div>
-              <div className="flex items-center space-x-2">
-                <h2 className="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">
+              <div className="flex items-center space-x-1.5 leading-none">
+                <h2 className="text-sm font-black uppercase text-white">
                   GIỜ VÀNG SĂN DEAL
                 </h2>
-                <span className="bg-yellow-400 text-gray-900 text-[10px] font-black px-2 py-0.5 rounded-full uppercase">
-                  Số lượng có hạn
+                <span className="bg-yellow-400 text-gray-900 text-[9px] font-black px-1.5 py-0.2 rounded-full">
+                  HOT
                 </span>
               </div>
-              <p className="text-xs text-orange-100 font-medium">
-                Khung giờ vàng giảm giá độc quyền từ các cửa hàng đối tác
-              </p>
             </div>
           </div>
 
           {/* Countdown Clock */}
-          <div className="flex items-center space-x-2 bg-black/25 backdrop-blur-sm px-3.5 py-1.5 rounded-xl border border-white/20 self-start sm:self-auto">
-            <Clock className="w-4 h-4 text-yellow-300" />
-            <span className="text-xs font-semibold text-yellow-200">Kết thúc sau:</span>
-            <div className="flex items-center space-x-1 font-mono font-black text-sm">
-              <span className="bg-white text-red-600 px-2 py-0.5 rounded">{timeLeft.hours}</span>
-              <span>:</span>
-              <span className="bg-white text-red-600 px-2 py-0.5 rounded">{timeLeft.minutes}</span>
-              <span>:</span>
-              <span className="bg-white text-red-600 px-2 py-0.5 rounded">{timeLeft.seconds}</span>
-            </div>
+          <div className="flex items-center space-x-1 font-mono font-black text-xs bg-black/25 px-2 py-0.5 rounded-lg border border-white/20">
+            <Clock className="w-3 h-3 text-yellow-300 mr-0.5" />
+            <span className="bg-white text-red-600 px-1 rounded">{timeLeft.hours}</span>
+            <span>:</span>
+            <span className="bg-white text-red-600 px-1 rounded">{timeLeft.minutes}</span>
+            <span>:</span>
+            <span className="bg-white text-red-600 px-1 rounded">{timeLeft.seconds}</span>
           </div>
         </div>
 
-        {/* Flash Sale Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-5">
+        {/* Flash Sale Horizontal Scrollable Cards (No more narrow squished columns!) */}
+        <div className="flex gap-2.5 overflow-x-auto pt-3 pb-1 scrollbar-none snap-x">
           {FLASH_DEALS.map((deal) => (
             <div
               key={deal.id}
               onClick={() => onSelectDeal(deal)}
-              className="bg-white rounded-2xl overflow-hidden shadow-sm text-gray-800 flex flex-col group cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              className="w-[145px] min-w-[145px] bg-white rounded-2xl overflow-hidden shadow-sm text-gray-800 flex flex-col group cursor-pointer hover:shadow-md transition-all flex-shrink-0 snap-start"
             >
               {/* Image */}
-              <div className="relative h-44 overflow-hidden bg-gray-100">
+              <div className="relative h-28 overflow-hidden bg-gray-100">
                 <img
                   src={deal.image}
                   alt={deal.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                 />
-                <span className="absolute top-2 left-2 bg-red-600 text-white text-[11px] font-black px-2 py-0.5 rounded-md shadow">
+                <span className="absolute top-1.5 left-1.5 bg-red-600 text-white text-[9px] font-black px-1.5 py-0.2 rounded shadow">
                   {deal.discount}
                 </span>
-                <span className="absolute top-2 right-2 bg-gray-900/70 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded shadow">
+                <span className="absolute top-1.5 right-1.5 bg-gray-900/70 text-white text-[8px] font-bold px-1 rounded">
                   {deal.city}
                 </span>
               </div>
 
               {/* Info */}
-              <div className="p-3.5 flex-1 flex flex-col justify-between">
+              <div className="p-2 flex-1 flex flex-col justify-between">
                 <div>
-                  <h3 className="font-bold text-xs sm:text-sm text-gray-900 line-clamp-2 leading-snug group-hover:text-noti-600 transition-colors">
+                  <span className="text-[9px] text-noti-700 font-bold block truncate">
+                    {deal.storeName}
+                  </span>
+                  <h3 className="font-bold text-[11px] text-gray-900 line-clamp-2 leading-snug mt-0.5 group-hover:text-noti-600">
                     {deal.title}
                   </h3>
 
                   {/* Price */}
-                  <div className="mt-2 flex items-baseline space-x-2">
-                    <span className="text-red-600 font-black text-lg">
+                  <div className="mt-1.5 flex items-baseline space-x-1">
+                    <span className="text-red-600 font-black text-xs">
                       {deal.salePrice.toLocaleString('vi-VN')}₫
                     </span>
-                    <span className="text-gray-400 line-through text-xs font-semibold">
+                    <span className="text-gray-400 line-through text-[9px]">
                       {deal.originalPrice.toLocaleString('vi-VN')}₫
-                    </span>
-                  </div>
-
-                  {/* Store */}
-                  <div className="mt-2 flex items-center justify-between text-[11px] text-gray-500">
-                    <span className="truncate max-w-[130px] font-medium">{deal.storeName}</span>
-                    <span className="flex items-center text-noti-600 font-semibold">
-                      <MapPin className="w-3 h-3 mr-0.5" />
-                      {deal.distance}
                     </span>
                   </div>
                 </div>
 
-                {/* Progress */}
-                <div className="mt-3">
-                  <div className="relative w-full h-3.5 bg-orange-100 rounded-full overflow-hidden flex items-center justify-center">
+                {/* Progress bar */}
+                <div className="mt-2">
+                  <div className="relative w-full h-3 bg-orange-100 rounded-full overflow-hidden flex items-center justify-center">
                     <div
                       className="absolute left-0 top-0 bottom-0 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"
                       style={{ width: `${deal.soldPercent}%` }}
                     />
-                    <span className="relative z-10 text-[9px] font-bold text-white uppercase tracking-wider">
+                    <span className="relative z-10 text-[8px] font-bold text-white uppercase tracking-wider">
                       Đã bán {deal.soldPercent}%
                     </span>
                   </div>

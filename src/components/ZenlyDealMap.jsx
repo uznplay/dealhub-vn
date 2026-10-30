@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import L from 'leaflet';
-import {
-  Navigation,
-  MapPin,
-  Store,
+import { 
+  Navigation, 
+  MapPin, 
+  Store, 
   Ticket,
   Compass,
   Layers,
-  ChevronRight
+  ChevronRight,
+  X,
+  Minus,
+  ExternalLink
 } from 'lucide-react';
 
 export const NATIONWIDE_DEALS = [
@@ -213,10 +216,11 @@ export default function ZenlyDealMap({ onSelectDeal, onSaveDeal, selectedCity = 
 
       const markerHtml = `
         <div class="relative cursor-pointer select-none">
-          <div class="px-2 py-0.5 rounded-full text-[10px] font-black shadow-md border flex items-center gap-1 transition-transform ${isSelected
-          ? 'bg-noti-600 text-white border-white scale-110 ring-2 ring-noti-400'
-          : 'bg-white text-gray-900 border-gray-300 hover:scale-105'
-        }">
+          <div class="px-2 py-0.5 rounded-full text-[10px] font-black shadow-md border flex items-center gap-1 transition-transform ${
+            isSelected 
+              ? 'bg-noti-600 text-white border-white scale-110 ring-2 ring-noti-400' 
+              : 'bg-white text-gray-900 border-gray-300 hover:scale-105'
+          }">
             <span class="w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-yellow-300' : 'bg-noti-500'}"></span>
             <span>${deal.badge}</span>
           </div>
@@ -245,72 +249,100 @@ export default function ZenlyDealMap({ onSelectDeal, onSaveDeal, selectedCity = 
   }, [activeCityTab, selectedMapDeal]);
 
   return (
-    <div className="w-full flex flex-col space-y-2">
-      {/* City Switcher Bar */}
-      <div className="px-3 pt-2 flex items-center justify-between gap-1">
-        <div className="flex items-center space-x-1.5 overflow-x-auto scrollbar-none text-[11px] font-bold">
-          {['Hà Nội', 'TP. Hồ Chí Minh', 'Đà Nẵng', 'Toàn quốc'].map((city) => (
-            <button
-              key={city}
-              onClick={() => setActiveCityTab(city)}
-              className={`px-3 py-1 rounded-full whitespace-nowrap transition-all ${activeCityTab === city
-                  ? 'bg-noti-500 text-white shadow-2xs'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-            >
-              {city}
-            </button>
-          ))}
-        </div>
+    <div className="w-full flex flex-col space-y-1.5">
+      {/* City Switcher Row: Clean full width scrolling, no overlapping buttons */}
+      <div className="px-3 pt-2 pb-1 overflow-x-auto scrollbar-none flex items-center gap-1.5">
+        {['Hà Nội', 'TP. Hồ Chí Minh', 'Đà Nẵng', 'Toàn quốc'].map((city) => (
+          <button
+            key={city}
+            onClick={() => setActiveCityTab(city)}
+            className={`px-3 py-1 rounded-full text-[11px] font-bold whitespace-nowrap transition-all ${
+              activeCityTab === city
+                ? 'bg-noti-500 text-white shadow-2xs'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            {city}
+          </button>
+        ))}
+      </div>
 
-        {/* Map Type toggle */}
-        <div className="flex items-center bg-gray-100 rounded-lg p-0.5 text-[10px] font-bold flex-shrink-0">
+      {/* Map Container */}
+      <div className="relative w-full h-[360px] bg-gray-100 overflow-hidden shadow-inner isolate">
+        <div ref={mapContainerRef} className="w-full h-full z-0" />
+
+        {/* Floating Map Type Switcher on Top-Right of Map (Never collides with city tabs!) */}
+        <div className="absolute top-2.5 right-2.5 z-10 bg-white/95 backdrop-blur-md rounded-xl p-0.5 shadow-md border border-gray-200 flex text-[10px] font-bold">
           <button
             onClick={() => setMapType('google-roadmap')}
-            className={`px-2 py-0.5 rounded-md transition-colors ${mapType === 'google-roadmap' ? 'bg-white text-gray-900 shadow-2xs' : 'text-gray-500'
-              }`}
+            className={`px-2 py-0.5 rounded-lg transition-colors ${
+              mapType === 'google-roadmap' ? 'bg-noti-500 text-white shadow-2xs' : 'text-gray-600'
+            }`}
           >
             Đường phố
           </button>
           <button
             onClick={() => setMapType('google-satellite')}
-            className={`px-2 py-0.5 rounded-md transition-colors ${mapType === 'google-satellite' ? 'bg-white text-gray-900 shadow-2xs' : 'text-gray-500'
-              }`}
+            className={`px-2 py-0.5 rounded-lg transition-colors ${
+              mapType === 'google-satellite' ? 'bg-noti-500 text-white shadow-2xs' : 'text-gray-600'
+            }`}
           >
             Vệ tinh
           </button>
         </div>
-      </div>
 
-      {/* Map Container */}
-      <div className="relative w-full h-[460px] bg-gray-100 overflow-hidden shadow-inner isolate">
-        <div ref={mapContainerRef} className="w-full h-full z-0" />
-
-        {/* Floating Selected Deal Card at Bottom */}
+        {/* Floating Selected Deal Card at Bottom with CLOSE BUTTON (Dấu trừ / X ẩn đi) */}
         {selectedMapDeal && (
-          <div className="absolute bottom-3 inset-x-3 z-10 bg-white/95 backdrop-blur-md rounded-2xl p-3 shadow-xl border border-gray-100 flex items-center gap-2.5">
-            <img
-              src={selectedMapDeal.image}
-              alt={selectedMapDeal.title}
-              className="w-16 h-16 rounded-xl object-cover flex-shrink-0"
-            />
+          <div className="absolute bottom-2.5 inset-x-2.5 z-10 bg-white/95 backdrop-blur-md rounded-2xl p-2.5 shadow-xl border border-gray-100 flex items-center gap-2.5">
+            
+            {/* Close / Minimize button at top-right */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedMapDeal(null);
+              }}
+              className="absolute -top-2.5 -right-2.5 w-6 h-6 rounded-full bg-gray-900 text-white flex items-center justify-center shadow hover:bg-black transition-colors"
+              title="Ẩn ưu đãi này"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+
+            {/* Thumbnail: Clicking opens detail */}
+            <div 
+              onClick={() => onSelectDeal && onSelectDeal(selectedMapDeal)}
+              className="relative w-16 h-16 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0 cursor-pointer group"
+            >
+              <img
+                src={selectedMapDeal.image}
+                alt={selectedMapDeal.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+              />
+              <span className="absolute top-0.5 left-0.5 bg-red-600 text-white text-[8px] font-black px-1 py-0.2 rounded">
+                {selectedMapDeal.badge}
+              </span>
+            </div>
+
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-bold text-noti-700 truncate">
                   {selectedMapDeal.storeName}
                 </span>
-                <span className="text-[9px] bg-red-100 text-red-700 font-black px-1.5 py-0.2 rounded">
-                  {selectedMapDeal.badge}
+                <span className="text-[9px] text-gray-400">
+                  {selectedMapDeal.distance}
                 </span>
               </div>
 
-              <h4 className="font-bold text-xs text-gray-900 truncate mt-0.5">
+              {/* Title: Clickable to view details */}
+              <h4 
+                onClick={() => onSelectDeal && onSelectDeal(selectedMapDeal)}
+                className="font-bold text-xs text-gray-900 truncate mt-0.5 cursor-pointer hover:text-noti-600"
+              >
                 {selectedMapDeal.title}
               </h4>
 
               <p className="text-[10px] text-gray-500 truncate flex items-center gap-1 mt-0.5">
-                <MapPin className="w-3 h-3 text-noti-600 flex-shrink-0" />
-                <span>{selectedMapDeal.address} • Cách {selectedMapDeal.distance}</span>
+                <MapPin className="w-2.5 h-2.5 text-noti-600 flex-shrink-0" />
+                <span>{selectedMapDeal.address}</span>
               </p>
 
               <div className="mt-1.5 flex items-center justify-between">
@@ -323,22 +355,31 @@ export default function ZenlyDealMap({ onSelectDeal, onSaveDeal, selectedCity = 
                   </span>
                 </div>
 
-                <button
-                  onClick={() => {
-                    if (onSaveDeal) onSaveDeal(selectedMapDeal);
-                  }}
-                  className="px-2.5 py-1 bg-noti-500 hover:bg-noti-600 text-white rounded-lg text-[10px] font-bold flex items-center gap-1 shadow-2xs active:scale-95 transition-transform"
-                >
-                  <Ticket className="w-3 h-3" />
-                  <span>Lưu kho</span>
-                </button>
+                <div className="flex items-center space-x-1.5">
+                  <button
+                    onClick={() => onSelectDeal && onSelectDeal(selectedMapDeal)}
+                    className="px-2 py-0.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-[10px] font-bold"
+                  >
+                    Chi tiết
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      if (onSaveDeal) onSaveDeal(selectedMapDeal);
+                    }}
+                    className="px-2 py-0.5 bg-noti-500 hover:bg-noti-600 text-white rounded-lg text-[10px] font-bold flex items-center gap-0.5 shadow-2xs"
+                  >
+                    <Ticket className="w-3 h-3" />
+                    <span>Lưu kho</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         )}
       </div>
 
-      {/* Nearby Deals Horizontal List */}
+      {/* Nearby Deals List */}
       <div className="p-3 bg-white space-y-2">
         <div className="flex items-center justify-between">
           <span className="font-bold text-xs text-gray-900">
@@ -359,23 +400,37 @@ export default function ZenlyDealMap({ onSelectDeal, onSaveDeal, selectedCity = 
                   mapInstanceRef.current.flyTo([deal.lat, deal.lng], 15, { duration: 0.6 });
                 }
               }}
-              className={`p-2.5 rounded-xl border flex items-center justify-between gap-2 cursor-pointer transition-all ${selectedMapDeal?.id === deal.id
-                  ? 'border-noti-500 bg-green-50/50'
+              className={`p-2.5 rounded-xl border flex items-center justify-between gap-2 cursor-pointer transition-all ${
+                selectedMapDeal?.id === deal.id 
+                  ? 'border-noti-500 bg-green-50/50' 
                   : 'border-gray-100 hover:border-gray-200 bg-white'
-                }`}
+              }`}
             >
               <div className="flex-1 min-w-0">
-                <p className="text-[10px] text-noti-700 font-bold truncate">{deal.storeName}</p>
-                <p className="text-xs font-bold text-gray-900 truncate">{deal.title}</p>
-                <p className="text-[10px] text-gray-400 mt-0.5">{deal.distance} • {deal.address}</p>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] text-noti-700 font-bold truncate">{deal.storeName}</span>
+                  <span className="text-[9px] bg-red-100 text-red-700 font-bold px-1 rounded">{deal.badge}</span>
+                </div>
+                <p className="text-xs font-bold text-gray-900 truncate mt-0.5">{deal.title}</p>
+                <p className="text-[10px] text-gray-400 mt-0.5 flex items-center gap-1">
+                  <MapPin className="w-2.5 h-2.5 text-gray-400 flex-shrink-0" />
+                  <span className="truncate">{deal.distance} • {deal.address}</span>
+                </p>
               </div>
+
               <div className="text-right flex-shrink-0">
                 <span className="text-xs font-black text-red-600 block">
                   {deal.salePrice?.toLocaleString('vi-VN')}₫
                 </span>
-                <span className="text-[9px] text-gray-400 line-through">
-                  {deal.originalPrice?.toLocaleString('vi-VN')}₫
-                </span>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onSelectDeal) onSelectDeal(deal);
+                  }}
+                  className="mt-1 px-2 py-0.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded text-[9px] font-bold"
+                >
+                  Xem tin
+                </button>
               </div>
             </div>
           ))}
