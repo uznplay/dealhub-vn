@@ -150,46 +150,51 @@ export default function SmartDealFinder({ allDeals = [], onSelectDeal, onSaveDea
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            {/* Results list: 100% full width mobile cards */}
+            <div className="space-y-2">
               {results.items.map((deal) => (
                 <div
                   key={deal.id}
-                  onClick={() => onSelectDeal(deal)}
-                  className="p-3.5 bg-white rounded-2xl border border-gray-200 hover:border-noti-400 hover:shadow-lg transition-all flex gap-3 cursor-pointer group"
+                  onClick={() => onSelectDeal && onSelectDeal(deal)}
+                  className="p-2.5 bg-white rounded-2xl border border-gray-200 hover:border-noti-400 shadow-2xs transition-all flex items-center gap-2.5 cursor-pointer group"
                 >
-                  <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
+                  <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
                     <img src={deal.image} alt={deal.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                    <span className="absolute top-1 left-1 bg-red-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded shadow">
+                    <span className="absolute top-1 left-1 bg-red-600 text-white text-[8px] font-black px-1 rounded shadow">
                       {deal.discount}
                     </span>
                   </div>
 
-                  <div className="flex-1 min-w-0 flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center justify-between text-[11px] text-gray-500">
-                        <span className="font-semibold text-noti-700 truncate max-w-[130px]">{deal.storeName}</span>
-                        <span className="text-[10px] bg-green-50 text-noti-700 px-1.5 py-0.5 rounded">{deal.distance}</span>
-                      </div>
-                      <h4 className="font-bold text-xs text-gray-900 line-clamp-1 mt-0.5 group-hover:text-noti-600 transition-colors">
-                        {deal.title}
-                      </h4>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between text-[10px] text-gray-500">
+                      <span className="font-semibold text-noti-700 truncate">{deal.storeName}</span>
+                      <span className="text-[9px] bg-green-50 text-noti-700 px-1 py-0.2 rounded font-bold">{deal.distance}</span>
                     </div>
 
-                    <div className="flex items-center justify-between mt-2 pt-1 border-t border-gray-100">
-                      <span className="text-red-600 font-black text-sm">
-                        {deal.salePrice.toLocaleString('vi-VN')}₫
-                      </span>
+                    <h4 className="font-bold text-xs text-gray-900 truncate mt-0.5 group-hover:text-noti-600 transition-colors">
+                      {deal.title}
+                    </h4>
+
+                    <div className="flex items-center justify-between mt-1">
+                      <div className="flex items-baseline space-x-1">
+                        <span className="text-red-600 font-black text-xs">
+                          {deal.salePrice.toLocaleString('vi-VN')}₫
+                        </span>
+                        <span className="text-[9px] text-gray-400 line-through">
+                          {deal.originalPrice.toLocaleString('vi-VN')}₫
+                        </span>
+                      </div>
 
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           if (onSaveDeal) onSaveDeal(deal);
                         }}
-                        className="p-1.5 bg-green-50 hover:bg-green-100 text-noti-700 rounded-lg text-xs font-bold transition-colors flex items-center gap-1"
+                        className="px-2 py-0.5 bg-noti-50 hover:bg-noti-100 text-noti-700 rounded-lg text-[10px] font-bold transition-colors flex items-center gap-1 border border-noti-200"
                         title="Lưu vào Kho Voucher"
                       >
-                        <Bookmark className="w-3.5 h-3.5" />
-                        <span className="text-[10px]">Lưu kho</span>
+                        <Bookmark className="w-3 h-3 text-noti-600" />
+                        <span>Lưu kho</span>
                       </button>
                     </div>
                   </div>

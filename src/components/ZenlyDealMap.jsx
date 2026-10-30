@@ -215,24 +215,45 @@ export default function ZenlyDealMap({ onSelectDeal, onSaveDeal, selectedCity = 
       const isSelected = selectedMapDeal?.id === deal.id;
 
       const markerHtml = `
-        <div class="relative cursor-pointer select-none">
-          <div class="px-2 py-0.5 rounded-full text-[10px] font-black shadow-md border flex items-center gap-1 transition-transform ${
+        <div class="relative cursor-pointer select-none flex flex-col items-center group">
+          {/* Discount Pill on top */}
+          <div class="px-1.5 py-0.5 rounded-full text-[9px] font-black shadow-md border mb-0.5 transition-transform ${
             isSelected 
-              ? 'bg-noti-600 text-white border-white scale-110 ring-2 ring-noti-400' 
-              : 'bg-white text-gray-900 border-gray-300 hover:scale-105'
+              ? 'bg-red-600 text-white border-white scale-110 shadow-lg' 
+              : 'bg-red-600 text-white border-white'
           }">
-            <span class="w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-yellow-300' : 'bg-noti-500'}"></span>
-            <span>${deal.badge}</span>
+            ${deal.badge}
           </div>
-          <div class="w-2 h-2 bg-noti-600 rotate-45 mx-auto -mt-1 ${isSelected ? 'bg-noti-600' : 'bg-gray-700'}"></div>
+
+          {/* Deal Avatar Photo Circle (Zenly style) */}
+          <div class="relative w-10 h-10 rounded-full border-2 transition-all ${
+            isSelected 
+              ? 'border-noti-500 ring-4 ring-noti-400/50 scale-115 shadow-xl' 
+              : 'border-white shadow-md hover:scale-110'
+          } bg-white overflow-hidden">
+            <img 
+              src="${deal.image}" 
+              alt="${deal.title}" 
+              class="w-full h-full object-cover" 
+              onerror="this.src='https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=100&auto=format&fit=crop&q=80'"
+            />
+          </div>
+
+          {/* Pin Pointer dot */}
+          <div class="w-2 h-2 rounded-full ${isSelected ? 'bg-noti-600 ring-2 ring-white' : 'bg-gray-800'} -mt-1 shadow-sm"></div>
+
+          {/* Distance tag */}
+          <span class="bg-gray-900/80 text-white text-[8px] font-bold px-1.5 py-0.2 rounded mt-0.5 whitespace-nowrap shadow">
+            ${deal.distance}
+          </span>
         </div>
       `;
 
       const dealIcon = L.divIcon({
         className: 'custom-deal-marker',
         html: markerHtml,
-        iconSize: [60, 30],
-        iconAnchor: [30, 28]
+        iconSize: [60, 68],
+        iconAnchor: [30, 60]
       });
 
       const marker = L.marker([deal.lat, deal.lng], { icon: dealIcon });
