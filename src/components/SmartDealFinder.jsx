@@ -183,13 +183,13 @@ export default function SmartDealFinder({ allDeals = [], onSelectDeal, onSaveDea
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          onSaveDeal(deal);
+                          if (onSaveDeal) onSaveDeal(deal);
                         }}
                         className="p-1.5 bg-green-50 hover:bg-green-100 text-noti-700 rounded-lg text-xs font-bold transition-colors flex items-center gap-1"
-                        title="Lưu vào Deal Passport"
+                        title="Lưu vào Kho Voucher"
                       >
                         <Bookmark className="w-3.5 h-3.5" />
-                        <span className="text-[10px]">Lưu ví</span>
+                        <span className="text-[10px]">Lưu kho</span>
                       </button>
                     </div>
                   </div>

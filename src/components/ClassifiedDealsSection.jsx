@@ -192,21 +192,21 @@ export default function ClassifiedDealsSection({
                   </span>
 
                   <div className="absolute bottom-2.5 right-2.5 flex items-center gap-1.5">
-                    {/* Bookmark into Deal Passport */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (onSaveDeal) onSaveDeal(deal);
-                      }}
-                      className={`w-8 h-8 rounded-full flex items-center justify-center shadow transition-all ${
-                        isSaved 
-                          ? 'bg-yellow-400 text-gray-900' 
-                          : 'bg-white/90 text-gray-600 hover:bg-white hover:text-yellow-600'
-                      }`}
-                      title="Lưu vào Deal Passport"
-                    >
-                      {isSaved ? <Check className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
-                    </button>
+                      {/* Bookmark into Kho Voucher */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (onSaveDeal) onSaveDeal(deal);
+                        }}
+                        className={`w-7 h-7 rounded-full flex items-center justify-center shadow-xs transition-all ${
+                          isSaved 
+                            ? 'bg-noti-500 text-white' 
+                            : 'bg-white/90 text-gray-700 hover:bg-white hover:text-noti-600'
+                        }`}
+                        title="Lưu vào Kho Voucher"
+                      >
+                        {isSaved ? <Check className="w-3.5 h-3.5" /> : <Bookmark className="w-3.5 h-3.5" />}
+                      </button>
 
                     {/* Like button */}
                     <button

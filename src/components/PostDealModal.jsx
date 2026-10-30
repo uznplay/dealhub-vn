@@ -61,27 +61,27 @@ export default function PostDealModal({ onClose, onAddDeal }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+    <div className="fixed inset-0 z-[99999] overflow-y-auto bg-black/75 backdrop-blur-sm flex items-center justify-center p-3 animate-fadeIn">
       <div 
-        className="bg-white rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl relative border border-gray-100"
+        className="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl relative border border-gray-100 flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-rose-600 to-pink-600 p-5 text-white flex items-center justify-between">
+        <div className="bg-gradient-to-r from-noti-600 to-emerald-700 p-4 text-white flex items-center justify-between flex-shrink-0">
           <div className="flex items-center space-x-2.5">
-            <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shadow-sm">
-              <Heart className="w-5 h-5 text-white" />
+            <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
+              <Store className="w-5 h-5 text-yellow-300" />
             </div>
             <div>
-              <h3 className="font-black text-lg">ĐĂNG TIN ƯU ĐÃI LÀM ĐẸP & THỜI TRANG</h3>
-              <p className="text-xs text-rose-100">
-                Dành cho các tiệm Spa, thẩm mỹ viện, salon nail & shop thời trang
+              <h3 className="font-black text-sm uppercase">TẠO ƯU ĐÃI CHO TIỆM</h3>
+              <p className="text-[10px] text-green-100">
+                Hiển thị ngay trên bản đồ và bảng tin người dùng
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
+            className="w-8 h-8 rounded-full bg-black/20 hover:bg-black/30 flex items-center justify-center text-white transition-colors"
           >
             <X className="w-4 h-4" />
           </button>

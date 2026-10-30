@@ -2,15 +2,10 @@ import React, { useState } from 'react';
 import { 
   Search, 
   MapPin, 
-  PlusCircle, 
   ChevronDown, 
-  User, 
-  Map, 
-  Wallet, 
-  Target, 
-  BarChart3,
-  Store,
-  Sparkles
+  Ticket, 
+  Store, 
+  Target
 } from 'lucide-react';
 import { CITIES } from '../data/mockData';
 
@@ -19,9 +14,6 @@ export default function Navbar({
   setSelectedCity,
   searchQuery,
   setSearchQuery,
-  activeTab = 'home',
-  setActiveTab,
-  onOpenPostDeal,
   onOpenPassport,
   onOpenMissions,
   onOpenMerchantDashboard,
@@ -30,77 +22,76 @@ export default function Navbar({
   const [showCityDropdown, setShowCityDropdown] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 shadow-md bg-gradient-to-r from-noti-700 via-noti-600 to-[#189a07] text-white">
-      {/* Top Bar */}
-      <div className="max-w-7xl mx-auto px-4 py-1.5 flex items-center justify-between text-xs border-b border-white/15 text-noti-100">
-        <div className="flex items-center space-x-4">
-          <span className="font-medium flex items-center gap-1 text-white">
-            <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
-            <span>Sàn Săn Deal Thời Trang, Spa, Làm Đẹp & Mỹ Phẩm Địa Phương</span>
-          </span>
-          <span className="hidden md:inline text-white/30">|</span>
-          <a href="#dealmap-section" className="hidden md:flex items-center gap-1 hover:text-white text-yellow-300 font-semibold transition-colors">
-            <Map className="w-3.5 h-3.5" />
-            <span>Bản đồ Spa & Shop gần bạn</span>
-          </a>
+    <header className="sticky top-0 z-40 bg-gradient-to-r from-noti-700 via-noti-600 to-noti-500 text-white shadow-md">
+      {/* Top Bar with Brand & Merchant Switcher */}
+      <div className="px-3.5 pt-2.5 pb-2 flex items-center justify-between">
+        {/* Brand */}
+        <div className="flex items-center space-x-2">
+          <div className="w-8 h-8 rounded-xl bg-white p-1 flex items-center justify-center shadow-xs">
+            <img src="/logo.svg" alt="DealHub" className="w-full h-full object-contain" />
+          </div>
+          <div>
+            <span className="text-base font-black tracking-tight leading-none text-white block">
+              DEAL<span className="text-yellow-300">HUB</span>
+            </span>
+            <span className="text-[9px] text-green-100 font-bold uppercase tracking-wider block">
+              Bản Đồ Deal Địa Phương
+            </span>
+          </div>
         </div>
 
-        {/* Topbar links */}
-        <div className="flex items-center space-x-3 font-medium text-white text-[11px]">
-          <button 
-            type="button"
+        {/* Right tools: Kho voucher & Kênh người bán */}
+        <div className="flex items-center space-x-1.5">
+          {/* Mission */}
+          <button
             onClick={onOpenMissions}
-            className="flex items-center gap-1 hover:text-yellow-300 transition-colors"
+            className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors"
+            title="Nhiệm vụ săn deal"
           >
-            <Target className="w-3.5 h-3.5 text-yellow-300" />
-            <span>Nhiệm vụ săn deal</span>
+            <Target className="w-4 h-4 text-yellow-300" />
           </button>
-          <span className="text-white/30">|</span>
-          <button 
-            type="button"
-            onClick={onOpenMerchantDashboard}
-            className="text-white/80 hover:text-yellow-300 transition-colors"
+
+          {/* Kho Voucher Button */}
+          <button
+            onClick={onOpenPassport}
+            className="flex items-center space-x-1 bg-white/20 hover:bg-white/30 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all relative border border-white/20"
           >
-            Dành cho đối tác người bán
+            <Ticket className="w-3.5 h-3.5 text-yellow-300" />
+            <span className="text-[11px]">Kho Voucher</span>
+            {savedDealsCount > 0 && (
+              <span className="w-4 h-4 rounded-full bg-yellow-400 text-gray-950 text-[10px] font-black flex items-center justify-center">
+                {savedDealsCount}
+              </span>
+            )}
+          </button>
+
+          {/* Kênh Người Bán icon link */}
+          <button
+            onClick={onOpenMerchantDashboard}
+            className="p-1.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-gray-950 transition-colors flex items-center gap-1 px-2 text-[10px] font-black shadow-xs"
+            title="Dành cho chủ cửa hàng"
+          >
+            <Store className="w-3.5 h-3.5" />
+            <span>KÊNH BÁN</span>
           </button>
         </div>
       </div>
 
-      {/* Main Navbar */}
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3 md:gap-5">
-        {/* Brand Logo */}
-        <a href="#" className="flex items-center space-x-2.5 cursor-pointer flex-shrink-0">
-          <div className="w-10 h-10 rounded-xl bg-white p-1.5 shadow flex items-center justify-center">
-            <img src="/logo.svg" alt="DealHub" className="w-full h-full object-contain" />
-          </div>
-          <div>
-            <div className="flex items-center space-x-1.5 leading-none">
-              <span className="text-2xl font-black tracking-tight text-white font-sans">
-                DEAL<span className="text-yellow-300">HUB</span>
-              </span>
-            </div>
-            <p className="text-[10px] text-green-100 font-bold tracking-wider mt-0.5 hidden sm:block uppercase">
-              BEAUTY • SPA • FASHION
-            </p>
-          </div>
-        </a>
-
-        {/* Location selector */}
-        <div className="relative hidden lg:block flex-shrink-0">
+      {/* Search & Location Row */}
+      <div className="px-3 pb-2.5 flex items-center gap-2">
+        {/* City selector */}
+        <div className="relative flex-shrink-0">
           <button
             onClick={() => setShowCityDropdown(!showCityDropdown)}
-            className="flex items-center space-x-1.5 bg-black/20 hover:bg-black/30 px-3.5 py-2 rounded-xl text-xs font-semibold border border-white/20 transition-all"
+            className="flex items-center space-x-1 bg-black/20 hover:bg-black/30 px-2.5 py-2 rounded-xl text-[11px] font-semibold border border-white/15"
           >
-            <MapPin className="w-3.5 h-3.5 text-yellow-300" />
-            <span className="truncate max-w-[120px]">{selectedCity}</span>
-            <ChevronDown className="w-3.5 h-3.5 opacity-80" />
+            <MapPin className="w-3 h-3 text-yellow-300" />
+            <span className="truncate max-w-[80px]">{selectedCity}</span>
+            <ChevronDown className="w-3 h-3 opacity-80" />
           </button>
 
           {showCityDropdown && (
-            <div className="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-xl py-2 z-50 text-gray-800 border border-gray-100">
-              <div className="px-3 py-1 text-[11px] font-bold text-gray-400 uppercase tracking-wider">
-                Chọn khu vực
-              </div>
+            <div className="absolute left-0 mt-1.5 w-40 bg-white rounded-xl shadow-xl py-1 z-50 text-gray-800 border border-gray-100 text-xs">
               {CITIES.map((city) => (
                 <button
                   key={city}
@@ -108,7 +99,7 @@ export default function Navbar({
                     setSelectedCity(city);
                     setShowCityDropdown(false);
                   }}
-                  className={`w-full text-left px-3.5 py-2 text-xs font-medium hover:bg-green-50 transition-colors ${
+                  className={`w-full text-left px-3 py-1.5 font-medium hover:bg-green-50 ${
                     selectedCity === city ? 'bg-green-100 text-noti-700 font-bold' : ''
                   }`}
                 >
@@ -119,78 +110,16 @@ export default function Navbar({
           )}
         </div>
 
-        {/* Search Bar */}
-        <div className="flex-1 max-w-xl">
-          <div className="relative flex items-center">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Tìm kiếm tiệm spa, làm nail, đầm thiết kế, mỹ phẩm..."
-              className="w-full pl-10 pr-24 py-2.5 rounded-xl bg-white text-gray-800 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-inner"
-            />
-            <Search className="w-4 h-4 text-gray-400 absolute left-3.5 pointer-events-none" />
-            <button className="absolute right-1.5 px-3.5 py-1.5 bg-noti-500 hover:bg-noti-600 active:scale-95 text-white font-bold text-xs rounded-lg shadow-sm transition-all">
-              Tìm kiếm
-            </button>
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex items-center space-x-2 sm:space-x-2.5 flex-shrink-0">
-          {/* Navigation to Feed */}
-          <button
-            type="button"
-            onClick={() => setActiveTab && setActiveTab('feed')}
-            className={`hidden md:flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all ${
-              activeTab === 'feed'
-                ? 'bg-yellow-400 text-gray-950 shadow'
-                : 'bg-white/15 hover:bg-white/25 text-white'
-            }`}
-          >
-            <Sparkles className="w-4 h-4 text-yellow-300" />
-            <span>BẢNG TIN SĂN DEAL</span>
-          </button>
-
-          {/* Navigation to Map */}
-          <button
-            type="button"
-            onClick={() => setActiveTab && setActiveTab('map')}
-            className={`hidden md:flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all ${
-              activeTab === 'map'
-                ? 'bg-yellow-400 text-gray-950 shadow'
-                : 'bg-white/15 hover:bg-white/25 text-white'
-            }`}
-          >
-            <Map className="w-4 h-4 text-yellow-300" />
-            <span>BẢN ĐỒ DEAL</span>
-          </button>
-
-          {/* Deal Passport Wallet Button */}
-          <button
-            type="button"
-            onClick={onOpenPassport}
-            className="flex items-center space-x-1.5 bg-white/20 hover:bg-white/30 backdrop-blur-sm px-3 py-2 rounded-xl text-xs font-bold border border-white/25 transition-all text-white relative shadow-sm"
-          >
-            <Wallet className="w-4 h-4 text-yellow-300" />
-            <span className="hidden md:inline">Ví Voucher</span>
-            {savedDealsCount > 0 && (
-              <span className="w-4 h-4 rounded-full bg-yellow-400 text-gray-950 text-[10px] font-black flex items-center justify-center">
-                {savedDealsCount}
-              </span>
-            )}
-          </button>
-
-          {/* Post Deal Button */}
-          <button
-            type="button"
-            onClick={onOpenPostDeal}
-            className="flex items-center space-x-1.5 bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-gray-950 font-extrabold px-3 py-2 rounded-xl text-xs sm:text-sm shadow hover:shadow-md active:scale-95 transition-all"
-          >
-            <PlusCircle className="w-4 h-4 text-gray-950" />
-            <span className="hidden sm:inline">CHIA SẺ DEAL</span>
-            <span className="sm:hidden">ĐĂNG</span>
-          </button>
+        {/* Search input */}
+        <div className="flex-1 relative">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Tìm spa, tiệm tóc, nail gần bạn..."
+            className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-white text-gray-900 placeholder-gray-400 text-xs focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-inner"
+          />
+          <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-2 pointer-events-none" />
         </div>
       </div>
     </header>

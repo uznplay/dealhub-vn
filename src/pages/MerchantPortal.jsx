@@ -1,29 +1,31 @@
 import React, { useState } from 'react';
-import {
-  BarChart3,
-  Eye,
-  Bookmark,
-  Ticket,
-  CheckCircle2,
-  Users,
-  TrendingUp,
-  ScanLine,
-  Plus,
-  Store,
-  Clock,
-  Sparkles,
-  Phone,
-  MapPin,
-  Calendar,
-  ShieldCheck,
-  Star,
+import { 
+  BarChart3, 
+  Eye, 
+  Bookmark, 
+  Ticket, 
+  CheckCircle2, 
+  Users, 
+  TrendingUp, 
+  ScanLine, 
+  Plus, 
+  Store, 
+  Clock, 
+  Sparkles, 
+  Phone, 
+  MapPin, 
+  Calendar, 
+  ShieldCheck, 
+  Star, 
   ArrowLeft,
   Settings,
   Bell,
   HelpCircle,
   ExternalLink,
-  DollarSign
+  DollarSign,
+  AlertCircle
 } from 'lucide-react';
+import { redeemVoucherBackend } from '../lib/supabase';
 
 export default function MerchantPortal({ onBackToHome, onOpenPostDeal }) {
   const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'deals' | 'scanner' | 'profile'
@@ -89,28 +91,26 @@ export default function MerchantPortal({ onBackToHome, onOpenPostDeal }) {
     }));
   };
 
-  const handleVerify = (e) => {
+  const handleVerify = async (e) => {
     e.preventDefault();
     if (!verifyCode.trim()) return;
 
-    const newRecord = {
-      id: `ck-${Date.now()}`,
-      code: verifyCode.toUpperCase(),
-      customer: 'Khách hàng DealHub',
-      service: 'Chăm Sóc Da Y Khoa 12 Bước',
-      time: 'Vừa xong',
-      amount: '189.000₫'
-    };
-
-    setVerifyResult({
-      success: true,
-      code: verifyCode.toUpperCase(),
-      service: 'Chăm Sóc Da Y Khoa 12 Bước',
-      discount: 'Giảm 62% - Khách thanh toán 189.000₫'
-    });
-
-    setRecentRedemptions([newRecord, ...recentRedemptions]);
-    setVerifyCode('');
+    const res = await redeemVoucherBackend(verifyCode);
+    if (res.success) {
+      setVerifyResult({
+        success: true,
+        code: res.voucher.code,
+        service: res.voucher.title,
+        discount: `Khách thanh toán ${res.voucher.salePrice?.toLocaleString('vi-VN')}₫`
+      });
+      setRecentRedemptions([res.record, ...recentRedemptions]);
+      setVerifyCode('');
+    } else {
+      setVerifyResult({
+        success: false,
+        message: res.message
+      });
+    }
   };
 
   return (
