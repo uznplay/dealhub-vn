@@ -1,14 +1,35 @@
 import React, { useState } from 'react';
-import { X, MapPin, Phone, MessageSquare, Navigation, Check, ShieldCheck, Clock, FileText } from 'lucide-react';
+import { 
+  X, 
+  MapPin, 
+  Phone, 
+  MessageSquare, 
+  Navigation, 
+  Check, 
+  ShieldCheck, 
+  Clock, 
+  FileText,
+  Wallet,
+  Bookmark
+} from 'lucide-react';
 
-export default function DealDetailModal({ deal, onClose }) {
+export default function DealDetailModal({ deal, onClose, onSaveDeal, isSaved = false }) {
   const [copied, setCopied] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
 
   if (!deal) return null;
 
   const handleCopyCode = () => {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleSaveToPassport = () => {
+    if (onSaveDeal) {
+      onSaveDeal(deal);
+      setJustSaved(true);
+      setTimeout(() => setJustSaved(false), 2000);
+    }
   };
 
   return (
@@ -83,6 +104,19 @@ export default function DealDetailModal({ deal, onClose }) {
             </div>
           </div>
 
+          {/* Deal Passport Save CTA Button (Feature 1) */}
+          <button
+            onClick={handleSaveToPassport}
+            className={`w-full py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-sm ${
+              isSaved || justSaved
+                ? 'bg-amber-100 text-amber-900 border border-amber-300'
+                : 'bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-gray-900'
+            }`}
+          >
+            <Wallet className="w-4 h-4" />
+            <span>{isSaved || justSaved ? '✓ Đã Lưu Vào Deal Passport' : 'Lưu Vào Ví Deal Passport (Dùng Khi Đi Ăn / Đi Chơi)'}</span>
+          </button>
+
           {/* Description */}
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-1 flex items-center gap-1">
@@ -134,16 +168,6 @@ export default function DealDetailModal({ deal, onClose }) {
                 <span>Gọi điện</span>
               </a>
             </div>
-          </div>
-
-          {/* Usage Guideline */}
-          <div className="bg-amber-50/60 p-3 rounded-xl border border-amber-200 text-xs text-gray-600 space-y-1">
-            <span className="font-bold text-amber-800 flex items-center gap-1">
-              <Clock className="w-3.5 h-3.5 text-amber-600" /> Hướng dẫn sử dụng ưu đãi:
-            </span>
-            <p>
-              Xuất trình mã ưu đãi hoặc thông báo áp dụng từ DealHub cho nhân viên thu ngân trước khi thanh toán để được giảm giá trực tiếp vào hóa đơn.
-            </p>
           </div>
         </div>
 

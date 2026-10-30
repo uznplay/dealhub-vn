@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Heart, Store, Filter } from 'lucide-react';
+import { MapPin, Heart, Store, Filter, Bookmark, Check } from 'lucide-react';
 import { CITIES } from '../data/mockData';
 
 export default function ClassifiedDealsSection({
@@ -8,7 +8,9 @@ export default function ClassifiedDealsSection({
   setSelectedCity,
   activeCategory,
   searchQuery,
-  onSelectDeal
+  onSelectDeal,
+  onSaveDeal,
+  savedDealIds = []
 }) {
   const [priceFilter, setPriceFilter] = useState('all');
   const [sortBy, setSortBy] = useState('popular');
@@ -166,6 +168,8 @@ export default function ClassifiedDealsSection({
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {filteredDeals.map((deal) => {
             const isLiked = likedDeals[deal.id];
+            const isSaved = savedDealIds.includes(deal.id);
+
             return (
               <div
                 key={deal.id}
@@ -187,12 +191,31 @@ export default function ClassifiedDealsSection({
                     {deal.city}
                   </span>
 
-                  <button
-                    onClick={(e) => toggleLike(deal.id, e)}
-                    className="absolute bottom-2.5 right-2.5 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow hover:bg-white text-gray-500"
-                  >
-                    <Heart className={`w-4 h-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
-                  </button>
+                  <div className="absolute bottom-2.5 right-2.5 flex items-center gap-1.5">
+                    {/* Bookmark into Deal Passport */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (onSaveDeal) onSaveDeal(deal);
+                      }}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center shadow transition-all ${
+                        isSaved 
+                          ? 'bg-yellow-400 text-gray-900' 
+                          : 'bg-white/90 text-gray-600 hover:bg-white hover:text-yellow-600'
+                      }`}
+                      title="Lưu vào Deal Passport"
+                    >
+                      {isSaved ? <Check className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+                    </button>
+
+                    {/* Like button */}
+                    <button
+                      onClick={(e) => toggleLike(deal.id, e)}
+                      className="w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow hover:bg-white text-gray-500"
+                    >
+                      <Heart className={`w-4 h-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+                    </button>
+                  </div>
                 </div>
 
                 {/* Content */}

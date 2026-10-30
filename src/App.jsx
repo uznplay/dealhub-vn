@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import HeroBanner from './components/HeroBanner';
+import SmartDealFinder from './components/SmartDealFinder';
 import ZenlyDealMap from './components/ZenlyDealMap';
 import CategoryGrid from './components/CategoryGrid';
 import FlashSaleSection from './components/FlashSaleSection';
 import ClassifiedDealsSection from './components/ClassifiedDealsSection';
 import DealDetailModal from './components/DealDetailModal';
 import PostDealModal from './components/PostDealModal';
+import DealPassportModal from './components/DealPassportModal';
+import DealMissionModal from './components/DealMissionModal';
+import MerchantImpactDashboard from './components/MerchantImpactDashboard';
 import Footer from './components/Footer';
 import { ALL_DEALS } from './data/mockData';
-import { Sparkles, PlusCircle, Home, Tag, Map, User } from 'lucide-react';
+import { Sparkles, PlusCircle, Home, Tag, Map, Wallet, Target, BarChart3 } from 'lucide-react';
 
 export default function App() {
   const [deals, setDeals] = useState(ALL_DEALS);
@@ -20,11 +24,54 @@ export default function App() {
   // Modals state
   const [selectedDeal, setSelectedDeal] = useState(null);
   const [showPostDealModal, setShowPostDealModal] = useState(false);
+  const [showPassportModal, setShowPassportModal] = useState(false);
+  const [showMissionModal, setShowMissionModal] = useState(false);
+  const [showMerchantDashboard, setShowMerchantDashboard] = useState(false);
+
+  // Deal Passport Saved Deals (with initial default demo data)
+  const [savedDeals, setSavedDeals] = useState(() => {
+    return [
+      {
+        ...ALL_DEALS[0],
+        isUsed: false,
+        savedAt: 'Hôm nay'
+      },
+      {
+        ...ALL_DEALS[2],
+        isUsed: false,
+        savedAt: 'Hôm qua'
+      }
+    ];
+  });
+
   const [toastMessage, setToastMessage] = useState(null);
 
   const showToast = (msg) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3000);
+  };
+
+  const handleSaveDeal = (dealToSave) => {
+    const exists = savedDeals.some(d => d.id === dealToSave.id);
+    if (exists) {
+      showToast('Ưu đãi này đã có trong Deal Passport của bạn!');
+      return;
+    }
+    setSavedDeals([
+      { ...dealToSave, isUsed: false, savedAt: 'Vừa xong' },
+      ...savedDeals
+    ]);
+    showToast('⭐ Đã lưu ưu đãi vào Deal Passport của bạn!');
+  };
+
+  const handleRemoveSavedDeal = (dealId) => {
+    setSavedDeals(savedDeals.filter(d => d.id !== dealId));
+    showToast('Đã xóa ưu đãi khỏi Deal Passport.');
+  };
+
+  const handleMarkUsed = (dealId) => {
+    setSavedDeals(savedDeals.map(d => d.id === dealId ? { ...d, isUsed: true } : d));
+    showToast('✓ Đã xác nhận sử dụng ưu đãi thành công!');
   };
 
   const handleAddDeal = (newDeal) => {
@@ -37,7 +84,7 @@ export default function App() {
       
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-20 right-4 z-50 bg-gray-900 text-white px-4 py-2.5 rounded-2xl shadow-xl flex items-center space-x-2 text-xs font-bold border border-noti-400">
+        <div className="fixed top-20 right-4 z-50 bg-gray-900 text-white px-4 py-2.5 rounded-2xl shadow-xl flex items-center space-x-2 text-xs font-bold border border-noti-400 animate-bounce">
           <Sparkles className="w-4 h-4 text-yellow-300" />
           <span>{toastMessage}</span>
         </div>
@@ -50,10 +97,21 @@ export default function App() {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         onOpenPostDeal={() => setShowPostDealModal(true)}
+        onOpenPassport={() => setShowPassportModal(true)}
+        onOpenMissions={() => setShowMissionModal(true)}
+        onOpenMerchantDashboard={() => setShowMerchantDashboard(true)}
+        savedDealsCount={savedDeals.filter(d => !d.isUsed).length}
       />
 
       {/* Hero Banner */}
       <HeroBanner />
+
+      {/* FEATURE 3: Smart Deal Finder (Tìm ưu đãi theo nhu cầu tự nhiên) */}
+      <SmartDealFinder
+        allDeals={deals}
+        onSelectDeal={(deal) => setSelectedDeal(deal)}
+        onSaveDeal={handleSaveDeal}
+      />
 
       {/* Google Maps DealMap Section */}
       <div id="dealmap-section">
@@ -82,6 +140,8 @@ export default function App() {
         activeCategory={activeCategory}
         searchQuery={searchQuery}
         onSelectDeal={(deal) => setSelectedDeal(deal)}
+        onSaveDeal={handleSaveDeal}
+        savedDealIds={savedDeals.map(d => d.id)}
       />
 
       {/* Mobile Bottom Navigation Bar */}
@@ -113,27 +173,61 @@ export default function App() {
           <PlusCircle className="w-7 h-7 text-gray-900" />
         </button>
 
-        <a 
-          href="#deals-section"
-          className="flex flex-col items-center text-[10px] font-medium text-gray-600 hover:text-noti-600"
-        >
-          <Tag className="w-5 h-5 mb-0.5" />
-          <span>Ưu đãi</span>
-        </a>
-
+        {/* Deal Passport */}
         <button
-          onClick={() => showToast('Tính năng tài khoản đang được phát triển')}
+          onClick={() => setShowPassportModal(true)}
+          className="flex flex-col items-center text-[10px] font-medium text-gray-600 hover:text-noti-600 relative"
+        >
+          <Wallet className="w-5 h-5 mb-0.5 text-yellow-600" />
+          <span>Ví Passport</span>
+          {savedDeals.filter(d => !d.isUsed).length > 0 && (
+            <span className="absolute top-0 right-1 w-3.5 h-3.5 bg-red-500 text-white rounded-full text-[8px] font-bold flex items-center justify-center">
+              {savedDeals.filter(d => !d.isUsed).length}
+            </span>
+          )}
+        </button>
+
+        {/* Deal Mission */}
+        <button
+          onClick={() => setShowMissionModal(true)}
           className="flex flex-col items-center text-[10px] font-medium text-gray-600 hover:text-noti-600"
         >
-          <User className="w-5 h-5 mb-0.5" />
-          <span>Tài khoản</span>
+          <Target className="w-5 h-5 mb-0.5 text-emerald-600" />
+          <span>Nhiệm vụ</span>
         </button>
       </div>
+
+      {/* FEATURE 1: Deal Passport Modal */}
+      {showPassportModal && (
+        <DealPassportModal
+          savedDeals={savedDeals}
+          onRemoveDeal={handleRemoveSavedDeal}
+          onMarkUsed={handleMarkUsed}
+          onClose={() => setShowPassportModal(false)}
+        />
+      )}
+
+      {/* FEATURE 2: Deal Mission Modal */}
+      {showMissionModal && (
+        <DealMissionModal
+          onClose={() => setShowMissionModal(false)}
+          onOpenPassport={() => setShowPassportModal(true)}
+        />
+      )}
+
+      {/* FEATURE 5: Deal Impact Dashboard (B2B Merchant) */}
+      {showMerchantDashboard && (
+        <MerchantImpactDashboard
+          onClose={() => setShowMerchantDashboard(false)}
+        />
+      )}
 
       {/* Modals */}
       {selectedDeal && (
         <DealDetailModal
           deal={selectedDeal}
+          isSaved={savedDeals.some(d => d.id === selectedDeal.id)}
+          onSaveDeal={handleSaveDeal}
           onClose={() => setSelectedDeal(null)}
         />
       )}

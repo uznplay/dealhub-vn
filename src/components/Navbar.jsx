@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
-import { Search, MapPin, PlusCircle, Bell, ChevronDown, User, Map } from 'lucide-react';
+import { 
+  Search, 
+  MapPin, 
+  PlusCircle, 
+  Bell, 
+  ChevronDown, 
+  User, 
+  Map, 
+  Wallet, 
+  Target, 
+  BarChart3 
+} from 'lucide-react';
 import { CITIES } from '../data/mockData';
 
 export default function Navbar({
@@ -7,7 +18,11 @@ export default function Navbar({
   setSelectedCity,
   searchQuery,
   setSearchQuery,
-  onOpenPostDeal
+  onOpenPostDeal,
+  onOpenPassport,
+  onOpenMissions,
+  onOpenMerchantDashboard,
+  savedDealsCount = 0
 }) {
   const [showCityDropdown, setShowCityDropdown] = useState(false);
 
@@ -20,15 +35,27 @@ export default function Navbar({
           <span className="hidden md:inline text-white/30">|</span>
           <a href="#dealmap-section" className="hidden md:flex items-center gap-1 hover:text-white text-yellow-300 font-semibold transition-colors">
             <Map className="w-3.5 h-3.5" />
-            <span>Xem bản đồ khuyến mãi</span>
+            <span>Bản đồ khuyến mãi</span>
           </a>
         </div>
         <div className="flex items-center space-x-4 font-medium text-white/90">
-          <span className="cursor-pointer hover:text-white transition-colors">Kênh người bán</span>
+          <button 
+            onClick={onOpenMerchantDashboard}
+            className="flex items-center gap-1 hover:text-yellow-300 transition-colors"
+          >
+            <BarChart3 className="w-3.5 h-3.5 text-yellow-300" />
+            <span>Kênh người bán (Đo hiệu quả)</span>
+          </button>
+          <span className="text-white/30">|</span>
+          <button 
+            onClick={onOpenMissions}
+            className="flex items-center gap-1 hover:text-yellow-300 transition-colors"
+          >
+            <Target className="w-3.5 h-3.5 text-yellow-300" />
+            <span>Nhiệm vụ săn deal</span>
+          </button>
           <span className="text-white/30">|</span>
           <span className="cursor-pointer hover:text-white transition-colors">Trợ giúp</span>
-          <span className="text-white/30">|</span>
-          <span className="cursor-pointer hover:text-white transition-colors">Đăng nhập</span>
         </div>
       </div>
 
@@ -86,7 +113,7 @@ export default function Navbar({
         </div>
 
         {/* Search Bar */}
-        <div className="flex-1 max-w-2xl">
+        <div className="flex-1 max-w-xl">
           <div className="relative flex items-center">
             <input
               type="text"
@@ -96,7 +123,7 @@ export default function Navbar({
               className="w-full pl-10 pr-24 py-2.5 rounded-xl bg-white text-gray-800 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-inner"
             />
             <Search className="w-4 h-4 text-gray-400 absolute left-3.5 pointer-events-none" />
-            <button className="absolute right-1.5 px-4 py-1.5 bg-noti-500 hover:bg-noti-600 active:scale-95 text-white font-bold text-xs rounded-lg shadow-sm transition-all">
+            <button className="absolute right-1.5 px-3.5 py-1.5 bg-noti-500 hover:bg-noti-600 active:scale-95 text-white font-bold text-xs rounded-lg shadow-sm transition-all">
               Tìm kiếm
             </button>
           </div>
@@ -104,35 +131,38 @@ export default function Navbar({
 
         {/* Action Buttons */}
         <div className="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
-          {/* Map Shortcut */}
-          <a
-            href="#dealmap-section"
-            className="hidden md:flex items-center space-x-1.5 bg-white/15 hover:bg-white/25 px-3 py-2 rounded-xl text-xs font-bold border border-white/20 transition-all text-white"
+          {/* Deal Passport Wallet Button */}
+          <button
+            onClick={onOpenPassport}
+            className="flex items-center space-x-1.5 bg-white/20 hover:bg-white/30 backdrop-blur-sm px-3 py-2 rounded-xl text-xs font-bold border border-white/25 transition-all text-white relative shadow-sm"
           >
-            <Map className="w-4 h-4 text-yellow-300" />
-            <span>Bản đồ deal</span>
-          </a>
+            <Wallet className="w-4 h-4 text-yellow-300" />
+            <span className="hidden sm:inline">Deal Passport</span>
+            {savedDealsCount > 0 && (
+              <span className="w-4 h-4 rounded-full bg-red-500 text-white text-[10px] font-black flex items-center justify-center">
+                {savedDealsCount}
+              </span>
+            )}
+          </button>
 
           {/* Post Deal Button (Chotot Style) */}
           <button
             onClick={onOpenPostDeal}
-            className="flex items-center space-x-1.5 bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-gray-900 font-extrabold px-3.5 py-2 rounded-xl text-xs sm:text-sm shadow hover:shadow-md active:scale-95 transition-all"
+            className="flex items-center space-x-1.5 bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-gray-900 font-extrabold px-3 py-2 rounded-xl text-xs sm:text-sm shadow hover:shadow-md active:scale-95 transition-all"
           >
             <PlusCircle className="w-4 h-4 text-gray-900" />
             <span className="hidden sm:inline">ĐĂNG DEAL</span>
             <span className="sm:hidden">ĐĂNG</span>
           </button>
 
-          {/* Notification */}
-          <div className="p-2 rounded-xl hover:bg-white/15 cursor-pointer transition-colors relative">
-            <Bell className="w-5 h-5 text-white" />
-            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
-          </div>
-
           {/* User Profile */}
-          <div className="w-8 h-8 rounded-full bg-white/20 border border-white/40 flex items-center justify-center cursor-pointer hover:scale-105 transition-transform">
+          <button 
+            onClick={onOpenMissions}
+            className="w-8 h-8 rounded-full bg-white/20 border border-white/40 flex items-center justify-center cursor-pointer hover:scale-105 transition-transform"
+            title="Xem nhiệm vụ & thành tích"
+          >
             <User className="w-4 h-4 text-white" />
-          </div>
+          </button>
         </div>
       </div>
     </header>
