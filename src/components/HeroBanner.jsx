@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowRight, MapPin, Map, ShieldCheck, Tag, Compass, Sparkles, Store, Heart } from 'lucide-react';
 
-export default function HeroBanner({ onOpenMerchantDashboard }) {
+export default function HeroBanner({ onViewFeed, onViewMap }) {
   return (
     <div className="relative overflow-hidden bg-gradient-to-b from-noti-600 via-noti-500 to-[#147a06] text-white pt-8 pb-12 px-4 sm:px-6">
       {/* Decorative background glows */}
@@ -44,21 +44,23 @@ export default function HeroBanner({ onOpenMerchantDashboard }) {
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2">
-            <a 
-              href="#dealmap-section"
-              className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white text-noti-700 font-extrabold text-sm shadow-lg hover:bg-yellow-300 hover:text-gray-900 transition-all flex items-center justify-center space-x-2 group"
+            <button 
+              type="button"
+              onClick={onViewFeed}
+              className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-yellow-400 text-gray-950 font-black text-xs sm:text-sm shadow-lg hover:bg-yellow-300 transition-all flex items-center justify-center space-x-2 group"
             >
-              <Compass className="w-4 h-4 text-noti-600 group-hover:rotate-45 transition-transform" />
-              <span>Xem Bản Đồ Làm Đẹp Quanh Bạn</span>
+              <Sparkles className="w-4 h-4 text-gray-950 group-hover:rotate-12 transition-transform" />
+              <span>Lướt Bảng Tin Săn Deal (Feed)</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </a>
+            </button>
 
             <button
-              onClick={onOpenMerchantDashboard}
-              className="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-black/25 hover:bg-black/35 border border-yellow-300/40 text-yellow-300 font-bold text-sm transition-all flex items-center justify-center space-x-2"
+              type="button"
+              onClick={onViewMap}
+              className="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-white/15 hover:bg-white/25 border border-white/25 text-white font-bold text-xs sm:text-sm transition-all flex items-center justify-center space-x-2"
             >
-              <Store className="w-4 h-4 text-yellow-300" />
-              <span>Bạn là Chủ Spa / Shop? Xem Kênh Người Bán</span>
+              <Compass className="w-4 h-4 text-yellow-300" />
+              <span>Xem Bản Đồ Làm Đẹp Gần Bạn</span>
             </button>
           </div>
 

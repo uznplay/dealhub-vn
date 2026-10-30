@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
-import { 
-  BarChart3, 
-  Eye, 
-  Bookmark, 
-  Ticket, 
-  CheckCircle2, 
-  Users, 
-  TrendingUp, 
-  ScanLine, 
-  Plus, 
-  Store, 
-  Clock, 
-  Sparkles, 
-  Phone, 
-  MapPin, 
-  Calendar, 
-  ShieldCheck, 
-  Star, 
+import {
+  BarChart3,
+  Eye,
+  Bookmark,
+  Ticket,
+  CheckCircle2,
+  Users,
+  TrendingUp,
+  ScanLine,
+  Plus,
+  Store,
+  Clock,
+  Sparkles,
+  Phone,
+  MapPin,
+  Calendar,
+  ShieldCheck,
+  Star,
   ArrowLeft,
   Settings,
   Bell,
@@ -115,11 +115,11 @@ export default function MerchantPortal({ onBackToHome, onOpenPostDeal }) {
 
   return (
     <div className="min-h-screen bg-[#f4f7f4] flex flex-col font-sans">
-      
+
       {/* 1. Merchant Dedicated Top Header */}
       <header className="sticky top-0 z-50 bg-[#14532d] text-white shadow-md border-b border-green-800">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-          
+
           {/* Brand & Store Selector */}
           <div className="flex items-center space-x-3">
             <button
@@ -176,17 +176,16 @@ export default function MerchantPortal({ onBackToHome, onOpenPostDeal }) {
 
       {/* 2. Main Portal Body with Left Navigation & Content Area */}
       <div className="max-w-7xl mx-auto px-4 py-6 flex-1 w-full flex flex-col md:flex-row gap-6">
-        
+
         {/* Left Sidebar Menu */}
         <aside className="w-full md:w-64 flex-shrink-0 space-y-2">
           <div className="bg-white rounded-2xl p-3 shadow-sm border border-gray-200 space-y-1">
             <button
               onClick={() => setActiveTab('overview')}
-              className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition-all ${
-                activeTab === 'overview'
+              className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition-all ${activeTab === 'overview'
                   ? 'bg-noti-500 text-white shadow'
                   : 'text-gray-700 hover:bg-gray-50'
-              }`}
+                }`}
             >
               <BarChart3 className="w-4 h-4" />
               <span>1. Đo Hiệu Quả (Deal Impact)</span>
@@ -194,11 +193,10 @@ export default function MerchantPortal({ onBackToHome, onOpenPostDeal }) {
 
             <button
               onClick={() => setActiveTab('deals')}
-              className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition-all ${
-                activeTab === 'deals'
+              className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition-all ${activeTab === 'deals'
                   ? 'bg-noti-500 text-white shadow'
                   : 'text-gray-700 hover:bg-gray-50'
-              }`}
+                }`}
             >
               <Sparkles className="w-4 h-4" />
               <span>2. Quản Lý Dịch Vụ ({merchantDeals.length})</span>
@@ -206,11 +204,10 @@ export default function MerchantPortal({ onBackToHome, onOpenPostDeal }) {
 
             <button
               onClick={() => setActiveTab('scanner')}
-              className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition-all ${
-                activeTab === 'scanner'
+              className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition-all ${activeTab === 'scanner'
                   ? 'bg-noti-500 text-white shadow'
                   : 'text-gray-700 hover:bg-gray-50'
-              }`}
+                }`}
             >
               <ScanLine className="w-4 h-4" />
               <span>3. Quét Thu Ngân Tại Tiệm</span>
@@ -218,11 +215,10 @@ export default function MerchantPortal({ onBackToHome, onOpenPostDeal }) {
 
             <button
               onClick={() => setActiveTab('profile')}
-              className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition-all ${
-                activeTab === 'profile'
+              className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition-all ${activeTab === 'profile'
                   ? 'bg-noti-500 text-white shadow'
                   : 'text-gray-700 hover:bg-gray-50'
-              }`}
+                }`}
             >
               <Star className="w-4 h-4" />
               <span>4. Hồ Sơ Tiệm & Đánh Giá</span>
@@ -378,11 +374,10 @@ export default function MerchantPortal({ onBackToHome, onOpenPostDeal }) {
                         <span className="text-xs font-bold bg-green-50 text-noti-700 px-2 py-0.5 rounded-md">
                           {deal.category}
                         </span>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                          deal.status === 'active' 
-                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${deal.status === 'active'
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                             : 'bg-gray-100 text-gray-500'
-                        }`}>
+                          }`}>
                           {deal.status === 'active' ? 'Đang hiển thị' : 'Đang tạm dừng'}
                         </span>
                       </div>
@@ -407,11 +402,10 @@ export default function MerchantPortal({ onBackToHome, onOpenPostDeal }) {
 
                       <button
                         onClick={() => toggleDealStatus(deal.id)}
-                        className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-colors ${
-                          deal.status === 'active'
+                        className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-colors ${deal.status === 'active'
                             ? 'bg-amber-100 text-amber-800 hover:bg-amber-200'
                             : 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
-                        }`}
+                          }`}
                       >
                         {deal.status === 'active' ? 'Tạm Dừng' : 'Kích Hoạt'}
                       </button>
@@ -576,3 +570,4 @@ export default function MerchantPortal({ onBackToHome, onOpenPostDeal }) {
     </div>
   );
 }
+

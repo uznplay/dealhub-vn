@@ -19,6 +19,8 @@ export default function Navbar({
   setSelectedCity,
   searchQuery,
   setSearchQuery,
+  activeTab = 'home',
+  setActiveTab,
   onOpenPostDeal,
   onOpenPassport,
   onOpenMissions,
@@ -44,16 +46,7 @@ export default function Navbar({
         </div>
 
         {/* Topbar links */}
-        <div className="flex items-center space-x-3 font-medium text-white">
-          <button 
-            type="button"
-            onClick={onOpenMerchantDashboard}
-            className="flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-gray-950 font-black px-2.5 py-0.5 rounded-full shadow transition-all"
-          >
-            <BarChart3 className="w-3.5 h-3.5 text-gray-950" />
-            <span>KÊNH NGƯỜI BÁN (ĐO HIỆU QUẢ)</span>
-          </button>
-          <span className="text-white/30">|</span>
+        <div className="flex items-center space-x-3 font-medium text-white text-[11px]">
           <button 
             type="button"
             onClick={onOpenMissions}
@@ -61,6 +54,14 @@ export default function Navbar({
           >
             <Target className="w-3.5 h-3.5 text-yellow-300" />
             <span>Nhiệm vụ săn deal</span>
+          </button>
+          <span className="text-white/30">|</span>
+          <button 
+            type="button"
+            onClick={onOpenMerchantDashboard}
+            className="text-white/80 hover:text-yellow-300 transition-colors"
+          >
+            Dành cho đối tác người bán
           </button>
         </div>
       </div>
@@ -137,15 +138,32 @@ export default function Navbar({
 
         {/* Action Buttons */}
         <div className="flex items-center space-x-2 sm:space-x-2.5 flex-shrink-0">
-          {/* Prominent Kênh Người Bán Button right in main bar */}
+          {/* Navigation to Feed */}
           <button
             type="button"
-            onClick={onOpenMerchantDashboard}
-            className="flex items-center space-x-1.5 bg-yellow-400 hover:bg-yellow-300 px-3 py-2 rounded-xl text-xs font-black transition-all text-gray-950 shadow"
-            title="Mở Trang Kênh Người Bán"
+            onClick={() => setActiveTab && setActiveTab('feed')}
+            className={`hidden md:flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all ${
+              activeTab === 'feed'
+                ? 'bg-yellow-400 text-gray-950 shadow'
+                : 'bg-white/15 hover:bg-white/25 text-white'
+            }`}
           >
-            <Store className="w-4 h-4 text-gray-950" />
-            <span className="hidden sm:inline">KÊNH NGƯỜI BÁN</span>
+            <Sparkles className="w-4 h-4 text-yellow-300" />
+            <span>BẢNG TIN SĂN DEAL</span>
+          </button>
+
+          {/* Navigation to Map */}
+          <button
+            type="button"
+            onClick={() => setActiveTab && setActiveTab('map')}
+            className={`hidden md:flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all ${
+              activeTab === 'map'
+                ? 'bg-yellow-400 text-gray-950 shadow'
+                : 'bg-white/15 hover:bg-white/25 text-white'
+            }`}
+          >
+            <Map className="w-4 h-4 text-yellow-300" />
+            <span>BẢN ĐỒ DEAL</span>
           </button>
 
           {/* Deal Passport Wallet Button */}
@@ -155,7 +173,7 @@ export default function Navbar({
             className="flex items-center space-x-1.5 bg-white/20 hover:bg-white/30 backdrop-blur-sm px-3 py-2 rounded-xl text-xs font-bold border border-white/25 transition-all text-white relative shadow-sm"
           >
             <Wallet className="w-4 h-4 text-yellow-300" />
-            <span className="hidden md:inline">Deal Passport</span>
+            <span className="hidden md:inline">Ví Voucher</span>
             {savedDealsCount > 0 && (
               <span className="w-4 h-4 rounded-full bg-yellow-400 text-gray-950 text-[10px] font-black flex items-center justify-center">
                 {savedDealsCount}
@@ -170,7 +188,7 @@ export default function Navbar({
             className="flex items-center space-x-1.5 bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-gray-950 font-extrabold px-3 py-2 rounded-xl text-xs sm:text-sm shadow hover:shadow-md active:scale-95 transition-all"
           >
             <PlusCircle className="w-4 h-4 text-gray-950" />
-            <span className="hidden sm:inline">ĐĂNG DEAL</span>
+            <span className="hidden sm:inline">CHIA SẺ DEAL</span>
             <span className="sm:hidden">ĐĂNG</span>
           </button>
         </div>

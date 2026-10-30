@@ -199,3 +199,125 @@ export const ALL_DEALS = [
     description: 'Chất vải tuyết thun co giãn nhẹ nhàng có quần bảo hộ bên trong, phong cách trẻ trung năng động chuẩn Hàn Quốc.'
   }
 ];
+
+export const MOCK_FEED_POSTS = [
+  {
+    id: 'post-1',
+    author: {
+      name: 'Thu Trang Beauty',
+      role: 'Reviewer Làm Đẹp',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
+      isVerified: true
+    },
+    time: '25 phút trước',
+    location: 'Ba Đình, Hà Nội • Cách bạn 650m',
+    content: '🔥 Deal cứu cánh làn da mụn bí bách sau đợt hè đây cả nhà ơi! Mình vừa test xong gói Chăm Sóc Da Y Khoa 12 bước tại An Nhiên Spa Liễu Giai. Kỹ thuật viên lấy nhân mụn bằng tăm bông cực êm, không sưng đỏ tí nào, đắp mặt nạ bạc hà mát lịm. Đang flash sale giảm 62% chỉ còn 189k thôi nha, các nàng bấm Lưu ví gấp kẻo hết lượt!',
+    tags: ['#ReviewSpa', '#ChamSocDaYKhoa', '#DealHotHaNoi', '#AnNhienSpa'],
+    image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&auto=format&fit=crop&q=80',
+    deal: {
+      id: 'flash-1',
+      title: 'Gói Chăm Sóc Da Y Khoa Chuyên Sâu 12 Bước + Chiếu Đèn Sinh Học',
+      storeName: 'An Nhiên Beauty & Clinic Spa',
+      originalPrice: 500000,
+      salePrice: 189000,
+      discount: '-62%',
+      address: '12 Liễu Giai, Ba Đình, Hà Nội'
+    },
+    likes: 342,
+    commentsCount: 48,
+    shares: 19,
+    comments: [
+      { id: 'c-1', author: 'Minh Anh', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80', text: 'Có cần đặt lịch trước không bạn ơi? Giá 189k này có phát sinh tip không ạ?', time: '12 phút trước' },
+      { id: 'c-2', author: 'Thu Trang Beauty', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80', text: '@Minh Anh Giá trọn gói không bắt buộc tip nha nàng! Chỉ cần lưu mã vào Deal Passport rồi đưa nhân viên quét là xong nha.', time: '8 phút trước' },
+      { id: 'c-3', author: 'Khánh Vy', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80', text: 'Vừa lưu ví xong, chiều nay ghé luôn đây hihi!', time: '3 phút trước' }
+    ]
+  },
+  {
+    id: 'post-2',
+    author: {
+      name: 'Chic Studio Thời Trang',
+      role: 'Shop Đối Tác DealHub',
+      avatar: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=120&auto=format&fit=crop&q=80',
+      isVerified: true
+    },
+    time: '1 giờ trước',
+    location: 'Quận 3, TP. Hồ Chí Minh • Cách bạn 1.2km',
+    content: '✨ BÙNG NỔ XẢ KHO ĐẦM LỤA THIẾT KẾ ĐI TIỆC CAO CẤP! \nChỉ duy nhất 50 suất giảm 55% từ 550.000₫ xuống còn 249.000₫ cho hội chị em DealHub. Chất liệu lụa tơ tằm dệt cao cấp, dáng xòe bay bổng che khuyết điểm bụng mỡ siêu tốt. Ghé shop thử trực tiếp hoặc đặt giữ size qua ví Deal Passport nhé!',
+    tags: ['#ThoiTrangNu', '#DamDiTiec', '#ChicStudio', '#Sale55%'],
+    image: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=800&auto=format&fit=crop&q=80',
+    deal: {
+      id: 'flash-2',
+      title: 'Đầm Thiết Kế Lụa Tơ Tằm Dáng Xòe Đi Tiệc & Dạo Phố',
+      storeName: 'Chic Studio Thời Trang Thiết Kế',
+      originalPrice: 550000,
+      salePrice: 249000,
+      discount: '-55%',
+      address: '104 Lê Văn Sỹ, Phường 10, Quận 3, TP.HCM'
+    },
+    likes: 518,
+    commentsCount: 65,
+    shares: 34,
+    comments: [
+      { id: 'c-4', author: 'Thảo My', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop&q=80', text: 'Mẫu này 52kg mặc vừa size M không shop ơi?', time: '40 phút trước' },
+      { id: 'c-5', author: 'Chic Studio', avatar: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=120&auto=format&fit=crop&q=80', text: '@Thảo My Dạ vừa vặn cực kỳ nàng nha, form co giãn nhẹ rất tôn dáng ạ!', time: '30 phút trước' }
+    ]
+  },
+  {
+    id: 'post-3',
+    author: {
+      name: 'Ngọc Hân Skincare',
+      role: 'Thành viên Săn Sale Tích Cực',
+      avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=120&auto=format&fit=crop&q=80',
+      isVerified: false
+    },
+    time: '3 giờ trước',
+    location: 'Hải Châu, Đà Nẵng • Cách bạn 800m',
+    content: 'Ai ở Đà Nẵng qua hốt lẹ combo serum B5 La Roche-Posay + Kem chống nắng chính hãng bên Beauty Garden đang sale sập sàn 489k này! Có hóa đơn VAT và tem chống hàng giả đầy đủ, check mã thoải mái tại quầy. Bấm lưu ngay kẻo hết hạn nhé mọi người ơi.',
+    tags: ['#SanSaleDaNang', '#MyPhamChinhHang', '#LaRochePosay', '#BeautyGarden'],
+    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800&auto=format&fit=crop&q=80',
+    deal: {
+      id: 'flash-3',
+      title: 'Bộ Đôi Serum B5 Phục Hồi Da & Kem Chống Nắng La Roche-Posay',
+      storeName: 'Beauty Garden Mỹ Phẩm Chính Hãng',
+      originalPrice: 850000,
+      salePrice: 489000,
+      discount: '-42%',
+      address: '45 Nguyễn Văn Linh, Hải Châu, Đà Nẵng'
+    },
+    likes: 289,
+    commentsCount: 22,
+    shares: 11,
+    comments: [
+      { id: 'c-6', author: 'Phương Linh', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80', text: 'Cảm ơn bạn đã share nha, sáng mai mình ghé lấy liền!', time: '1 giờ trước' }
+    ]
+  },
+  {
+    id: 'post-4',
+    author: {
+      name: 'Mộc Trà Dưỡng Sinh',
+      role: 'Shop Đối Tác DealHub',
+      avatar: 'https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=120&auto=format&fit=crop&q=80',
+      isVerified: true
+    },
+    time: '5 giờ trước',
+    location: 'Cầu Giấy, Hà Nội • Cách bạn 320m',
+    content: '🌿 Đi làm cả tuần mỏi vai gáy thì ghé Mộc Trà gội đầu dưỡng sinh thư giãn nha! Gói 75 phút gội nước thảo mộc đun trong ngày, massage bấm huyệt đả thông kinh lạc, đắp mắt thảo dược chỉ 99k (giá gốc 250k). Đặc biệt tặng thêm trà sen tuyết dưỡng nhan miễn phí cho khách lưu mã từ DealHub!',
+    tags: ['#GoiDauDuongSinh', '#GiamStress', '#SpaCauGiay', '#MocTraSpa'],
+    image: 'https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=800&auto=format&fit=crop&q=80',
+    deal: {
+      id: 'flash-4',
+      title: 'Gội Đầu Dưỡng Sinh Thảo Dược 75 Phút Kèm Massage Vai Gáy',
+      storeName: 'Mộc Trà Dưỡng Sinh Spa',
+      originalPrice: 250000,
+      salePrice: 99000,
+      discount: '-60%',
+      address: '157 Xuân Thủy, Cầu Giấy, Hà Nội'
+    },
+    likes: 640,
+    commentsCount: 89,
+    shares: 45,
+    comments: [
+      { id: 'c-7', author: 'Hoàng Anh', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80', text: 'Mình từng đi ở đây 2 lần rồi, nước bồ kết nấu thơm nức mũi, bấm huyệt bao phê luôn ạ!', time: '3 giờ trước' }
+    ]
+  }
+];

@@ -6,6 +6,7 @@ import ZenlyDealMap from './components/ZenlyDealMap';
 import CategoryGrid from './components/CategoryGrid';
 import FlashSaleSection from './components/FlashSaleSection';
 import ClassifiedDealsSection from './components/ClassifiedDealsSection';
+import DealFeed from './components/DealFeed';
 import DealDetailModal from './components/DealDetailModal';
 import PostDealModal from './components/PostDealModal';
 import DealPassportModal from './components/DealPassportModal';
@@ -13,13 +14,26 @@ import DealMissionModal from './components/DealMissionModal';
 import MerchantPortal from './pages/MerchantPortal';
 import Footer from './components/Footer';
 import { ALL_DEALS } from './data/mockData';
-import { Sparkles, PlusCircle, Home, Tag, Map, Wallet, Target, Store } from 'lucide-react';
+import { 
+  Sparkles, 
+  PlusCircle, 
+  Home, 
+  Map, 
+  Wallet, 
+  Target, 
+  Store,
+  Flame,
+  Compass
+} from 'lucide-react';
 
 export default function App() {
   // Navigation View: 'home' | 'merchant'
   const [currentView, setCurrentView] = useState(() => {
     return window.location.pathname === '/merchant' ? 'merchant' : 'home';
   });
+
+  // User Inner Tabs: 'home' (Khám phá) | 'feed' (Bảng tin FB) | 'map' (Bản đồ DealMap)
+  const [userTab, setUserTab] = useState('home');
 
   const [deals, setDeals] = useState(ALL_DEALS);
   const [selectedCity, setSelectedCity] = useState('Toàn quốc');
@@ -106,7 +120,7 @@ export default function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  // IF USER IS IN MERCHANT PORTAL VIEW: RENDER FULL SCREEN DEDICATED MERCHANT PAGE!
+  // 1. IF USER IS IN MERCHANT PORTAL VIEW: RENDER FULL SCREEN DEDICATED MERCHANT PAGE!
   if (currentView === 'merchant') {
     return (
       <>
@@ -132,9 +146,9 @@ export default function App() {
     );
   }
 
-  // STANDARD USER SHOPPING VIEW (Trang Chủ Khách Hàng)
+  // 2. STANDARD CONSUMER SHOPPING & COMMUNITY VIEW (Trang Chủ Khách Hàng)
   return (
-    <div className="min-h-screen flex flex-col bg-[#f6faf6] text-gray-800 pb-16 md:pb-0">
+    <div className="min-h-screen flex flex-col bg-[#f6faf6] text-gray-800 pb-20 md:pb-0">
       
       {/* Toast Notification */}
       {toastMessage && (
@@ -144,12 +158,14 @@ export default function App() {
         </div>
       )}
 
-      {/* Top Navigation */}
+      {/* Top Consumer Navbar */}
       <Navbar
         selectedCity={selectedCity}
         setSelectedCity={setSelectedCity}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+        activeTab={userTab}
+        setActiveTab={setUserTab}
         onOpenPostDeal={() => setShowPostDealModal(true)}
         onOpenPassport={() => setShowPassportModal(true)}
         onOpenMissions={() => setShowMissionModal(true)}
@@ -157,102 +173,203 @@ export default function App() {
         savedDealsCount={savedDeals.filter(d => !d.isUsed).length}
       />
 
-      {/* Hero Banner */}
-      <HeroBanner 
-        onOpenMerchantDashboard={() => navigateTo('merchant')}
-      />
+      {/* Sub-nav App Bar (Khám Phá • Bảng Tin FB • Bản Đồ) */}
+      <div className="sticky top-[58px] z-30 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-2xs">
+        <div className="max-w-4xl mx-auto px-4 flex items-center justify-center gap-2 sm:gap-4 py-2">
+          <button
+            onClick={() => setUserTab('home')}
+            className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition-all ${
+              userTab === 'home'
+                ? 'bg-noti-500 text-white shadow-sm scale-102'
+                : 'text-gray-600 hover:bg-gray-100 hover:text-noti-600'
+            }`}
+          >
+            <Home className="w-4 h-4" />
+            <span>Săn Deal Hot</span>
+          </button>
 
-      {/* AI Smart Beauty & Fashion Finder */}
-      <SmartDealFinder
-        allDeals={deals}
-        onSelectDeal={(deal) => setSelectedDeal(deal)}
-        onSaveDeal={handleSaveDeal}
-      />
+          <button
+            onClick={() => setUserTab('feed')}
+            className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition-all relative ${
+              userTab === 'feed'
+                ? 'bg-noti-500 text-white shadow-sm scale-102'
+                : 'text-gray-600 hover:bg-gray-100 hover:text-noti-600'
+            }`}
+          >
+            <Flame className="w-4 h-4 text-amber-500 fill-amber-500" />
+            <span>Bảng Tin Săn Deal</span>
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-ping absolute top-1.5 right-1.5" />
+            <span className="w-2 h-2 rounded-full bg-red-500 absolute top-1.5 right-1.5" />
+          </button>
 
-      {/* Google Maps DealMap Section (Spa, Thẩm mỹ viện, Thời trang) */}
-      <div id="dealmap-section">
-        <ZenlyDealMap
-          selectedCity={selectedCity}
-          onSelectDeal={(deal) => setSelectedDeal(deal)}
-        />
+          <button
+            onClick={() => setUserTab('map')}
+            className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition-all ${
+              userTab === 'map'
+                ? 'bg-noti-500 text-white shadow-sm scale-102'
+                : 'text-gray-600 hover:bg-gray-100 hover:text-noti-600'
+            }`}
+          >
+            <Map className="w-4 h-4 text-emerald-600" />
+            <span>Bản Đồ Làm Đẹp</span>
+          </button>
+        </div>
       </div>
 
-      {/* Category Icons Grid */}
-      <CategoryGrid
-        activeCategory={activeCategory}
-        onSelectCategory={setActiveCategory}
-      />
+      {/* VIEW 1: HOME (Khám Phá Ưu Đãi) */}
+      {userTab === 'home' && (
+        <main className="space-y-6">
+          {/* Hero Banner (Consumer Beauty & Fashion only) */}
+          <HeroBanner 
+            onViewFeed={() => setUserTab('feed')}
+            onViewMap={() => setUserTab('map')}
+          />
 
-      {/* Flash Sale Section */}
-      <FlashSaleSection
-        onSelectDeal={(deal) => setSelectedDeal(deal)}
-      />
+          {/* AI Smart Beauty & Fashion Finder */}
+          <SmartDealFinder
+            allDeals={deals}
+            onSelectDeal={(deal) => setSelectedDeal(deal)}
+            onSaveDeal={handleSaveDeal}
+          />
 
-      {/* All Deals Section */}
-      <ClassifiedDealsSection
-        deals={deals}
-        selectedCity={selectedCity}
-        setSelectedCity={setSelectedCity}
-        activeCategory={activeCategory}
-        searchQuery={searchQuery}
-        onSelectDeal={(deal) => setSelectedDeal(deal)}
-        onSaveDeal={handleSaveDeal}
-        savedDealIds={savedDeals.map(d => d.id)}
-      />
+          {/* Quick Map Teaser */}
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="bg-gradient-to-r from-emerald-600 to-noti-600 text-white rounded-3xl p-4 sm:p-6 shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="space-y-1 text-center sm:text-left">
+                <span className="bg-yellow-400 text-gray-950 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
+                  Tọa độ quanh bạn
+                </span>
+                <h3 className="text-lg sm:text-xl font-black">
+                  Khám Phá Spa, Nail & Shop Quanh Đây
+                </h3>
+                <p className="text-xs text-white/90">
+                  Xem ngay các viện thẩm mỹ, tiệm làm tóc và shop thời trang đang có voucher giảm giá trong bán kính 2km.
+                </p>
+              </div>
+              <button
+                onClick={() => setUserTab('map')}
+                className="px-5 py-2.5 bg-white text-noti-700 hover:bg-yellow-300 hover:text-gray-950 font-black text-xs rounded-xl shadow transition-all flex items-center space-x-2 flex-shrink-0"
+              >
+                <Compass className="w-4 h-4" />
+                <span>Mở Bản Đồ Vệ Tinh</span>
+              </button>
+            </div>
+          </div>
 
-      {/* Mobile Bottom Navigation Bar */}
-      <div className="fixed bottom-0 inset-x-0 z-40 bg-white border-t border-gray-200 py-1.5 px-3 flex items-center justify-around md:hidden shadow-xl">
+          {/* Category Icons Grid */}
+          <CategoryGrid
+            activeCategory={activeCategory}
+            onSelectCategory={setActiveCategory}
+          />
+
+          {/* Flash Sale Section */}
+          <FlashSaleSection
+            onSelectDeal={(deal) => setSelectedDeal(deal)}
+          />
+
+          {/* All Deals Section */}
+          <ClassifiedDealsSection
+            deals={deals}
+            selectedCity={selectedCity}
+            setSelectedCity={setSelectedCity}
+            activeCategory={activeCategory}
+            searchQuery={searchQuery}
+            onSelectDeal={(deal) => setSelectedDeal(deal)}
+            onSaveDeal={handleSaveDeal}
+            savedDealIds={savedDeals.map(d => d.id)}
+          />
+        </main>
+      )}
+
+      {/* VIEW 2: DEAL FEED (Bảng Tin Săn Deal Giống Facebook / NOTI) */}
+      {userTab === 'feed' && (
+        <main className="py-2">
+          <DealFeed 
+            onSaveDeal={handleSaveDeal}
+            onSelectDeal={(deal) => setSelectedDeal(deal)}
+            savedDealIds={savedDeals.map(d => d.id)}
+          />
+        </main>
+      )}
+
+      {/* VIEW 3: MAP (Zenly / Google Maps toàn màn hình) */}
+      {userTab === 'map' && (
+        <main className="max-w-7xl mx-auto px-4 py-4">
+          <ZenlyDealMap
+            selectedCity={selectedCity}
+            onSelectDeal={(deal) => setSelectedDeal(deal)}
+          />
+        </main>
+      )}
+
+      {/* Mobile-First Bottom Navigation Bar (Giống Ứng Dụng NOTI / App Di Động) */}
+      <nav className="fixed bottom-0 inset-x-0 z-40 bg-white border-t border-gray-200 py-1.5 px-2 flex items-center justify-around md:hidden shadow-2xl">
+        {/* Tab 1: Trang chủ */}
         <button 
           onClick={() => {
-            setActiveCategory('all');
+            setUserTab('home');
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
-          className="flex flex-col items-center text-[10px] font-bold text-noti-600"
+          className={`flex flex-col items-center text-[10px] font-bold transition-colors ${
+            userTab === 'home' ? 'text-noti-600' : 'text-gray-500 hover:text-gray-800'
+          }`}
         >
           <Home className="w-5 h-5 mb-0.5" />
-          <span>Trang chủ</span>
+          <span>Săn Deal</span>
         </button>
 
-        <a 
-          href="#dealmap-section"
-          className="flex flex-col items-center text-[10px] font-semibold text-gray-600 hover:text-noti-600"
+        {/* Tab 2: Bảng tin (Facebook style) */}
+        <button 
+          onClick={() => {
+            setUserTab('feed');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          className={`flex flex-col items-center text-[10px] font-bold transition-colors relative ${
+            userTab === 'feed' ? 'text-noti-600' : 'text-gray-500 hover:text-gray-800'
+          }`}
         >
-          <Map className="w-5 h-5 mb-0.5 text-noti-600" />
-          <span>Bản đồ</span>
-        </a>
+          <Flame className="w-5 h-5 mb-0.5 text-amber-500 fill-amber-500" />
+          <span>Bảng tin</span>
+          <span className="w-2 h-2 rounded-full bg-red-500 absolute top-0 right-1" />
+        </button>
 
-        {/* Center Post Deal button */}
+        {/* Tab 3: Center Đăng Deal */}
         <button
           onClick={() => setShowPostDealModal(true)}
-          className="-mt-5 w-12 h-12 rounded-full bg-gradient-to-r from-amber-400 to-yellow-400 text-gray-900 shadow-xl flex items-center justify-center font-black active:scale-90 transition-transform"
-          title="Đăng Deal Mới"
+          className="-mt-5 w-11 h-11 rounded-full bg-gradient-to-r from-amber-400 to-yellow-400 text-gray-900 shadow-xl flex items-center justify-center font-black active:scale-90 transition-transform"
+          title="Chia sẻ deal mới"
         >
-          <PlusCircle className="w-7 h-7 text-gray-900" />
+          <PlusCircle className="w-6 h-6 text-gray-900" />
         </button>
 
-        {/* Deal Passport */}
+        {/* Tab 4: Bản đồ */}
+        <button 
+          onClick={() => {
+            setUserTab('map');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          className={`flex flex-col items-center text-[10px] font-bold transition-colors ${
+            userTab === 'map' ? 'text-noti-600' : 'text-gray-500 hover:text-gray-800'
+          }`}
+        >
+          <Map className="w-5 h-5 mb-0.5 text-emerald-600" />
+          <span>Bản đồ</span>
+        </button>
+
+        {/* Tab 5: Deal Passport */}
         <button
           onClick={() => setShowPassportModal(true)}
-          className="flex flex-col items-center text-[10px] font-medium text-gray-600 hover:text-noti-600 relative"
+          className="flex flex-col items-center text-[10px] font-medium text-gray-500 hover:text-noti-600 relative"
         >
           <Wallet className="w-5 h-5 mb-0.5 text-yellow-600" />
-          <span>Deal Passport</span>
+          <span>Ví voucher</span>
           {savedDeals.filter(d => !d.isUsed).length > 0 && (
-            <span className="absolute top-0 right-1 w-3.5 h-3.5 bg-red-500 text-white rounded-full text-[8px] font-bold flex items-center justify-center">
+            <span className="absolute -top-1 right-1 w-4 h-4 bg-red-500 text-white rounded-full text-[9px] font-bold flex items-center justify-center">
               {savedDeals.filter(d => !d.isUsed).length}
             </span>
           )}
         </button>
-
-        {/* Kênh Người Bán (Dedicated Page) on Mobile Bottom Bar */}
-        <button
-          onClick={() => navigateTo('merchant')}
-          className="flex flex-col items-center text-[10px] font-bold text-amber-600 hover:text-noti-600"
-        >
-          <Store className="w-5 h-5 mb-0.5" />
-          <span>Kênh người bán</span>
-        </button>
-      </div>
+      </nav>
 
       {/* Deal Passport Modal */}
       {showPassportModal && (
