@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import L from 'leaflet';
-import { 
-  Navigation, 
-  MapPin, 
-  Store, 
+import {
+  Navigation,
+  MapPin,
+  Store,
   Ticket,
   Compass,
   Layers,
@@ -213,11 +213,10 @@ export default function ZenlyDealMap({ onSelectDeal, onSaveDeal, selectedCity = 
 
       const markerHtml = `
         <div class="relative cursor-pointer select-none">
-          <div class="px-2 py-0.5 rounded-full text-[10px] font-black shadow-md border flex items-center gap-1 transition-transform ${
-            isSelected 
-              ? 'bg-noti-600 text-white border-white scale-110 ring-2 ring-noti-400' 
-              : 'bg-white text-gray-900 border-gray-300 hover:scale-105'
-          }">
+          <div class="px-2 py-0.5 rounded-full text-[10px] font-black shadow-md border flex items-center gap-1 transition-transform ${isSelected
+          ? 'bg-noti-600 text-white border-white scale-110 ring-2 ring-noti-400'
+          : 'bg-white text-gray-900 border-gray-300 hover:scale-105'
+        }">
             <span class="w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-yellow-300' : 'bg-noti-500'}"></span>
             <span>${deal.badge}</span>
           </div>
@@ -254,11 +253,10 @@ export default function ZenlyDealMap({ onSelectDeal, onSaveDeal, selectedCity = 
             <button
               key={city}
               onClick={() => setActiveCityTab(city)}
-              className={`px-3 py-1 rounded-full whitespace-nowrap transition-all ${
-                activeCityTab === city
+              className={`px-3 py-1 rounded-full whitespace-nowrap transition-all ${activeCityTab === city
                   ? 'bg-noti-500 text-white shadow-2xs'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
+                }`}
             >
               {city}
             </button>
@@ -269,17 +267,15 @@ export default function ZenlyDealMap({ onSelectDeal, onSaveDeal, selectedCity = 
         <div className="flex items-center bg-gray-100 rounded-lg p-0.5 text-[10px] font-bold flex-shrink-0">
           <button
             onClick={() => setMapType('google-roadmap')}
-            className={`px-2 py-0.5 rounded-md transition-colors ${
-              mapType === 'google-roadmap' ? 'bg-white text-gray-900 shadow-2xs' : 'text-gray-500'
-            }`}
+            className={`px-2 py-0.5 rounded-md transition-colors ${mapType === 'google-roadmap' ? 'bg-white text-gray-900 shadow-2xs' : 'text-gray-500'
+              }`}
           >
             Đường phố
           </button>
           <button
             onClick={() => setMapType('google-satellite')}
-            className={`px-2 py-0.5 rounded-md transition-colors ${
-              mapType === 'google-satellite' ? 'bg-white text-gray-900 shadow-2xs' : 'text-gray-500'
-            }`}
+            className={`px-2 py-0.5 rounded-md transition-colors ${mapType === 'google-satellite' ? 'bg-white text-gray-900 shadow-2xs' : 'text-gray-500'
+              }`}
           >
             Vệ tinh
           </button>
@@ -363,11 +359,10 @@ export default function ZenlyDealMap({ onSelectDeal, onSaveDeal, selectedCity = 
                   mapInstanceRef.current.flyTo([deal.lat, deal.lng], 15, { duration: 0.6 });
                 }
               }}
-              className={`p-2.5 rounded-xl border flex items-center justify-between gap-2 cursor-pointer transition-all ${
-                selectedMapDeal?.id === deal.id 
-                  ? 'border-noti-500 bg-green-50/50' 
+              className={`p-2.5 rounded-xl border flex items-center justify-between gap-2 cursor-pointer transition-all ${selectedMapDeal?.id === deal.id
+                  ? 'border-noti-500 bg-green-50/50'
                   : 'border-gray-100 hover:border-gray-200 bg-white'
-              }`}
+                }`}
             >
               <div className="flex-1 min-w-0">
                 <p className="text-[10px] text-noti-700 font-bold truncate">{deal.storeName}</p>

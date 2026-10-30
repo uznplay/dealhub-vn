@@ -95,3 +95,4 @@ CREATE POLICY "Allow public update deals" ON public.deals FOR UPDATE USING (true
 CREATE POLICY "Allow public all vouchers" ON public.vouchers FOR ALL USING (true);
 CREATE POLICY "Allow public all feed_posts" ON public.feed_posts FOR ALL USING (true);
 CREATE POLICY "Allow public all redemptions" ON public.redemptions FOR ALL USING (true);
+
