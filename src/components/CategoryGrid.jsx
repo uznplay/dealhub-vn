@@ -2,24 +2,24 @@ import React from 'react';
 import { CATEGORIES } from '../data/mockData';
 import { 
   Sparkles, 
-  Utensils, 
-  Smartphone, 
-  Shirt, 
   Heart, 
-  ShoppingBag, 
-  Tag, 
-  Ticket 
+  Shirt, 
+  Smile, 
+  Scissors, 
+  Crown, 
+  Activity,
+  ShoppingBag
 } from 'lucide-react';
 
 const ICON_MAP = {
   Sparkles,
-  Utensils,
-  Smartphone,
-  Shirt,
   Heart,
-  ShoppingBag,
-  Tag,
-  Ticket
+  Shirt,
+  Smile,
+  Scissors,
+  Crown,
+  Activity,
+  ShoppingBag
 };
 
 export default function CategoryGrid({ activeCategory, onSelectCategory }) {

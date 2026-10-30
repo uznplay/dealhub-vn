@@ -28,13 +28,13 @@ export default function Navbar({
   const [showCityDropdown, setShowCityDropdown] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 shadow-md bg-gradient-to-r from-rose-700 via-rose-600 to-pink-600 text-white">
+    <header className="sticky top-0 z-50 shadow-md bg-gradient-to-r from-noti-700 via-noti-600 to-[#189a07] text-white">
       {/* Top Bar */}
-      <div className="max-w-7xl mx-auto px-4 py-1.5 flex items-center justify-between text-xs border-b border-white/10 text-white/90">
+      <div className="max-w-7xl mx-auto px-4 py-1.5 flex items-center justify-between text-xs border-b border-white/15 text-noti-100">
         <div className="flex items-center space-x-4">
-          <span className="font-medium flex items-center gap-1">
+          <span className="font-medium flex items-center gap-1 text-white">
             <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
-            <span>Sàn Săn Deal Thời Trang, Spa, Làm Đẹp & Mỹ Phẩm</span>
+            <span>Sàn Săn Deal Thời Trang, Spa, Làm Đẹp & Mỹ Phẩm Địa Phương</span>
           </span>
           <span className="hidden md:inline text-white/30">|</span>
           <a href="#dealmap-section" className="hidden md:flex items-center gap-1 hover:text-white text-yellow-300 font-semibold transition-colors">
@@ -44,11 +44,11 @@ export default function Navbar({
         </div>
 
         {/* Topbar links */}
-        <div className="flex items-center space-x-3 font-medium text-white/90">
+        <div className="flex items-center space-x-3 font-medium text-white">
           <button 
             type="button"
             onClick={onOpenMerchantDashboard}
-            className="flex items-center gap-1.5 bg-yellow-400 text-gray-950 font-black px-2.5 py-0.5 rounded-full shadow hover:bg-yellow-300 transition-colors"
+            className="flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-gray-950 font-black px-2.5 py-0.5 rounded-full shadow transition-all"
           >
             <BarChart3 className="w-3.5 h-3.5 text-gray-950" />
             <span>KÊNH NGƯỜI BÁN (ĐO HIỆU QUẢ)</span>
@@ -78,7 +78,7 @@ export default function Navbar({
                 DEAL<span className="text-yellow-300">HUB</span>
               </span>
             </div>
-            <p className="text-[10px] text-pink-100 font-semibold tracking-wider mt-0.5 hidden sm:block uppercase">
+            <p className="text-[10px] text-green-100 font-bold tracking-wider mt-0.5 hidden sm:block uppercase">
               BEAUTY • SPA • FASHION
             </p>
           </div>
@@ -107,8 +107,8 @@ export default function Navbar({
                     setSelectedCity(city);
                     setShowCityDropdown(false);
                   }}
-                  className={`w-full text-left px-3.5 py-2 text-xs font-medium hover:bg-rose-50 transition-colors ${
-                    selectedCity === city ? 'bg-rose-100 text-rose-700 font-bold' : ''
+                  className={`w-full text-left px-3.5 py-2 text-xs font-medium hover:bg-green-50 transition-colors ${
+                    selectedCity === city ? 'bg-green-100 text-noti-700 font-bold' : ''
                   }`}
                 >
                   {city}
@@ -129,7 +129,7 @@ export default function Navbar({
               className="w-full pl-10 pr-24 py-2.5 rounded-xl bg-white text-gray-800 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-inner"
             />
             <Search className="w-4 h-4 text-gray-400 absolute left-3.5 pointer-events-none" />
-            <button className="absolute right-1.5 px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-bold text-xs rounded-lg shadow-sm transition-all">
+            <button className="absolute right-1.5 px-3.5 py-1.5 bg-noti-500 hover:bg-noti-600 active:scale-95 text-white font-bold text-xs rounded-lg shadow-sm transition-all">
               Tìm kiếm
             </button>
           </div>
@@ -141,10 +141,10 @@ export default function Navbar({
           <button
             type="button"
             onClick={onOpenMerchantDashboard}
-            className="flex items-center space-x-1.5 bg-gray-950/40 hover:bg-gray-950/60 px-3 py-2 rounded-xl text-xs font-black border border-white/20 transition-all text-yellow-300 shadow"
-            title="Mở Bảng Điều Khiển Cửa Hàng B2B"
+            className="flex items-center space-x-1.5 bg-yellow-400 hover:bg-yellow-300 px-3 py-2 rounded-xl text-xs font-black transition-all text-gray-950 shadow"
+            title="Mở Trang Kênh Người Bán"
           >
-            <Store className="w-4 h-4 text-yellow-300" />
+            <Store className="w-4 h-4 text-gray-950" />
             <span className="hidden sm:inline">KÊNH NGƯỜI BÁN</span>
           </button>
 
@@ -157,7 +157,7 @@ export default function Navbar({
             <Wallet className="w-4 h-4 text-yellow-300" />
             <span className="hidden md:inline">Deal Passport</span>
             {savedDealsCount > 0 && (
-              <span className="w-4 h-4 rounded-full bg-yellow-400 text-gray-900 text-[10px] font-black flex items-center justify-center">
+              <span className="w-4 h-4 rounded-full bg-yellow-400 text-gray-950 text-[10px] font-black flex items-center justify-center">
                 {savedDealsCount}
               </span>
             )}
@@ -167,9 +167,9 @@ export default function Navbar({
           <button
             type="button"
             onClick={onOpenPostDeal}
-            className="flex items-center space-x-1.5 bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-gray-900 font-extrabold px-3 py-2 rounded-xl text-xs sm:text-sm shadow hover:shadow-md active:scale-95 transition-all"
+            className="flex items-center space-x-1.5 bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-gray-950 font-extrabold px-3 py-2 rounded-xl text-xs sm:text-sm shadow hover:shadow-md active:scale-95 transition-all"
           >
-            <PlusCircle className="w-4 h-4 text-gray-900" />
+            <PlusCircle className="w-4 h-4 text-gray-950" />
             <span className="hidden sm:inline">ĐĂNG DEAL</span>
             <span className="sm:hidden">ĐĂNG</span>
           </button>

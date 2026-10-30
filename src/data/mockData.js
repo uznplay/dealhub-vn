@@ -9,14 +9,14 @@ export const CITIES = [
 ];
 
 export const CATEGORIES = [
-  { id: 'all', name: 'Tất cả ưu đãi', icon: 'Sparkles', color: 'bg-rose-500 text-white' },
-  { id: 'spa', name: 'Spa & Chăm sóc da', icon: 'Heart', color: 'bg-rose-50 text-rose-600' },
-  { id: 'fashion', name: 'Thời trang nữ & nam', icon: 'Shirt', color: 'bg-pink-50 text-pink-600' },
-  { id: 'cosmetics', name: 'Mỹ phẩm & Skincare', icon: 'Sparkles', color: 'bg-purple-50 text-purple-600' },
-  { id: 'nail_eyelash', name: 'Nail & Nối mi', icon: 'Smile', color: 'bg-amber-50 text-amber-600' },
-  { id: 'hair_salon', name: 'Hair Salon & Gội đầu', icon: 'Scissors', color: 'bg-emerald-50 text-emerald-600' },
-  { id: 'perfume', name: 'Nước hoa & Phụ kiện', icon: 'Crown', color: 'bg-blue-50 text-blue-600' },
-  { id: 'massage', name: 'Massage & Dưỡng sinh', icon: 'Activity', color: 'bg-teal-50 text-teal-600' },
+  { id: 'all', name: 'Tất cả ưu đãi', icon: 'Sparkles', color: 'bg-noti-500 text-white' },
+  { id: 'spa', name: 'Spa & Chăm sóc da', icon: 'Heart', color: 'bg-emerald-50 text-emerald-700' },
+  { id: 'fashion', name: 'Thời trang & Quần áo', icon: 'Shirt', color: 'bg-teal-50 text-teal-700' },
+  { id: 'cosmetics', name: 'Mỹ phẩm & Skincare', icon: 'Sparkles', color: 'bg-green-50 text-green-700' },
+  { id: 'nail_eyelash', name: 'Nail & Nối mi', icon: 'Smile', color: 'bg-lime-50 text-lime-700' },
+  { id: 'hair_salon', name: 'Hair Salon & Gội đầu', icon: 'Scissors', color: 'bg-emerald-50 text-emerald-700' },
+  { id: 'perfume', name: 'Nước hoa & Phụ kiện', icon: 'Crown', color: 'bg-emerald-50 text-emerald-800' },
+  { id: 'massage', name: 'Massage & Dưỡng sinh', icon: 'Activity', color: 'bg-teal-50 text-teal-800' },
 ];
 
 export const FLASH_DEALS = [
