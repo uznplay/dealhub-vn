@@ -47,6 +47,23 @@ export default function App() {
   const [showPostDealModal, setShowPostDealModal] = useState(false);
   const [showKhoVoucherModal, setShowKhoVoucherModal] = useState(false);
   const [showMissionModal, setShowMissionModal] = useState(false);
+  const [missionModalInitialTab, setMissionModalInitialTab] = useState('missions');
+
+  // User Reward Points state (Tích điểm & Đổi voucher)
+  const [userPoints, setUserPoints] = useState(() => {
+    const saved = localStorage.getItem('dealhub_user_points');
+    return saved !== null ? parseInt(saved, 10) : 150;
+  });
+
+  const handleUpdatePoints = (newPoints) => {
+    setUserPoints(newPoints);
+    localStorage.setItem('dealhub_user_points', newPoints.toString());
+  };
+
+  const handleOpenMissions = (tab = 'missions') => {
+    setMissionModalInitialTab(tab);
+    setShowMissionModal(true);
+  };
 
   // Kho Voucher Saved Deals state
   const [savedDeals, setSavedDeals] = useState([]);
@@ -167,9 +184,10 @@ export default function App() {
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
                 onOpenPassport={() => setShowKhoVoucherModal(true)}
-                onOpenMissions={() => setShowMissionModal(true)}
+                onOpenMissions={handleOpenMissions}
                 onOpenMerchantDashboard={() => navigateTo('merchant')}
                 savedDealsCount={savedDeals.filter(d => !d.isUsed).length}
+                userPoints={userPoints}
               />
 
               {/* Sub-nav App Bar (Khám Phá • Bản Đồ • Bảng Tin) */}
@@ -330,17 +348,24 @@ export default function App() {
             {showKhoVoucherModal && (
               <DealPassportModal
                 savedDeals={savedDeals}
+                userPoints={userPoints}
+                onOpenRewards={() => handleOpenMissions('rewards')}
                 onRemoveDeal={handleRemoveSavedDeal}
                 onMarkUsed={handleMarkUsed}
                 onClose={() => setShowKhoVoucherModal(false)}
               />
             )}
 
-            {/* Deal Mission Modal */}
+            {/* Deal Mission & Reward Store Modal */}
             {showMissionModal && (
               <DealMissionModal
+                initialTab={missionModalInitialTab}
+                userPoints={userPoints}
+                onUpdatePoints={handleUpdatePoints}
+                onSaveDeal={handleSaveDeal}
                 onClose={() => setShowMissionModal(false)}
                 onOpenPassport={() => setShowKhoVoucherModal(true)}
+                showToast={showToast}
               />
             )}
 

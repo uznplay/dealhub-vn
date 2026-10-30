@@ -7,17 +7,21 @@ import {
   MapPin, 
   CheckCircle2, 
   AlertCircle, 
-  Navigation,
-  Trash2,
-  Copy,
-  Check
+  Navigation, 
+  Trash2, 
+  Copy, 
+  Check,
+  Gift,
+  Coins
 } from 'lucide-react';
 
 export default function DealPassportModal({ 
   savedDeals = [], 
   onRemoveDeal, 
   onMarkUsed, 
-  onClose 
+  onClose,
+  userPoints = 150,
+  onOpenRewards
 }) {
   const [filterStatus, setFilterStatus] = useState('all'); // 'all' | 'active' | 'used'
   const [activeQrDeal, setActiveQrDeal] = useState(null);
@@ -66,7 +70,7 @@ export default function DealPassportModal({
         </div>
 
         {/* Filter bar */}
-        <div className="px-4 py-2.5 bg-gray-50 border-b border-gray-100 flex items-center justify-between text-xs flex-shrink-0">
+        <div className="px-4 py-2 bg-gray-50 border-b border-gray-100 flex items-center justify-between text-xs flex-shrink-0">
           <div className="flex items-center space-x-1.5">
             <button
               onClick={() => setFilterStatus('all')}
@@ -99,6 +103,29 @@ export default function DealPassportModal({
               Đã dùng ({savedDeals.filter(d => d.isUsed).length})
             </button>
           </div>
+        </div>
+
+        {/* Điểm thưởng & Đổi voucher thêm banner */}
+        <div className="px-3.5 py-2 bg-gradient-to-r from-amber-50 to-emerald-50 border-b border-amber-100 flex items-center justify-between flex-shrink-0">
+          <div className="flex items-center space-x-1.5">
+            <div className="w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center text-[10px] font-black text-amber-950">
+              ⭐
+            </div>
+            <span className="text-[11px] text-gray-700 font-bold">
+              Có <strong className="text-amber-700">{userPoints}</strong> điểm thưởng
+            </span>
+          </div>
+
+          <button
+            onClick={() => {
+              onClose();
+              if (onOpenRewards) onOpenRewards();
+            }}
+            className="text-[10px] font-black text-noti-700 bg-white hover:bg-noti-50 px-2 py-1 rounded-lg border border-noti-200 shadow-2xs transition-all flex items-center gap-1"
+          >
+            <Gift className="w-3 h-3 text-amber-500" />
+            <span>Đổi Quà Thêm</span>
+          </button>
         </div>
 
         {/* List of Saved Vouchers */}

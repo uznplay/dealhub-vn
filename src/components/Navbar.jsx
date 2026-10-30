@@ -5,7 +5,9 @@ import {
   ChevronDown, 
   Ticket, 
   Store, 
-  Target
+  Target,
+  Gift,
+  Coins
 } from 'lucide-react';
 import { CITIES } from '../data/mockData';
 
@@ -17,7 +19,8 @@ export default function Navbar({
   onOpenPassport,
   onOpenMissions,
   onOpenMerchantDashboard,
-  savedDealsCount = 0
+  savedDealsCount = 0,
+  userPoints = 150
 }) {
   const [showCityDropdown, setShowCityDropdown] = useState(false);
 
@@ -40,39 +43,40 @@ export default function Navbar({
           </div>
         </div>
 
-        {/* Right tools: Kho voucher & Kênh người bán */}
+        {/* Right tools: Điểm thưởng đổi quà, Kho voucher & Kênh người bán */}
         <div className="flex items-center space-x-1.5">
-          {/* Mission */}
+          {/* Điểm Thưởng & Đổi Quà Button */}
           <button
-            onClick={onOpenMissions}
-            className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors"
-            title="Nhiệm vụ săn deal"
+            onClick={() => onOpenMissions('rewards')}
+            className="flex items-center space-x-1 bg-amber-400 hover:bg-amber-300 text-gray-950 px-2 py-1.5 rounded-xl text-xs font-black transition-all shadow-xs"
+            title="Đổi quà từ điểm thưởng"
           >
-            <Target className="w-4 h-4 text-yellow-300" />
+            <Coins className="w-3.5 h-3.5 text-amber-900" />
+            <span className="text-[11px]">{userPoints}⭐</span>
           </button>
 
           {/* Kho Voucher Button */}
           <button
             onClick={onOpenPassport}
-            className="flex items-center space-x-1 bg-white/20 hover:bg-white/30 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all relative border border-white/20"
+            className="flex items-center space-x-1 bg-white/20 hover:bg-white/30 px-2 py-1.5 rounded-xl text-xs font-bold transition-all relative border border-white/20"
           >
             <Ticket className="w-3.5 h-3.5 text-yellow-300" />
-            <span className="text-[11px]">Kho Voucher</span>
+            <span className="text-[11px]">Kho</span>
             {savedDealsCount > 0 && (
-              <span className="w-4 h-4 rounded-full bg-yellow-400 text-gray-950 text-[10px] font-black flex items-center justify-center">
+              <span className="w-3.5 h-3.5 rounded-full bg-yellow-400 text-gray-950 text-[9px] font-black flex items-center justify-center">
                 {savedDealsCount}
               </span>
             )}
           </button>
 
-          {/* Kênh Người Bán icon link */}
+          {/* Kênh Người Bán button */}
           <button
             onClick={onOpenMerchantDashboard}
-            className="p-1.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-gray-950 transition-colors flex items-center gap-1 px-2 text-[10px] font-black shadow-xs"
+            className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors flex items-center gap-1 px-2 text-[10px] font-bold border border-white/20 shadow-xs"
             title="Dành cho chủ cửa hàng"
           >
-            <Store className="w-3.5 h-3.5" />
-            <span>KÊNH BÁN</span>
+            <Store className="w-3.5 h-3.5 text-yellow-300" />
+            <span>Kênh bán</span>
           </button>
         </div>
       </div>
