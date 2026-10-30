@@ -259,3 +259,4 @@ export default function DealPassportModal({ savedDeals = [], onRemoveDeal, onMar
     </div>
   );
 }
+

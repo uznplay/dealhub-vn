@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
-import { X, Store, CheckCircle2 } from 'lucide-react';
+import { X, Store, CheckCircle2, Sparkles, Heart } from 'lucide-react';
 import { CITIES, CATEGORIES } from '../data/mockData';
 
 export default function PostDealModal({ onClose, onAddDeal }) {
   const [formData, setFormData] = useState({
     title: '',
-    category: 'fnb',
+    category: 'spa',
     storeName: '',
     city: 'Hà Nội',
     address: '',
     originalPrice: '',
     salePrice: '',
     description: '',
-    image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&auto=format&fit=crop&q=80',
-    badge: 'Mới đăng'
+    image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&auto=format&fit=crop&q=80',
+    badge: 'Ưu đãi mới'
   });
 
   const [submitted, setSubmitted] = useState(false);
@@ -25,13 +25,13 @@ export default function PostDealModal({ onClose, onAddDeal }) {
       const pct = Math.round(((orig - sale) / orig) * 100);
       return `-${pct}%`;
     }
-    return '-20%';
+    return '-30%';
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.title || !formData.salePrice || !formData.storeName) {
-      alert('Vui lòng điền đầy đủ tiêu đề, tên cửa hàng và giá khuyến mãi!');
+      alert('Vui lòng điền đầy đủ tiêu đề dịch vụ, tên tiệm và giá ưu đãi!');
       return;
     }
 
@@ -39,7 +39,7 @@ export default function PostDealModal({ onClose, onAddDeal }) {
       id: `deal-${Date.now()}`,
       title: formData.title,
       category: formData.category,
-      originalPrice: parseInt(formData.originalPrice) || parseInt(formData.salePrice) * 1.3,
+      originalPrice: parseInt(formData.originalPrice) || parseInt(formData.salePrice) * 1.5,
       salePrice: parseInt(formData.salePrice),
       discount: calculateDiscount(),
       image: formData.image,
@@ -50,7 +50,7 @@ export default function PostDealModal({ onClose, onAddDeal }) {
       badge: 'Vừa đăng',
       likes: 1,
       rating: 5.0,
-      description: formData.description || 'Ưu đãi đặc biệt áp dụng trực tiếp tại cửa hàng.'
+      description: formData.description || 'Ưu đãi độc quyền áp dụng trực tiếp tại tiệm spa / shop thời trang.'
     };
 
     onAddDeal(newDeal);
@@ -67,21 +67,21 @@ export default function PostDealModal({ onClose, onAddDeal }) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-amber-400 to-yellow-400 p-5 text-gray-900 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-rose-600 to-pink-600 p-5 text-white flex items-center justify-between">
           <div className="flex items-center space-x-2.5">
-            <div className="w-10 h-10 rounded-xl bg-white/80 flex items-center justify-center shadow-sm">
-              <Store className="w-5 h-5 text-gray-900" />
+            <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shadow-sm">
+              <Heart className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h3 className="font-black text-lg">ĐĂNG TIN KHUYẾN MÃI</h3>
-              <p className="text-xs text-gray-800">
-                Dành cho các cửa hàng, quán ăn và doanh nghiệp bán lẻ
+              <h3 className="font-black text-lg">ĐĂNG TIN ƯU ĐÃI LÀM ĐẸP & THỜI TRANG</h3>
+              <p className="text-xs text-rose-100">
+                Dành cho các tiệm Spa, thẩm mỹ viện, salon nail & shop thời trang
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-black/10 hover:bg-black/20 flex items-center justify-center text-gray-900 transition-colors"
+            className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -89,37 +89,37 @@ export default function PostDealModal({ onClose, onAddDeal }) {
 
         {submitted ? (
           <div className="p-8 text-center space-y-3">
-            <div className="w-14 h-14 bg-noti-100 rounded-full flex items-center justify-center mx-auto text-noti-600">
+            <div className="w-14 h-14 bg-rose-100 rounded-full flex items-center justify-center mx-auto text-rose-600">
               <CheckCircle2 className="w-8 h-8" />
             </div>
-            <h4 className="text-lg font-black text-gray-900">Đăng Tin Thành Công!</h4>
+            <h4 className="text-lg font-black text-gray-900">Đăng Ưu Đãi Thành Công!</h4>
             <p className="text-xs text-gray-500">
-              Chương trình khuyến mãi của bạn đã được xuất bản và hiển thị trên DealHub.
+              Dịch vụ của bạn đã được xuất bản trên bản đồ và danh sách DealHub Beauty & Fashion.
             </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-3.5 text-xs">
             <div>
               <label className="block font-bold text-gray-700 mb-1">
-                Tiêu đề chương trình khuyến mãi <span className="text-red-500">*</span>
+                Tên gói dịch vụ / Sản phẩm khuyến mãi <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 required
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder="Ví dụ: Giảm 40% Toàn bộ Menu Trà Sữa & Đồ Uống..."
-                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-noti-500"
+                placeholder="Ví dụ: Gói Chăm Sóc Da Y Khoa 12 Bước hoặc Set Váy Thiết Kế..."
+                className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block font-bold text-gray-700 mb-1">Ngành hàng</label>
+                <label className="block font-bold text-gray-700 mb-1">Danh mục làm đẹp / thời trang</label>
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-noti-500 bg-white"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-rose-500 bg-white"
                 >
                   {CATEGORIES.filter(c => c.id !== 'all').map(c => (
                     <option key={c.id} value={c.id}>{c.name}</option>
@@ -132,7 +132,7 @@ export default function PostDealModal({ onClose, onAddDeal }) {
                 <select
                   value={formData.city}
                   onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-noti-500 bg-white"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-rose-500 bg-white"
                 >
                   {CITIES.filter(c => c !== 'Toàn quốc').map(c => (
                     <option key={c} value={c}>{c}</option>
@@ -141,27 +141,27 @@ export default function PostDealModal({ onClose, onAddDeal }) {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 bg-gray-50 p-3 rounded-2xl border border-gray-200">
+            <div className="grid grid-cols-2 gap-3 bg-rose-50/50 p-3 rounded-2xl border border-rose-100">
               <div>
-                <label className="block font-bold text-gray-600 mb-1">Giá niêm yết (VNĐ)</label>
+                <label className="block font-bold text-gray-600 mb-1">Giá gốc niêm yết (VNĐ)</label>
                 <input
                   type="number"
                   value={formData.originalPrice}
                   onChange={(e) => setFormData({ ...formData, originalPrice: e.target.value })}
-                  placeholder="Ví dụ: 65000"
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-noti-500"
+                  placeholder="Ví dụ: 500000"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-red-600 mb-1">Giá khuyến mãi (VNĐ) *</label>
+                <label className="block font-bold text-red-600 mb-1">Giá ưu đãi DealHub (VNĐ) *</label>
                 <input
                   type="number"
                   required
                   value={formData.salePrice}
                   onChange={(e) => setFormData({ ...formData, salePrice: e.target.value })}
-                  placeholder="Ví dụ: 29000"
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-noti-500 font-bold text-red-600"
+                  placeholder="Ví dụ: 189000"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-rose-500 font-bold text-red-600"
                 />
               </div>
             </div>
@@ -169,47 +169,47 @@ export default function PostDealModal({ onClose, onAddDeal }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block font-bold text-gray-700 mb-1">
-                  Tên cửa hàng / Thương hiệu <span className="text-red-500">*</span>
+                  Tên tiệm Spa / Thẩm mỹ viện / Shop <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   required
                   value={formData.storeName}
                   onChange={(e) => setFormData({ ...formData, storeName: e.target.value })}
-                  placeholder="Ví dụ: ToCoToCo Tea"
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-noti-500"
+                  placeholder="Ví dụ: An Nhiên Beauty Spa"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 mb-1">Địa chỉ cụ thể</label>
+                <label className="block font-bold text-gray-700 mb-1">Địa chỉ tiệm cụ thể</label>
                 <input
                   type="text"
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  placeholder="Ví dụ: 157 Xuân Thủy, Cầu Giấy"
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-noti-500"
+                  placeholder="Ví dụ: 12 Liễu Giai, Ba Đình"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block font-bold text-gray-700 mb-1">Mô tả chi tiết & Điều kiện áp dụng</label>
+              <label className="block font-bold text-gray-700 mb-1">Mô tả quy trình liệu trình & Điều kiện áp dụng</label>
               <textarea
                 rows={2}
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Khung giờ áp dụng, điều kiện hóa đơn, liên hệ đặt bàn..."
-                className="w-full px-3 py-2 rounded-xl border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-noti-500"
+                placeholder="Các bước liệu trình, thời gian làm dịch vụ, liên hệ đặt lịch trước..."
+                className="w-full px-3 py-2 rounded-xl border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
               />
             </div>
 
             <div className="pt-2">
               <button
                 type="submit"
-                className="w-full py-3 bg-noti-500 hover:bg-noti-600 active:scale-98 text-white font-bold text-sm rounded-xl shadow transition-all"
+                className="w-full py-3 bg-rose-600 hover:bg-rose-700 active:scale-98 text-white font-bold text-sm rounded-xl shadow transition-all"
               >
-                Đăng Tin Khuyến Mãi Ngay
+                Đăng Ưu Đãi Lên Sàn Ngay
               </button>
             </div>
           </form>

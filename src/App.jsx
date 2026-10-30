@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Navbar from './components/Navbar';
 import HeroBanner from './components/HeroBanner';
 import SmartDealFinder from './components/SmartDealFinder';
@@ -13,7 +13,7 @@ import DealMissionModal from './components/DealMissionModal';
 import MerchantImpactDashboard from './components/MerchantImpactDashboard';
 import Footer from './components/Footer';
 import { ALL_DEALS } from './data/mockData';
-import { Sparkles, PlusCircle, Home, Tag, Map, Wallet, Target, BarChart3 } from 'lucide-react';
+import { Sparkles, PlusCircle, Home, Tag, Map, Wallet, Target, Store } from 'lucide-react';
 
 export default function App() {
   const [deals, setDeals] = useState(ALL_DEALS);
@@ -21,23 +21,23 @@ export default function App() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   
-  // Modals state
+  // Modals & Portal states
   const [selectedDeal, setSelectedDeal] = useState(null);
   const [showPostDealModal, setShowPostDealModal] = useState(false);
   const [showPassportModal, setShowPassportModal] = useState(false);
   const [showMissionModal, setShowMissionModal] = useState(false);
   const [showMerchantDashboard, setShowMerchantDashboard] = useState(false);
 
-  // Deal Passport Saved Deals (with initial default demo data)
+  // Deal Passport Saved Deals (with initial default demo data for Spa & Fashion)
   const [savedDeals, setSavedDeals] = useState(() => {
     return [
       {
-        ...ALL_DEALS[0],
+        ...ALL_DEALS[0], // An Nhiên Beauty Spa
         isUsed: false,
         savedAt: 'Hôm nay'
       },
       {
-        ...ALL_DEALS[2],
+        ...ALL_DEALS[1], // Chic Studio Thời Trang
         isUsed: false,
         savedAt: 'Hôm qua'
       }
@@ -71,20 +71,20 @@ export default function App() {
 
   const handleMarkUsed = (dealId) => {
     setSavedDeals(savedDeals.map(d => d.id === dealId ? { ...d, isUsed: true } : d));
-    showToast('✓ Đã xác nhận sử dụng ưu đãi thành công!');
+    showToast('✓ Đã xác nhận sử dụng ưu đãi tại tiệm thành công!');
   };
 
   const handleAddDeal = (newDeal) => {
     setDeals([newDeal, ...deals]);
-    showToast('Đăng tin khuyến mãi thành công!');
+    showToast('Đăng tin ưu đãi làm đẹp / thời trang thành công!');
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f6faf6] text-gray-800 pb-16 md:pb-0">
+    <div className="min-h-screen flex flex-col bg-[#fff8fa] text-gray-800 pb-16 md:pb-0">
       
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-20 right-4 z-50 bg-gray-900 text-white px-4 py-2.5 rounded-2xl shadow-xl flex items-center space-x-2 text-xs font-bold border border-noti-400 animate-bounce">
+        <div className="fixed top-20 right-4 z-50 bg-gray-900 text-white px-4 py-2.5 rounded-2xl shadow-xl flex items-center space-x-2 text-xs font-bold border border-rose-400 animate-bounce">
           <Sparkles className="w-4 h-4 text-yellow-300" />
           <span>{toastMessage}</span>
         </div>
@@ -104,16 +104,18 @@ export default function App() {
       />
 
       {/* Hero Banner */}
-      <HeroBanner />
+      <HeroBanner 
+        onOpenMerchantDashboard={() => setShowMerchantDashboard(true)}
+      />
 
-      {/* FEATURE 3: Smart Deal Finder (Tìm ưu đãi theo nhu cầu tự nhiên) */}
+      {/* AI Smart Beauty & Fashion Finder */}
       <SmartDealFinder
         allDeals={deals}
         onSelectDeal={(deal) => setSelectedDeal(deal)}
         onSaveDeal={handleSaveDeal}
       />
 
-      {/* Google Maps DealMap Section */}
+      {/* Google Maps DealMap Section (Spa, Thẩm mỹ viện, Thời trang) */}
       <div id="dealmap-section">
         <ZenlyDealMap
           selectedCity={selectedCity}
@@ -145,13 +147,13 @@ export default function App() {
       />
 
       {/* Mobile Bottom Navigation Bar */}
-      <div className="fixed bottom-0 inset-x-0 z-40 bg-white border-t border-gray-200 py-1.5 px-4 flex items-center justify-around md:hidden shadow-lg">
+      <div className="fixed bottom-0 inset-x-0 z-40 bg-white border-t border-gray-200 py-1.5 px-3 flex items-center justify-around md:hidden shadow-xl">
         <button 
           onClick={() => {
             setActiveCategory('all');
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
-          className="flex flex-col items-center text-[10px] font-bold text-noti-600"
+          className="flex flex-col items-center text-[10px] font-bold text-rose-600"
         >
           <Home className="w-5 h-5 mb-0.5" />
           <span>Trang chủ</span>
@@ -159,9 +161,9 @@ export default function App() {
 
         <a 
           href="#dealmap-section"
-          className="flex flex-col items-center text-[10px] font-semibold text-gray-600 hover:text-noti-600"
+          className="flex flex-col items-center text-[10px] font-semibold text-gray-600 hover:text-rose-600"
         >
-          <Map className="w-5 h-5 mb-0.5 text-noti-600" />
+          <Map className="w-5 h-5 mb-0.5 text-rose-600" />
           <span>Bản đồ</span>
         </a>
 
@@ -169,6 +171,7 @@ export default function App() {
         <button
           onClick={() => setShowPostDealModal(true)}
           className="-mt-5 w-12 h-12 rounded-full bg-gradient-to-r from-amber-400 to-yellow-400 text-gray-900 shadow-xl flex items-center justify-center font-black active:scale-90 transition-transform"
+          title="Đăng Deal Mới"
         >
           <PlusCircle className="w-7 h-7 text-gray-900" />
         </button>
@@ -176,28 +179,39 @@ export default function App() {
         {/* Deal Passport */}
         <button
           onClick={() => setShowPassportModal(true)}
-          className="flex flex-col items-center text-[10px] font-medium text-gray-600 hover:text-noti-600 relative"
+          className="flex flex-col items-center text-[10px] font-medium text-gray-600 hover:text-rose-600 relative"
         >
           <Wallet className="w-5 h-5 mb-0.5 text-yellow-600" />
-          <span>Ví Passport</span>
+          <span>Deal Passport</span>
           {savedDeals.filter(d => !d.isUsed).length > 0 && (
-            <span className="absolute top-0 right-1 w-3.5 h-3.5 bg-red-500 text-white rounded-full text-[8px] font-bold flex items-center justify-center">
+            <span className="absolute top-0 right-1 w-3.5 h-3.5 bg-rose-600 text-white rounded-full text-[8px] font-bold flex items-center justify-center">
               {savedDeals.filter(d => !d.isUsed).length}
             </span>
           )}
         </button>
 
-        {/* Deal Mission */}
+        {/* Kênh Người Bán (Merchant Dashboard) on Mobile Bottom Bar */}
         <button
-          onClick={() => setShowMissionModal(true)}
-          className="flex flex-col items-center text-[10px] font-medium text-gray-600 hover:text-noti-600"
+          onClick={() => setShowMerchantDashboard(true)}
+          className="flex flex-col items-center text-[10px] font-bold text-amber-600 hover:text-rose-600"
         >
-          <Target className="w-5 h-5 mb-0.5 text-emerald-600" />
-          <span>Nhiệm vụ</span>
+          <Store className="w-5 h-5 mb-0.5" />
+          <span>Kênh người bán</span>
         </button>
       </div>
 
-      {/* FEATURE 1: Deal Passport Modal */}
+      {/* FULL-FEATURED MERCHANT PORTAL (Kênh Người Bán) */}
+      {showMerchantDashboard && (
+        <MerchantImpactDashboard
+          onClose={() => setShowMerchantDashboard(false)}
+          onOpenPostDeal={() => {
+            setShowMerchantDashboard(false);
+            setShowPostDealModal(true);
+          }}
+        />
+      )}
+
+      {/* Deal Passport Modal */}
       {showPassportModal && (
         <DealPassportModal
           savedDeals={savedDeals}
@@ -207,7 +221,7 @@ export default function App() {
         />
       )}
 
-      {/* FEATURE 2: Deal Mission Modal */}
+      {/* Deal Mission Modal */}
       {showMissionModal && (
         <DealMissionModal
           onClose={() => setShowMissionModal(false)}
@@ -215,14 +229,7 @@ export default function App() {
         />
       )}
 
-      {/* FEATURE 5: Deal Impact Dashboard (B2B Merchant) */}
-      {showMerchantDashboard && (
-        <MerchantImpactDashboard
-          onClose={() => setShowMerchantDashboard(false)}
-        />
-      )}
-
-      {/* Modals */}
+      {/* Deal Details Modal */}
       {selectedDeal && (
         <DealDetailModal
           deal={selectedDeal}
@@ -232,6 +239,7 @@ export default function App() {
         />
       )}
 
+      {/* Post Deal Modal */}
       {showPostDealModal && (
         <PostDealModal
           onClose={() => setShowPostDealModal(false)}
