@@ -11,6 +11,7 @@ import DealDetailModal from './components/DealDetailModal';
 import PostDealModal from './components/PostDealModal';
 import DealPassportModal from './components/DealPassportModal';
 import DealMissionModal from './components/DealMissionModal';
+import PhoneLockScreen from './components/PhoneLockScreen';
 import MerchantPortal from './pages/MerchantPortal';
 import Footer from './components/Footer';
 import { 
@@ -42,6 +43,9 @@ export default function App() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   
+  // Smartphone Lock Screen state (chỉ khóa khi tải trang / reload trang)
+  const [isDeviceLocked, setIsDeviceLocked] = useState(true);
+
   // Modals state
   const [selectedDeal, setSelectedDeal] = useState(null);
   const [showPostDealModal, setShowPostDealModal] = useState(false);
@@ -137,6 +141,11 @@ export default function App() {
       {/* Smartphone Device Frame (Fixed Height on Desktop so it never stretches out) */}
       <div className="w-full max-w-[412px] h-full sm:h-[844px] bg-[#f8faf8] shadow-[0_25px_70px_rgba(0,0,0,0.8)] relative flex flex-col overflow-hidden sm:rounded-[44px] sm:border-[8px] sm:border-slate-800">
         
+        {/* Smartphone Lock Screen (Nền xanh DealHub, chạm để mở khóa, chỉ khóa khi reload trang) */}
+        {isDeviceLocked && (
+          <PhoneLockScreen onUnlock={() => setIsDeviceLocked(false)} />
+        )}
+
         {/* Dynamic Island / Mobile Phone Top Notch on Desktop */}
         <div className="hidden sm:flex justify-between items-center px-6 pt-2.5 pb-1 text-xs font-bold bg-noti-700 text-white flex-shrink-0 select-none">
           <span>9:41</span>
