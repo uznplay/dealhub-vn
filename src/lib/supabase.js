@@ -315,3 +315,28 @@ export async function addCommentBackend(postId, commentText) {
   localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(updated));
   return updated;
 }
+
+export async function createFeedPostBackend(newPost) {
+  const current = await fetchFeedPostsBackend();
+  const updated = [newPost, ...current];
+  localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(updated));
+  try {
+    await supabase.from('feed_posts').insert([{
+      id: newPost.id,
+      author: newPost.author,
+      role: newPost.role,
+      avatar: newPost.avatar,
+      time: newPost.time,
+      content: newPost.content,
+      images: newPost.images,
+      likes: newPost.likes,
+      comments_count: newPost.commentsCount,
+      attached_deal: newPost.attachedDeal,
+      tags: newPost.tags,
+      location: newPost.location
+    }]);
+  } catch (err) {
+    console.warn('Supabase create feed post fallback:', err);
+  }
+  return updated;
+}

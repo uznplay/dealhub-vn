@@ -20,7 +20,8 @@ import {
   fetchVouchersBackend, 
   saveVoucherBackend, 
   removeVoucherBackend,
-  createNewDealBackend
+  createNewDealBackend,
+  createFeedPostBackend
 } from './lib/supabase';
 import { 
   Home, 
@@ -136,25 +137,45 @@ export default function App() {
     showToast('Đã đánh dấu voucher đã sử dụng!');
   };
 
-  // Khi Người Bán tạo deal mới -> Tự động kích hoạt Push Notification sang điện thoại Khách Hàng
-  const handleAddDeal = async (newDeal) => {
+  // Khi Người Bán tạo deal mới -> Tự động xuất bản lên Sàn, Bản Đồ, Bảng Tin & Push Notification
+  const handleAddDeal = async (payload) => {
+    const newDeal = payload.deal || payload;
+    const feedPost = payload.feedPost;
+
+    // 1. Lưu Deal vào cơ sở dữ liệu (Trang chủ & Bản đồ cập nhật ngay)
     const updated = await createNewDealBackend(newDeal);
     setDeals(updated);
+
+    // 2. Lưu Bài Viết vào Bảng Tin Săn Deal
+    if (feedPost) {
+      await createFeedPostBackend(feedPost);
+    }
+
     setShowPostDealModal(false);
 
-    // Kích hoạt Push Notification
+    // 3. Logic Push Notification chuẩn xác:
+    // "nếu ở màn hình khoá rồi đã thấy push rồi thì mở lên k cần thấy nữa,
+    // mà đã mở màn hình khoá rồi mới gửi push thì mới hiện push ở màn hình thường"
     const notif = {
       id: `push-${Date.now()}`,
-      title: `🔥 ${newDeal.storeName} vừa đăng deal mới!`,
+      title: `${newDeal.storeName} vừa đăng deal mới!`,
       body: `${newDeal.title} - Giảm ${newDeal.discount}! Chạm để xem và lưu ngay.`,
       deal: newDeal,
       time: 'Vừa xong'
     };
 
-    setLiveNotifications(prev => [notif, ...prev]);
-    setActiveInAppNotif(notif);
     playNotificationChime();
-    showToast('Đã đăng ưu đãi & Bắn Push Notification sang máy khách hàng!');
+
+    if (isCustomerLocked) {
+      // Máy khách ĐANG KHÓA -> Chỉ hiện lên màn hình khóa, không hiện đè lại khi mở khóa
+      setLiveNotifications(prev => [notif, ...prev]);
+    } else {
+      // Máy khách ĐÃ MỞ KHÓA -> Thả banner drop-down từ đỉnh màn hình xuống
+      setActiveInAppNotif(notif);
+      setTimeout(() => setActiveInAppNotif(null), 5000);
+    }
+
+    showToast('Đã xuất bản lên Sàn, Bản Đồ & Bảng Tin!');
   };
 
   // Nút bắn Push Notification thử nghiệm
@@ -172,36 +193,40 @@ export default function App() {
 
     const notif = {
       id: `push-${Date.now()}`,
-      title: `⚡ Deal chớp nhoáng từ ${sampleDeal.storeName}!`,
-      body: `${sampleDeal.title} giảm ${sampleDeal.discount}. Số lượng có hạn!`,
+      title: `Ưu đãi mới từ ${sampleDeal.storeName}!`,
+      body: `${sampleDeal.title} - Giảm ${sampleDeal.discount}.`,
       deal: sampleDeal,
       time: 'Vừa xong'
     };
 
-    setLiveNotifications(prev => [notif, ...prev]);
-    setActiveInAppNotif(notif);
     playNotificationChime();
-    showToast('Đã bắn Push Notification tới điện thoại khách hàng!');
+
+    if (isCustomerLocked) {
+      setLiveNotifications(prev => [notif, ...prev]);
+    } else {
+      setActiveInAppNotif(notif);
+      setTimeout(() => setActiveInAppNotif(null), 5000);
+    }
+
+    showToast('Đã gửi Push Notification!');
   };
 
   return (
     <div className="min-h-screen w-screen bg-slate-950 flex flex-col items-center justify-start lg:justify-center p-2 sm:p-5 overflow-x-hidden overflow-y-auto select-none font-sans">
       
-      {/* TOP CONTROL BAR: Brand & Dual Screen Mode Switcher */}
-      <header className="w-full max-w-5xl mb-3 flex flex-wrap items-center justify-between gap-2.5 px-3 py-2 bg-slate-900/90 backdrop-blur-md rounded-2xl border border-slate-800 text-white shadow-xl flex-shrink-0 z-40">
-        <div className="flex items-center space-x-2">
-          <div className="w-7 h-7 rounded-lg bg-noti-500 p-1 flex items-center justify-center shadow-xs">
+      {/* TOP CONTROL BAR: Đồng bộ chuẩn 3 màu: Xanh DealHub, Đen Slate, Trắng */}
+      <header className="w-full max-w-4xl mb-4 flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-slate-900 rounded-2xl border border-slate-800 text-white shadow-xl flex-shrink-0 z-40">
+        <div className="flex items-center space-x-2.5">
+          <div className="w-7 h-7 rounded-lg bg-noti-600 p-1 flex items-center justify-center shadow-xs">
             <img src="/logo.svg" alt="DealHub" className="w-full h-full object-contain" />
           </div>
           <div>
-            <div className="flex items-center space-x-1.5">
-              <span className="text-sm font-black tracking-tight text-white">
-                DEAL<span className="text-yellow-400">HUB</span>
-              </span>
-              <span className="text-[10px] font-black bg-noti-600 text-white px-2 py-0.5 rounded-full border border-noti-400">
-                MÔ PHỎNG SONG HÀNH O2O
-              </span>
-            </div>
+            <span className="text-sm font-bold tracking-tight text-white block leading-none">
+              DEALHUB <span className="text-noti-400 text-xs font-semibold">O2O</span>
+            </span>
+            <span className="text-[10px] text-slate-400 block mt-0.5">
+              Mô phỏng song hành Khách hàng & Chủ tiệm
+            </span>
           </div>
         </div>
 
@@ -210,38 +235,38 @@ export default function App() {
           {/* Quick Push Test button */}
           <button
             onClick={handleTriggerDemoPush}
-            className="flex items-center space-x-1 px-2.5 py-1.5 bg-amber-400 hover:bg-amber-300 text-gray-950 rounded-xl text-xs font-black transition-all shadow-xs"
+            className="flex items-center space-x-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white rounded-xl text-xs font-bold transition-all border border-slate-700"
             title="Bắn thông báo thử nghiệm từ Người bán sang Khách hàng"
           >
-            <Send className="w-3.5 h-3.5 text-gray-950" />
-            <span className="text-[11px]">Bắn Push Noti Test</span>
+            <Send className="w-3.5 h-3.5 text-noti-400" />
+            <span>Thử Push Noti</span>
           </button>
 
           {/* Mode Switcher on mobile/tablet */}
-          <div className="bg-slate-800 p-1 rounded-xl flex items-center space-x-1 text-[11px] font-bold border border-slate-700">
+          <div className="bg-slate-950 p-1 rounded-xl flex items-center space-x-1 text-xs font-medium border border-slate-800">
             <button
               onClick={() => setDeviceViewMode('both')}
-              className={`px-2.5 py-1 rounded-lg transition-all hidden lg:block ${
-                deviceViewMode === 'both' ? 'bg-noti-500 text-white shadow-xs' : 'text-slate-400 hover:text-white'
+              className={`px-3 py-1 rounded-lg transition-all hidden lg:block ${
+                deviceViewMode === 'both' ? 'bg-noti-600 text-white font-bold' : 'text-slate-400 hover:text-white'
               }`}
             >
               2 Điện Thoại
             </button>
             <button
               onClick={() => setDeviceViewMode('consumer')}
-              className={`px-2.5 py-1 rounded-lg transition-all ${
-                deviceViewMode === 'consumer' ? 'bg-noti-500 text-white shadow-xs' : 'text-slate-400 hover:text-white'
+              className={`px-3 py-1 rounded-lg transition-all ${
+                deviceViewMode === 'consumer' ? 'bg-noti-600 text-white font-bold' : 'text-slate-400 hover:text-white'
               }`}
             >
-              📱 Khách Hàng
+              Khách Hàng
             </button>
             <button
               onClick={() => setDeviceViewMode('merchant')}
-              className={`px-2.5 py-1 rounded-lg transition-all ${
-                deviceViewMode === 'merchant' ? 'bg-noti-500 text-white shadow-xs' : 'text-slate-400 hover:text-white'
+              className={`px-3 py-1 rounded-lg transition-all ${
+                deviceViewMode === 'merchant' ? 'bg-noti-600 text-white font-bold' : 'text-slate-400 hover:text-white'
               }`}
             >
-              🏪 Người Bán
+              Người Bán
             </button>
           </div>
         </div>
@@ -249,7 +274,7 @@ export default function App() {
 
       {/* Global Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-16 z-[9999999] bg-gray-900 text-white px-4 py-2.5 rounded-2xl shadow-2xl flex items-center space-x-2.5 text-xs font-bold border-2 border-noti-400 animate-bounce">
+        <div className="fixed top-16 z-[9999999] bg-slate-900 text-white px-4 py-2.5 rounded-2xl shadow-2xl flex items-center space-x-2.5 text-xs font-bold border border-noti-500 animate-fadeIn">
           <CheckCircle2 className="w-4 h-4 text-noti-400 flex-shrink-0" />
           <span>{toastMessage}</span>
         </div>
@@ -283,10 +308,14 @@ export default function App() {
               {/* LOCK SCREEN OVERLAY ON CONSUMER PHONE (Chỉ khóa khi reload lại trang) */}
               {isCustomerLocked && (
                 <PhoneLockScreen 
-                  onUnlock={() => setIsCustomerLocked(false)}
+                  onUnlock={() => {
+                    setIsCustomerLocked(false);
+                    setActiveInAppNotif(null);
+                  }}
                   liveNotifications={liveNotifications}
                   onNotificationClick={(notif) => {
                     setIsCustomerLocked(false);
+                    setActiveInAppNotif(null);
                     if (notif.deal) setSelectedDeal(notif.deal);
                   }}
                 />

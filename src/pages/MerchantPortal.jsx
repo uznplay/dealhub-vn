@@ -144,22 +144,12 @@ export default function MerchantPortal({ onBackToHome, onOpenPostDeal, onTrigger
         <div className="flex items-center space-x-1.5 flex-shrink-0">
           <button
             onClick={onOpenPostDeal}
-            className="px-2.5 py-1 bg-yellow-400 hover:bg-yellow-300 text-gray-950 rounded-lg text-[10px] font-black flex items-center gap-1 shadow-xs transition-transform active:scale-95"
-            title="Đăng deal mới và tự động gửi Push Notification"
+            className="px-3 py-1.5 bg-noti-500 hover:bg-noti-600 text-white rounded-xl text-xs font-bold flex items-center gap-1 shadow-xs transition-transform active:scale-95"
+            title="Đăng ưu đãi dịch vụ mới"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>+ Đăng Deal</span>
+            <span>Đăng Deal</span>
           </button>
-
-          {onTriggerPushNoti && (
-            <button
-              onClick={onTriggerPushNoti}
-              className="p-1 rounded-lg bg-white/20 hover:bg-white/30 text-white"
-              title="Bắn Push Notification thử nghiệm"
-            >
-              <Bell className="w-3.5 h-3.5 text-yellow-300 animate-bounce" />
-            </button>
-          )}
         </div>
       </header>
 
@@ -227,64 +217,40 @@ export default function MerchantPortal({ onBackToHome, onOpenPostDeal, onTrigger
               </div>
             </div>
 
-            {/* Live Push Notification Banner */}
-            <div className="bg-gradient-to-r from-amber-50 to-emerald-50 border border-amber-200 rounded-2xl p-2.5 flex items-start justify-between gap-2 shadow-2xs">
-              <div className="flex items-start space-x-2 min-w-0">
-                <div className="w-7 h-7 rounded-xl bg-amber-400 text-gray-950 flex items-center justify-center flex-shrink-0 font-bold shadow-xs">
-                  <Bell className="w-4 h-4 text-gray-950" />
-                </div>
-                <div className="min-w-0">
-                  <h5 className="text-[11px] font-black text-gray-900 leading-tight">
-                    Hỗ Trợ Live Push Notification
-                  </h5>
-                  <p className="text-[10px] text-gray-600 leading-snug mt-0.5">
-                    Đăng deal sẽ bắn thông báo đẩy trực tiếp sang màn hình điện thoại khách hàng bên trái!
-                  </p>
-                </div>
-              </div>
-
-              <button
-                onClick={onOpenPostDeal}
-                className="px-2.5 py-1.5 bg-noti-600 hover:bg-noti-700 text-white rounded-xl font-bold text-[10px] whitespace-nowrap shadow-xs flex-shrink-0"
-              >
-                + Đăng Ngay
-              </button>
-            </div>
-
-            {/* 5 Core Impact Metrics (Grid 2-3 Columns for clean mobile display) */}
+            {/* 5 Core Impact Metrics (Đồng bộ 3 màu chuẩn: Xanh DealHub, Đen Slate, Trắng) */}
             <div className="grid grid-cols-2 gap-2">
-              <div className="bg-white p-2.5 rounded-2xl border border-gray-100 shadow-2xs">
+              <div className="bg-white p-3 rounded-2xl border border-gray-200 shadow-2xs">
                 <span className="text-[9px] font-bold text-gray-400 uppercase block">1. Deal Views</span>
-                <span className="text-lg font-black text-blue-600">2,450</span>
-                <span className="text-[9px] text-gray-400 block mt-0.5">Lượt xem online</span>
+                <span className="text-xl font-black text-gray-900">2,450</span>
+                <span className="text-[9px] text-gray-500 block mt-0.5">Lượt xem online</span>
               </div>
 
-              <div className="bg-white p-2.5 rounded-2xl border border-gray-100 shadow-2xs">
+              <div className="bg-white p-3 rounded-2xl border border-gray-200 shadow-2xs">
                 <span className="text-[9px] font-bold text-gray-400 uppercase block">2. Saves (Kho Voucher)</span>
-                <span className="text-lg font-black text-amber-500">580</span>
-                <span className="text-[9px] text-gray-400 block mt-0.5">Lưu vào kho cá nhân</span>
+                <span className="text-xl font-black text-gray-900">580</span>
+                <span className="text-[9px] text-gray-500 block mt-0.5">Lưu vào kho cá nhân</span>
               </div>
 
-              <div className="bg-white p-2.5 rounded-2xl border border-gray-100 shadow-2xs">
+              <div className="bg-white p-3 rounded-2xl border border-gray-200 shadow-2xs">
                 <span className="text-[9px] font-bold text-gray-400 uppercase block">3. Claims</span>
-                <span className="text-lg font-black text-purple-600">290</span>
-                <span className="text-[9px] text-gray-400 block mt-0.5">Lượt nhận mã giảm giá</span>
+                <span className="text-xl font-black text-gray-900">290</span>
+                <span className="text-[9px] text-gray-500 block mt-0.5">Lượt nhận mã giảm giá</span>
               </div>
 
-              <div className="bg-white p-2.5 rounded-2xl border border-green-200 bg-green-50/50 shadow-2xs">
+              <div className="bg-white p-3 rounded-2xl border border-noti-200 bg-noti-50/30 shadow-2xs">
                 <span className="text-[9px] font-bold text-noti-700 uppercase block">4. Redemptions</span>
-                <span className="text-lg font-black text-noti-700">142</span>
-                <span className="text-[9px] text-noti-600 block mt-0.5">Khách đã đến làm tại tiệm</span>
+                <span className="text-xl font-black text-noti-700">142</span>
+                <span className="text-[9px] text-noti-600 block mt-0.5">Khách đã làm tại tiệm</span>
               </div>
 
-              <div className="col-span-2 bg-white p-2.5 rounded-2xl border border-gray-100 shadow-2xs flex items-center justify-between">
+              <div className="col-span-2 bg-white p-3 rounded-2xl border border-gray-200 shadow-2xs flex items-center justify-between">
                 <div>
                   <span className="text-[9px] font-bold text-gray-400 uppercase block">5. Khách Hàng Mới</span>
-                  <span className="text-base font-black text-rose-600">+98 khách mới</span>
+                  <span className="text-base font-black text-noti-700">+98 khách mới</span>
                 </div>
                 <div className="text-right">
                   <span className="text-[9px] font-bold text-gray-400 uppercase block">Tỷ Lệ Chuyển Đổi</span>
-                  <span className="text-xs font-black text-noti-700">5.8% (Online-to-Offline)</span>
+                  <span className="text-xs font-black text-gray-900">5.8% (Online-to-Offline)</span>
                 </div>
               </div>
             </div>
