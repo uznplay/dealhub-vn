@@ -111,50 +111,34 @@ export default function PhoneLockScreen({
       </div>
 
       {/* CENTER: iOS-style Notification Cards */}
-      <div className="px-4 space-y-2.5 relative z-10 w-full overflow-y-auto max-h-[46%] py-1">
+      <div className="px-5 space-y-2.5 relative z-10 w-full overflow-y-auto max-h-[48%] py-1">
         
-        {/* LIVE PUSH NOTIFICATIONS FROM MERCHANT */}
+        {/* LIVE PUSH NOTIFICATIONS FROM MERCHANT (Chuẩn phong cách iOS như card mẫu, không viền vàng, không nhảy) */}
         {liveNotifications && liveNotifications.length > 0 && liveNotifications.map((notif) => (
           <div 
             key={notif.id}
             onClick={(e) => handleLiveNotifClick(e, notif)}
-            className="p-3.5 rounded-2xl bg-gray-900/90 backdrop-blur-xl border-2 border-yellow-400 shadow-[0_10px_30px_rgba(234,179,8,0.35)] space-y-1.5 transform hover:scale-[1.02] active:scale-95 transition-all animate-bounce"
+            className="p-3.5 rounded-2xl bg-white/15 backdrop-blur-xl border border-white/20 shadow-xl space-y-1.5 transform hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
           >
-            <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center justify-between text-xs text-emerald-100">
               <div className="flex items-center space-x-1.5">
                 <div className="w-5 h-5 rounded-md bg-white p-0.5 flex items-center justify-center shadow-xs">
                   <img src="/logo.svg" alt="logo" className="w-full h-full object-contain" />
                 </div>
-                <span className="font-black text-[11px] text-yellow-300">DEALHUB LIVE PUSH</span>
-                <span className="text-[10px] text-gray-300">• {notif.time || 'Vừa xong'}</span>
+                <span className="font-bold text-[11px] text-white">DEALHUB</span>
+                <span className="text-[10px] text-emerald-200">• {notif.time || 'Vừa xong'}</span>
               </div>
-              <span className="flex items-center gap-1 text-[9px] font-black text-red-500 bg-red-50 px-1.5 py-0.5 rounded-full">
-                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping" />
-                MỚI ĐĂNG
-              </span>
+              <span className="text-[10px] text-emerald-200 font-medium">Bây giờ</span>
             </div>
 
-            <div className="flex items-start gap-2.5 pt-1">
-              {notif.deal?.image && (
-                <img 
-                  src={notif.deal.image} 
-                  alt="" 
-                  className="w-11 h-11 rounded-xl object-cover flex-shrink-0 border border-white/20" 
-                />
-              )}
-              <div className="flex-1 min-w-0">
-                <h4 className="text-xs font-black text-white leading-tight line-clamp-1">
-                  {notif.title}
-                </h4>
-                <p className="text-[11px] text-emerald-300 font-semibold mt-0.5 line-clamp-2">
-                  {notif.body || `${notif.deal?.title} - Giảm ${notif.deal?.discount}! Chạm để xem.`}
-                </p>
-              </div>
-            </div>
-
-            <div className="pt-1 flex items-center justify-between text-[10px] text-yellow-300 font-bold border-t border-white/10 mt-1">
-              <span>Chạm thông báo này để mở deal</span>
-              <ExternalLink className="w-3 h-3 text-yellow-300" />
+            <div>
+              <h4 className="text-xs font-bold text-white flex items-center gap-1">
+                <Flame className="w-3.5 h-3.5 text-amber-400" />
+                {notif.title}
+              </h4>
+              <p className="text-[11px] text-emerald-50 mt-0.5 line-clamp-2 leading-relaxed">
+                {notif.body || `${notif.deal?.title} đang giảm giá ${notif.deal?.discount}. Chạm để mở xem ngay.`}
+              </p>
             </div>
           </div>
         ))}

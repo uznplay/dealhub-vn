@@ -256,26 +256,15 @@ export default function App() {
       )}
 
       {/* ========================================================
-          DUAL SMARTPHONE CONTAINER (2 KHUNG ĐIỆN THOẠI SONG SONG)
+          DUAL SMARTPHONE CONTAINER (2 KHUNG ĐIỆN THOẠI SONG SONG - CÁCH NHAU RỘNG RÃI)
           ======================================================== */}
-      <div className="flex flex-col lg:flex-row items-center justify-center gap-6 xl:gap-8 w-full max-w-6xl">
+      <div className="flex flex-col lg:flex-row items-center justify-center gap-12 md:gap-16 lg:gap-20 xl:gap-28 w-full max-w-7xl py-4">
         
         {/* ===================================================
             PHONE 1: ĐIỆN THOẠI NGƯỜI DÙNG BÌNH THƯỜNG (CONSUMER)
             =================================================== */}
         {(deviceViewMode === 'both' || deviceViewMode === 'consumer') && (
           <div className="flex flex-col items-center">
-            {/* Phone Label */}
-            <div className="mb-2 flex items-center space-x-2 text-xs font-black text-emerald-400 bg-slate-900 px-3 py-1 rounded-full border border-slate-800">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              <span>📱 ĐIỆN THOẠI KHÁCH HÀNG (CONSUMER)</span>
-              {liveNotifications.length > 0 && (
-                <span className="w-4 h-4 bg-red-500 text-white rounded-full text-[9px] flex items-center justify-center font-bold">
-                  {liveNotifications.length}
-                </span>
-              )}
-            </div>
-
             {/* Smartphone Device Frame 1 */}
             <div className="w-[390px] h-[810px] bg-[#f8faf8] shadow-[0_25px_70px_rgba(0,0,0,0.85)] relative flex flex-col overflow-hidden rounded-[42px] border-[8px] border-slate-800">
               
@@ -516,15 +505,6 @@ export default function App() {
             =================================================== */}
         {(deviceViewMode === 'both' || deviceViewMode === 'merchant') && (
           <div className="flex flex-col items-center">
-            {/* Phone Label */}
-            <div className="mb-2 flex items-center space-x-2 text-xs font-black text-yellow-400 bg-slate-900 px-3 py-1 rounded-full border border-slate-800">
-              <Store className="w-3.5 h-3.5 text-yellow-400" />
-              <span>🏪 ĐIỆN THOẠI CHỦ TIỆM (MERCHANT PRO)</span>
-              <span className="text-[10px] bg-yellow-400 text-gray-950 font-black px-1.5 py-0.2 rounded-md">
-                LIVE O2O
-              </span>
-            </div>
-
             {/* Smartphone Device Frame 2 */}
             <div className="w-[390px] h-[810px] bg-[#f8faf8] shadow-[0_25px_70px_rgba(0,0,0,0.85)] relative flex flex-col overflow-hidden rounded-[42px] border-[8px] border-slate-800">
               
