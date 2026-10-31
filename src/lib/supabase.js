@@ -316,6 +316,30 @@ export async function addCommentBackend(postId, commentText) {
   return updated;
 }
 
+export async function updateDealBackend(updatedDeal) {
+  const current = await fetchDealsFromBackend();
+  const updated = current.map(d => d.id === updatedDeal.id ? { ...d, ...updatedDeal } : d);
+  localStorage.setItem(STORAGE_KEYS.DEALS, JSON.stringify(updated));
+  try {
+    await supabase.from('deals').update(updatedDeal).eq('id', updatedDeal.id);
+  } catch (err) {
+    console.warn('Supabase update deal fallback:', err);
+  }
+  return updated;
+}
+
+export async function deleteDealBackend(dealId) {
+  const current = await fetchDealsFromBackend();
+  const updated = current.filter(d => d.id !== dealId);
+  localStorage.setItem(STORAGE_KEYS.DEALS, JSON.stringify(updated));
+  try {
+    await supabase.from('deals').delete().eq('id', dealId);
+  } catch (err) {
+    console.warn('Supabase delete deal fallback:', err);
+  }
+  return updated;
+}
+
 export async function createFeedPostBackend(newPost) {
   const current = await fetchFeedPostsBackend();
   const updated = [newPost, ...current];

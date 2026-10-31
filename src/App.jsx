@@ -21,7 +21,9 @@ import {
   saveVoucherBackend, 
   removeVoucherBackend,
   createNewDealBackend,
-  createFeedPostBackend
+  createFeedPostBackend,
+  updateDealBackend,
+  deleteDealBackend
 } from './lib/supabase';
 import { 
   Home, 
@@ -176,6 +178,21 @@ export default function App() {
     }
 
     showToast('Đã xuất bản lên Sàn, Bản Đồ & Bảng Tin!');
+  };
+
+  // Cập nhật thông tin deal (Chủ tiệm chỉnh sửa deal)
+  const handleUpdateDeal = async (updatedDeal) => {
+    const updated = await updateDealBackend(updatedDeal);
+    setDeals(updated);
+    showToast('Đã lưu thay đổi ưu đãi thành công!');
+  };
+
+  // Xóa deal khỏi sàn
+  const handleDeleteDeal = async (dealId) => {
+    if (!window.confirm('Bạn có chắc chắn muốn xóa ưu đãi này khỏi sàn không?')) return;
+    const updated = await deleteDealBackend(dealId);
+    setDeals(updated);
+    showToast('Đã xóa ưu đãi khỏi hệ thống.');
   };
 
   // Nút bắn Push Notification thử nghiệm
@@ -555,6 +572,10 @@ export default function App() {
                   onBackToHome={() => setDeviceViewMode('consumer')}
                   onOpenPostDeal={() => setShowPostDealModal(true)}
                   onTriggerPushNoti={handleTriggerDemoPush}
+                  deals={deals}
+                  onUpdateDeal={handleUpdateDeal}
+                  onDeleteDeal={handleDeleteDeal}
+                  onPreviewDeal={(deal) => setSelectedDeal(deal)}
                 />
               </div>
 

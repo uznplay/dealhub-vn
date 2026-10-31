@@ -129,7 +129,26 @@ export default function DealFeed({ onSaveDeal, onSelectDeal, savedDealIds = [] }
         {filteredPosts.map((post) => {
           const isLiked = likedPosts[post.id];
           const isCommentsOpen = openComments[post.id];
-          const isDealSaved = savedDealIds.includes(post.deal?.id);
+          
+          // Defensive fallbacks for Author profile
+          const authorName = typeof post.author === 'object' && post.author?.name
+            ? post.author.name
+            : (typeof post.author === 'string' && post.author.trim() ? post.author : (post.storeName || 'An Nhiên Beauty Spa'));
+          
+          const authorAvatar = typeof post.author === 'object' && post.author?.avatar
+            ? post.author.avatar
+            : (post.avatar || 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&auto=format&fit=crop&q=80');
+
+          const authorRole = typeof post.author === 'object' && post.author?.role
+            ? post.author.role
+            : (post.role || 'Chủ Tiệm Spa (Đối tác xác thực)');
+
+          const isVerified = typeof post.author === 'object' ? post.author.isVerified !== false : true;
+
+          // Image and Deal Fallbacks
+          const postImage = post.image || post.images?.[0];
+          const attachedDeal = post.deal || post.attachedDeal;
+          const isDealSaved = attachedDeal && savedDealIds.includes(attachedDeal.id);
 
           return (
             <article 
@@ -141,11 +160,11 @@ export default function DealFeed({ onSaveDeal, onSelectDeal, savedDealIds = [] }
                 <div className="flex items-center space-x-2.5">
                   <div className="relative">
                     <img
-                      src={post.author.avatar}
-                      alt={post.author.name}
+                      src={authorAvatar}
+                      alt={authorName}
                       className="w-9 h-9 rounded-full object-cover border border-gray-100"
                     />
-                    {post.author.isVerified && (
+                    {isVerified && (
                       <span className="absolute -bottom-0.5 -right-0.5 bg-noti-500 text-white rounded-full p-0.5">
                         <CheckCircle2 className="w-2.5 h-2.5" />
                       </span>
@@ -154,10 +173,10 @@ export default function DealFeed({ onSaveDeal, onSelectDeal, savedDealIds = [] }
                   <div>
                     <div className="flex items-center space-x-1.5">
                       <span className="font-bold text-xs text-gray-900 leading-none">
-                        {post.author.name}
+                        {authorName}
                       </span>
                       <span className="bg-green-50 text-noti-700 text-[9px] font-bold px-1.5 py-0.2 rounded border border-green-200">
-                        {post.author.role}
+                        {authorRole}
                       </span>
                     </div>
                     <div className="flex items-center space-x-1 text-[10px] text-gray-400 mt-0.5">
@@ -187,20 +206,20 @@ export default function DealFeed({ onSaveDeal, onSelectDeal, savedDealIds = [] }
               </div>
 
               {/* Post Image */}
-              {post.image && (
+              {postImage && (
                 <div 
-                  onClick={() => post.deal && onSelectDeal && onSelectDeal(post.deal)}
+                  onClick={() => attachedDeal && onSelectDeal && onSelectDeal(attachedDeal)}
                   className="relative overflow-hidden bg-gray-100 max-h-72 cursor-pointer group"
                 >
                   <img
-                    src={post.image}
+                    src={postImage}
                     alt="Hình ảnh ưu đãi"
                     className="w-full h-auto object-cover max-h-72 group-hover:scale-102 transition-transform"
                     loading="lazy"
                   />
-                  {post.deal?.discount && (
+                  {attachedDeal?.discount && (
                     <div className="absolute top-2.5 left-2.5 bg-red-600 text-white px-2 py-0.5 rounded-lg text-[10px] font-black shadow">
-                      {post.deal.discount} OFF
+                      {attachedDeal.discount} OFF
                     </div>
                   )}
                   <span className="absolute bottom-2 right-2 bg-black/60 text-white text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 backdrop-blur-xs">
@@ -211,39 +230,39 @@ export default function DealFeed({ onSaveDeal, onSelectDeal, savedDealIds = [] }
               )}
 
               {/* Attached Deal Box (Đi kèm địa chỉ & link xem map chi tiết) */}
-              {post.deal && (
+              {attachedDeal && (
                 <div className="p-2.5 bg-[#f4faf4] border-t border-b border-green-100 flex flex-col gap-1.5">
                   <div 
-                    onClick={() => onSelectDeal && onSelectDeal(post.deal)}
+                    onClick={() => onSelectDeal && onSelectDeal(attachedDeal)}
                     className="cursor-pointer group flex items-start justify-between gap-2"
                   >
                     <div className="flex-1 min-w-0">
                       <span className="text-[9px] font-bold text-noti-700 uppercase tracking-wide flex items-center gap-1">
                         <Store className="w-2.5 h-2.5" />
-                        {post.deal.storeName}
+                        {attachedDeal.storeName}
                       </span>
                       <p className="font-bold text-xs text-gray-900 truncate mt-0.5 group-hover:text-noti-600">
-                        {post.deal.title}
+                        {attachedDeal.title}
                       </p>
                       <p className="text-[10px] text-gray-500 truncate flex items-center gap-1 mt-0.5">
                         <MapPin className="w-2.5 h-2.5 text-noti-600 flex-shrink-0" />
-                        <span>{post.deal.address || post.location}</span>
+                        <span>{attachedDeal.address || post.location}</span>
                       </p>
                     </div>
 
                     <div className="text-right flex-shrink-0">
                       <span className="text-red-600 font-black text-xs block">
-                        {post.deal.salePrice?.toLocaleString('vi-VN')}₫
+                        {attachedDeal.salePrice?.toLocaleString('vi-VN')}₫
                       </span>
                       <span className="line-through text-gray-400 text-[10px]">
-                        {post.deal.originalPrice?.toLocaleString('vi-VN')}₫
+                        {attachedDeal.originalPrice?.toLocaleString('vi-VN')}₫
                       </span>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-end space-x-2 pt-1 border-t border-green-200/60">
                     <button
-                      onClick={() => onSelectDeal && onSelectDeal(post.deal)}
+                      onClick={() => onSelectDeal && onSelectDeal(attachedDeal)}
                       className="px-2.5 py-1 bg-white hover:bg-gray-100 text-gray-700 rounded-lg text-[10px] font-bold border border-gray-200 flex items-center gap-1"
                     >
                       <MapPin className="w-3 h-3 text-noti-600" />
@@ -252,7 +271,7 @@ export default function DealFeed({ onSaveDeal, onSelectDeal, savedDealIds = [] }
 
                     <button
                       onClick={() => {
-                        if (onSaveDeal) onSaveDeal(post.deal);
+                        if (onSaveDeal && attachedDeal) onSaveDeal(attachedDeal);
                       }}
                       className={`px-3 py-1 rounded-lg text-[10px] font-black shadow-2xs flex items-center space-x-1 transition-all active:scale-95 ${
                         isDealSaved

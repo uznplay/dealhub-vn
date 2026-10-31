@@ -108,18 +108,25 @@ export default function PostDealModal({ onClose, onAddDeal }) {
     // 2. Unified Feed Post for Bảng Tin Săn Deal
     const newFeedPost = {
       id: `post-${Date.now()}`,
-      author: storeProfile.storeName,
+      author: {
+        name: storeProfile.storeName,
+        avatar: storeProfile.avatar,
+        role: 'Chủ Tiệm Spa (Đối tác xác thực)',
+        isVerified: true
+      },
       role: 'Chủ Tiệm Spa (Đối tác xác thực)',
       avatar: storeProfile.avatar,
       time: 'Vừa xong',
       location: storeProfile.address,
       content: formData.postContent,
+      image: formData.image,
       images: [formData.image],
+      deal: newDeal,
+      attachedDeal: newDeal,
       likes: 5,
       commentsCount: 0,
       comments: [],
-      tags: ['#DealMoi', '#AnNhienSpa', '#UuDaiGioVang'],
-      attachedDeal: newDeal
+      tags: ['#DealMoi', '#AnNhienSpa', '#UuDaiGioVang']
     };
 
     onAddDeal({ deal: newDeal, feedPost: newFeedPost });

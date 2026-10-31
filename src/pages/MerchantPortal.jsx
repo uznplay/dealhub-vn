@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   BarChart3, 
   Eye, 
@@ -24,57 +24,105 @@ import {
   ExternalLink,
   DollarSign,
   AlertCircle,
-  Check
+  Check,
+  Edit3,
+  Trash2,
+  X,
+  Play,
+  Pause,
+  Image as ImageIcon
 } from 'lucide-react';
 import { redeemVoucherBackend } from '../lib/supabase';
 
-export default function MerchantPortal({ onBackToHome, onOpenPostDeal, onTriggerPushNoti }) {
+export default function MerchantPortal({ 
+  onBackToHome, 
+  onOpenPostDeal, 
+  onTriggerPushNoti,
+  deals = [],
+  onUpdateDeal,
+  onDeleteDeal,
+  onPreviewDeal 
+}) {
   const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'deals' | 'scanner' | 'profile'
   const [verifyCode, setVerifyCode] = useState('');
   const [verifyResult, setVerifyResult] = useState(null);
+  const [editingDeal, setEditingDeal] = useState(null);
 
-  // Store's active deals list
-  const [merchantDeals, setMerchantDeals] = useState([
-    {
-      id: 'm-deal-1',
-      title: 'Gói Chăm Sóc Da Y Khoa Chuyên Sâu 12 Bước',
-      category: 'Spa & Chăm sóc da',
-      originalPrice: 500000,
-      salePrice: 189000,
-      discount: '-62%',
-      views: 1420,
-      saves: 320,
-      redemptions: 84,
-      revenue: '15.876.000₫',
-      status: 'active'
-    },
-    {
-      id: 'm-deal-2',
-      title: 'Triệt Lông Nách & Tay Diode Laser Âm 5 Độ C',
-      category: 'Thẩm mỹ viện',
-      originalPrice: 800000,
-      salePrice: 299000,
-      discount: '-63%',
-      views: 1030,
-      saves: 260,
-      redemptions: 58,
-      revenue: '17.342.000₫',
-      status: 'active'
-    },
-    {
-      id: 'm-deal-3',
-      title: 'Gội Đầu Dưỡng Sinh Thảo Dược 75 Phút',
-      category: 'Hair Salon',
-      originalPrice: 250000,
-      salePrice: 99000,
-      discount: '-60%',
-      views: 890,
-      saves: 195,
-      redemptions: 45,
-      revenue: '4.455.000₫',
-      status: 'paused'
+  // Store's default initial deals
+  const [localStatuses, setLocalStatuses] = useState({});
+
+  // Merge default deals with deals passed from App.jsx
+  const merchantDeals = useMemo(() => {
+    // Collect all deals posted by An Nhiên Beauty Spa or user-created deals
+    const customDeals = deals.map(d => ({
+      id: d.id,
+      title: d.title,
+      category: d.category || 'Spa & Chăm sóc da',
+      originalPrice: d.originalPrice || 500000,
+      salePrice: d.salePrice || 189000,
+      discount: d.discount || '-50%',
+      image: d.image || 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&auto=format&fit=crop&q=80',
+      views: d.views || 450,
+      saves: d.saves || 95,
+      redemptions: d.redemptions || 28,
+      status: localStatuses[d.id] || d.status || 'active',
+      description: d.description || '',
+      address: d.address || '12 Liễu Giai, Ba Đình, Hà Nội',
+      storeName: d.storeName || 'An Nhiên Beauty & Clinic Spa'
+    }));
+
+    if (customDeals.length > 0) {
+      return customDeals;
     }
-  ]);
+
+    return [
+      {
+        id: 'm-deal-1',
+        title: 'Gói Chăm Sóc Da Y Khoa Chuyên Sâu 12 Bước',
+        category: 'Spa & Chăm sóc da',
+        originalPrice: 500000,
+        salePrice: 189000,
+        discount: '-62%',
+        image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&auto=format&fit=crop&q=80',
+        views: 1420,
+        saves: 320,
+        redemptions: 84,
+        revenue: '15.876.000₫',
+        status: localStatuses['m-deal-1'] || 'active',
+        description: 'Quy trình chuẩn y khoa loại bỏ bụi bẩn, cồi mụn sâu và cấp ẩm tầng sâu.'
+      },
+      {
+        id: 'm-deal-2',
+        title: 'Triệt Lông Nách & Tay Diode Laser Âm 5 Độ C',
+        category: 'Thẩm mỹ viện',
+        originalPrice: 800000,
+        salePrice: 299000,
+        discount: '-63%',
+        image: 'https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=400&auto=format&fit=crop&q=80',
+        views: 1030,
+        saves: 260,
+        redemptions: 58,
+        revenue: '17.342.000₫',
+        status: localStatuses['m-deal-2'] || 'active',
+        description: 'Công nghệ Diode Laser lạnh không đau rát, bảo hành 3 năm.'
+      },
+      {
+        id: 'm-deal-3',
+        title: 'Gội Đầu Dưỡng Sinh Thảo Dược 75 Phút',
+        category: 'Hair Salon',
+        originalPrice: 250000,
+        salePrice: 99000,
+        discount: '-60%',
+        image: 'https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=400&auto=format&fit=crop&q=80',
+        views: 890,
+        saves: 195,
+        redemptions: 45,
+        revenue: '4.455.000₫',
+        status: localStatuses['m-deal-3'] || 'paused',
+        description: 'Massage bấm huyệt cổ vai gáy thảo dược tự nhiên.'
+      }
+    ];
+  }, [deals, localStatuses]);
 
   // Real-time checkin history
   const [recentRedemptions, setRecentRedemptions] = useState([
@@ -84,12 +132,34 @@ export default function MerchantPortal({ onBackToHome, onOpenPostDeal, onTrigger
   ]);
 
   const toggleDealStatus = (id) => {
-    setMerchantDeals(merchantDeals.map(d => {
-      if (d.id === id) {
-        return { ...d, status: d.status === 'active' ? 'paused' : 'active' };
-      }
-      return d;
+    setLocalStatuses(prev => ({
+      ...prev,
+      [id]: prev[id] === 'paused' ? 'active' : 'paused'
     }));
+  };
+
+  const handleSaveEditedDeal = (e) => {
+    e.preventDefault();
+    if (!editingDeal) return;
+
+    const orig = parseInt(editingDeal.originalPrice) || 0;
+    const sale = parseInt(editingDeal.salePrice) || 0;
+    let disc = editingDeal.discount;
+    if (orig > 0 && sale > 0 && sale < orig) {
+      disc = `-${Math.round(((orig - sale) / orig) * 100)}%`;
+    }
+
+    const updated = {
+      ...editingDeal,
+      originalPrice: orig,
+      salePrice: sale,
+      discount: disc
+    };
+
+    if (onUpdateDeal) {
+      onUpdateDeal(updated);
+    }
+    setEditingDeal(null);
   };
 
   const handleVerify = async (e) => {
@@ -314,74 +384,273 @@ export default function MerchantPortal({ onBackToHome, onOpenPostDeal, onTrigger
           </div>
         )}
 
-        {/* TAB 2: QUẢN LÝ DỊCH VỤ & ƯU ĐÃI */}
+        {/* TAB 2: QUẢN LÝ DỊCH VỤ & ƯU ĐÃI (XEM LẠI, CHỈNH SỬA, BẬT/TẮT, XÓA) */}
         {activeTab === 'deals' && (
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-black text-gray-900">Danh Sách Ưu Đãi Của Tiệm</h3>
-                <p className="text-[10px] text-gray-500">Bật/tắt hoặc tạo voucher mới</p>
+                <p className="text-[10px] text-gray-500">Xem lại, chỉnh sửa hoặc tạm dừng chiến dịch</p>
               </div>
 
               <button
                 onClick={onOpenPostDeal}
-                className="px-3 py-1.5 bg-yellow-400 hover:bg-yellow-300 text-gray-950 font-black text-xs rounded-xl shadow-2xs flex items-center gap-1"
+                className="px-3 py-1.5 bg-noti-500 hover:bg-noti-600 text-white font-bold text-xs rounded-xl shadow-2xs flex items-center gap-1 transition-transform active:scale-95"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Tạo Deal</span>
+                <span>+ Đăng Deal Mới</span>
               </button>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {merchantDeals.map((d) => (
-                <div key={d.id} className="p-3 bg-white rounded-2xl border border-gray-100 shadow-2xs space-y-2">
-                  <div className="flex items-start justify-between gap-2">
+                <div key={d.id} className="p-3 bg-white rounded-2xl border border-gray-100 shadow-2xs space-y-2.5">
+                  <div className="flex items-start gap-2.5">
+                    {/* Deal Image thumbnail */}
+                    <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-100 relative">
+                      <img 
+                        src={d.image} 
+                        alt={d.title}
+                        className="w-full h-full object-cover" 
+                      />
+                      <span className="absolute bottom-0 right-0 bg-red-600 text-white text-[8px] font-black px-1 rounded-tl">
+                        {d.discount}
+                      </span>
+                    </div>
+
+                    {/* Deal Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[9px] font-bold text-noti-700 bg-green-50 px-1.5 rounded">
+                        <span className="text-[9px] font-bold text-noti-700 bg-green-50 px-1.5 py-0.5 rounded border border-green-100">
                           {d.category}
                         </span>
-                        <span className={`text-[8px] font-black px-1.5 rounded ${d.status === 'active' ? 'bg-green-100 text-noti-800' : 'bg-gray-100 text-gray-500'}`}>
-                          {d.status === 'active' ? 'ĐANG CHẠY' : 'TẠM DỪNG'}
+                        <span className={`text-[8px] font-black px-1.5 py-0.5 rounded ${
+                          d.status === 'active' 
+                            ? 'bg-green-100 text-noti-800' 
+                            : 'bg-gray-100 text-gray-500'
+                        }`}>
+                          {d.status === 'active' ? '● ĐANG CHẠY' : '❚❚ TẠM DỪNG'}
                         </span>
                       </div>
-                      <h4 className="font-bold text-xs text-gray-900 mt-1 line-clamp-1">{d.title}</h4>
-                      <div className="flex items-baseline space-x-1 mt-0.5">
-                        <span className="text-xs font-black text-red-600">{d.salePrice.toLocaleString('vi-VN')}₫</span>
-                        <span className="text-[9px] text-gray-400 line-through">{d.originalPrice.toLocaleString('vi-VN')}₫</span>
-                        <span className="text-[9px] font-black text-red-600">({d.discount})</span>
+                      <h4 className="font-bold text-xs text-gray-900 mt-1 line-clamp-2 leading-snug">
+                        {d.title}
+                      </h4>
+                      <div className="flex items-baseline space-x-1.5 mt-1">
+                        <span className="text-xs font-black text-red-600">
+                          {d.salePrice?.toLocaleString('vi-VN')}₫
+                        </span>
+                        <span className="text-[10px] text-gray-400 line-through">
+                          {d.originalPrice?.toLocaleString('vi-VN')}₫
+                        </span>
                       </div>
                     </div>
+                  </div>
+
+                  {/* Operational Action Buttons: Xem lại • Chỉnh sửa • Bật/Tắt • Xóa */}
+                  <div className="flex items-center justify-between gap-1.5 pt-2 border-t border-gray-100">
+                    <button
+                      onClick={() => onPreviewDeal && onPreviewDeal(d)}
+                      className="flex-1 py-1.5 px-2 bg-gray-50 hover:bg-gray-100 text-gray-700 font-bold text-[10px] rounded-lg border border-gray-200 flex items-center justify-center gap-1 transition-colors"
+                      title="Xem lại giao diện khách hàng nhìn thấy"
+                    >
+                      <Eye className="w-3 h-3 text-noti-600" />
+                      <span>Xem lại</span>
+                    </button>
+
+                    <button
+                      onClick={() => setEditingDeal(d)}
+                      className="flex-1 py-1.5 px-2 bg-green-50 hover:bg-green-100 text-noti-800 font-bold text-[10px] rounded-lg border border-green-200 flex items-center justify-center gap-1 transition-colors"
+                      title="Chỉnh sửa thông tin & giá deal"
+                    >
+                      <Edit3 className="w-3 h-3 text-noti-600" />
+                      <span>Chỉnh sửa</span>
+                    </button>
 
                     <button
                       onClick={() => toggleDealStatus(d.id)}
-                      className={`px-2 py-1 rounded-lg text-[10px] font-bold transition-colors ${
+                      className={`py-1.5 px-2.5 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1 transition-colors ${
                         d.status === 'active'
-                          ? 'bg-amber-100 text-amber-800 hover:bg-amber-200'
-                          : 'bg-green-100 text-noti-800 hover:bg-green-200'
+                          ? 'bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100'
+                          : 'bg-green-100 text-noti-800 border border-green-300 hover:bg-green-200'
                       }`}
+                      title="Tạm dừng hoặc kích hoạt bán"
                     >
-                      {d.status === 'active' ? 'Tạm dừng' : 'Kích hoạt'}
+                      {d.status === 'active' ? (
+                        <>
+                          <Pause className="w-2.5 h-2.5" />
+                          <span>Dừng</span>
+                        </>
+                      ) : (
+                        <>
+                          <Play className="w-2.5 h-2.5" />
+                          <span>Bật</span>
+                        </>
+                      )}
                     </button>
+
+                    {onDeleteDeal && (
+                      <button
+                        onClick={() => onDeleteDeal(d.id)}
+                        className="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 transition-colors"
+                        title="Xóa deal"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    )}
                   </div>
 
-                  <div className="grid grid-cols-3 gap-1 pt-1.5 border-t border-gray-100 text-[10px] text-gray-500 text-center">
+                  {/* Funnel Metrics */}
+                  <div className="grid grid-cols-3 gap-1 pt-1.5 border-t border-gray-50 text-[10px] text-gray-500 text-center bg-gray-50/60 rounded-lg p-1.5">
                     <div>
                       <span className="font-bold text-gray-900 block">{d.views}</span>
-                      <span>Lượt xem</span>
+                      <span className="text-[9px]">Lượt xem</span>
                     </div>
                     <div>
                       <span className="font-bold text-gray-900 block">{d.saves}</span>
-                      <span>Lưu kho</span>
+                      <span className="text-[9px]">Lưu kho</span>
                     </div>
                     <div>
                       <span className="font-bold text-noti-700 block">{d.redemptions}</span>
-                      <span>Đã làm tiệm</span>
+                      <span className="text-[9px]">Khách đến</span>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
+
+            {/* Modal Chỉnh Sửa Deal */}
+            {editingDeal && (
+              <div className="fixed inset-0 z-[99999] bg-black/75 backdrop-blur-xs flex items-center justify-center p-3 animate-fadeIn">
+                <div 
+                  className="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl border border-gray-100 flex flex-col max-h-[88vh]"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="bg-gradient-to-r from-noti-700 to-noti-600 p-3.5 text-white flex items-center justify-between flex-shrink-0">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center">
+                        <Edit3 className="w-4 h-4 text-white" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-xs uppercase">CHỈNH SỬA ƯU ĐÃI DEAL</h4>
+                        <p className="text-[9px] text-green-100">Cập nhật giá và nội dung bài đăng</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setEditingDeal(null)}
+                      className="w-6 h-6 rounded-full bg-black/20 hover:bg-black/30 flex items-center justify-center text-white"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleSaveEditedDeal} className="p-3.5 overflow-y-auto space-y-3 text-xs flex-1">
+                    <div>
+                      <label className="block text-[11px] font-bold text-gray-700 mb-1">
+                        Tên gói dịch vụ / Tiêu đề deal *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={editingDeal.title}
+                        onChange={(e) => setEditingDeal({ ...editingDeal, title: e.target.value })}
+                        className="w-full px-2.5 py-1.5 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-noti-500"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="block text-[11px] font-bold text-gray-700 mb-1">
+                          Giá niêm yết (VNĐ)
+                        </label>
+                        <input
+                          type="number"
+                          value={editingDeal.originalPrice}
+                          onChange={(e) => setEditingDeal({ ...editingDeal, originalPrice: e.target.value })}
+                          className="w-full px-2.5 py-1.5 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-noti-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-bold text-red-600 mb-1">
+                          Giá DealHub (VNĐ) *
+                        </label>
+                        <input
+                          type="number"
+                          required
+                          value={editingDeal.salePrice}
+                          onChange={(e) => setEditingDeal({ ...editingDeal, salePrice: e.target.value })}
+                          className="w-full px-2.5 py-1.5 rounded-xl border border-red-200 bg-red-50/20 text-xs font-bold text-red-700 focus:outline-none focus:border-red-500"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-gray-700 mb-1">
+                        Danh mục dịch vụ
+                      </label>
+                      <select
+                        value={editingDeal.category}
+                        onChange={(e) => setEditingDeal({ ...editingDeal, category: e.target.value })}
+                        className="w-full px-2.5 py-1.5 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-noti-500 bg-white"
+                      >
+                        <option value="Spa & Chăm sóc da">Spa & Chăm sóc da</option>
+                        <option value="Thẩm mỹ viện">Thẩm mỹ viện y khoa</option>
+                        <option value="Hair Salon">Hair Salon tóc</option>
+                        <option value="Nail & Eyelash">Nail & Mi nghệ thuật</option>
+                        <option value="Thời trang & Phụ kiện">Showroom & Thời trang</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-gray-700 mb-1">
+                        Mô tả chi tiết & Điều kiện áp dụng
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={editingDeal.description}
+                        onChange={(e) => setEditingDeal({ ...editingDeal, description: e.target.value })}
+                        className="w-full px-2.5 py-1.5 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-noti-500 resize-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-gray-700 mb-1">
+                        Hình ảnh đại diện dịch vụ
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <img 
+                          src={editingDeal.image} 
+                          alt="preview" 
+                          className="w-12 h-12 rounded-lg object-cover border border-gray-200 flex-shrink-0" 
+                        />
+                        <input
+                          type="url"
+                          value={editingDeal.image}
+                          onChange={(e) => setEditingDeal({ ...editingDeal, image: e.target.value })}
+                          className="flex-1 px-2.5 py-1.5 rounded-xl border border-gray-200 text-[10px] focus:outline-none focus:border-noti-500"
+                          placeholder="Link ảnh HTTPS..."
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => setEditingDeal(null)}
+                        className="flex-1 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-xl"
+                      >
+                        Hủy
+                      </button>
+                      <button
+                        type="submit"
+                        className="flex-1 py-2 bg-noti-500 hover:bg-noti-600 text-white font-bold text-xs rounded-xl shadow-xs"
+                      >
+                        Lưu Thay Đổi
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
