@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { 
   BarChart3, 
   Eye, 
@@ -30,7 +30,8 @@ import {
   X,
   Play,
   Pause,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Upload
 } from 'lucide-react';
 import { redeemVoucherBackend } from '../lib/supabase';
 
@@ -47,6 +48,22 @@ export default function MerchantPortal({
   const [verifyCode, setVerifyCode] = useState('');
   const [verifyResult, setVerifyResult] = useState(null);
   const [editingDeal, setEditingDeal] = useState(null);
+  const editFileInputRef = useRef(null);
+
+  const handleEditFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Vui lòng chọn ảnh dung lượng dưới 5MB!');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setEditingDeal(prev => ({ ...prev, image: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   // Store's default initial deals
   const [localStatuses, setLocalStatuses] = useState({});
@@ -613,21 +630,49 @@ export default function MerchantPortal({
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-bold text-gray-700 mb-1">
-                        Hình ảnh đại diện dịch vụ
-                      </label>
+                      <input 
+                        type="file" 
+                        ref={editFileInputRef} 
+                        accept="image/*" 
+                        onChange={handleEditFileChange} 
+                        className="hidden" 
+                      />
+
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-[11px] font-bold text-gray-700">
+                          Hình ảnh đại diện dịch vụ
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => editFileInputRef.current?.click()}
+                          className="text-[10px] text-noti-700 font-bold bg-green-50 hover:bg-green-100 px-2 py-0.5 rounded-lg border border-green-200 flex items-center gap-1"
+                        >
+                          <Upload className="w-2.5 h-2.5" />
+                          <span>Tải ảnh từ máy</span>
+                        </button>
+                      </div>
+
                       <div className="flex items-center gap-2">
-                        <img 
-                          src={editingDeal.image} 
-                          alt="preview" 
-                          className="w-12 h-12 rounded-lg object-cover border border-gray-200 flex-shrink-0" 
-                        />
+                        <div 
+                          onClick={() => editFileInputRef.current?.click()}
+                          className="w-14 h-14 rounded-xl overflow-hidden border border-gray-200 flex-shrink-0 cursor-pointer relative group"
+                          title="Bấm để tải ảnh mới từ máy"
+                        >
+                          <img 
+                            src={editingDeal.image} 
+                            alt="preview" 
+                            className="w-full h-full object-cover" 
+                          />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[9px] font-bold transition-opacity">
+                            Đổi
+                          </div>
+                        </div>
                         <input
                           type="url"
                           value={editingDeal.image}
                           onChange={(e) => setEditingDeal({ ...editingDeal, image: e.target.value })}
-                          className="flex-1 px-2.5 py-1.5 rounded-xl border border-gray-200 text-[10px] focus:outline-none focus:border-noti-500"
-                          placeholder="Link ảnh HTTPS..."
+                          className="flex-1 px-2.5 py-2 rounded-xl border border-gray-200 text-[10px] focus:outline-none focus:border-noti-500"
+                          placeholder="Hoặc dán link ảnh HTTPS..."
                         />
                       </div>
                     </div>

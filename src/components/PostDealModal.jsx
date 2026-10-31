@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   X, 
   Store, 
@@ -11,7 +11,10 @@ import {
   DollarSign, 
   Layers,
   Send,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Upload,
+  Link as LinkIcon,
+  Check
 } from 'lucide-react';
 
 const PHOTO_PRESETS = [
@@ -37,12 +40,21 @@ const PHOTO_PRESETS = [
   },
   {
     id: 'p5',
-    label: 'Thời trang',
+    label: 'Thời trang Showroom',
     url: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&auto=format&fit=crop&q=80'
+  },
+  {
+    id: 'p6',
+    label: 'Làm Nail / Mi',
+    url: 'https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=600&auto=format&fit=crop&q=80'
   }
 ];
 
 export default function PostDealModal({ onClose, onAddDeal }) {
+  const fileInputRef = useRef(null);
+  const [showUrlInput, setShowUrlInput] = useState(false);
+  const [customUrl, setCustomUrl] = useState('');
+
   // Tiệm mặc định gắn liền hồ sơ đối tác
   const storeProfile = {
     storeName: 'An Nhiên Beauty & Clinic Spa',
@@ -55,7 +67,7 @@ export default function PostDealModal({ onClose, onAddDeal }) {
 
   const [formData, setFormData] = useState({
     title: 'Gói Chăm Sóc Da Y Khoa Chuyên Sâu 12 Bước + Chiếu Ánh Sáng Sinh Học',
-    category: 'spa',
+    category: 'Spa & Chăm sóc da',
     originalPrice: '500000',
     salePrice: '189000',
     postContent: 'Ưu đãi giờ vàng dành riêng cho khách hàng DealHub! Giảm ngay 62% cho 20 khách hàng đầu tiên đặt lịch trải nghiệm liệu trình chuẩn y khoa tuần này. Cam kết không phát sinh phụ phí!',
@@ -63,6 +75,32 @@ export default function PostDealModal({ onClose, onAddDeal }) {
   });
 
   const [submitted, setSubmitted] = useState(false);
+
+  // Xử lý tải ảnh từ máy tính hoặc điện thoại
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Vui lòng chọn ảnh có dung lượng dưới 5MB!');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, image: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Áp dụng link ảnh nhập tay
+  const handleApplyUrl = (e) => {
+    e.preventDefault();
+    if (customUrl.trim()) {
+      setFormData(prev => ({ ...prev, image: customUrl.trim() }));
+      setShowUrlInput(false);
+      setCustomUrl('');
+    }
+  };
 
   const calculateDiscount = () => {
     const orig = parseFloat(formData.originalPrice);
@@ -212,42 +250,112 @@ export default function PostDealModal({ onClose, onAddDeal }) {
               />
             </div>
 
-            {/* 3. Chọn & Xem Trước Hình Ảnh */}
-            <div className="space-y-1.5">
-              <label className="font-bold text-gray-700 block text-[11px] flex items-center justify-between">
-                <span>Hình ảnh ưu đãi thực tế</span>
-                <span className="text-[10px] text-noti-700 font-semibold">Chạm để chọn ảnh mẫu</span>
-              </label>
+            {/* 3. Chọn & Thay Đổi Hình Ảnh (Upload từ máy / Nhập link / Chọn mẫu) */}
+            <div className="space-y-2">
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                accept="image/*" 
+                onChange={handleFileChange} 
+                className="hidden" 
+              />
 
-              {/* Image Preview Box */}
-              <div className="relative w-full h-32 rounded-2xl overflow-hidden border border-gray-200 bg-gray-100 group">
+              <div className="flex items-center justify-between">
+                <label className="font-bold text-gray-800 text-[11px] flex items-center gap-1">
+                  <Camera className="w-3.5 h-3.5 text-noti-600" />
+                  <span>Hình ảnh ưu đãi thực tế</span>
+                  <span className="text-red-500">*</span>
+                </label>
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="text-[10px] text-noti-700 font-bold bg-green-50 hover:bg-green-100 px-2 py-0.5 rounded-lg border border-green-200 flex items-center gap-1 transition-colors"
+                  >
+                    <Upload className="w-2.5 h-2.5" />
+                    <span>Tải ảnh từ máy</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowUrlInput(!showUrlInput)}
+                    className="text-[10px] text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 px-1.5 py-0.5 rounded-lg border border-gray-200 flex items-center gap-1"
+                    title="Dán link ảnh từ web"
+                  >
+                    <LinkIcon className="w-2.5 h-2.5" />
+                    <span>Link</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Ô dán link ảnh tùy chọn */}
+              {showUrlInput && (
+                <div className="flex items-center gap-1 p-1.5 bg-gray-50 rounded-xl border border-gray-200 animate-fadeIn">
+                  <input
+                    type="url"
+                    value={customUrl}
+                    onChange={(e) => setCustomUrl(e.target.value)}
+                    placeholder="Dán link ảnh https://..."
+                    className="flex-1 px-2 py-1 bg-white border border-gray-200 rounded-lg text-[10px] outline-none focus:border-noti-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleApplyUrl}
+                    className="px-2.5 py-1 bg-noti-500 hover:bg-noti-600 text-white rounded-lg text-[10px] font-bold"
+                  >
+                    Dùng ảnh
+                  </button>
+                </div>
+              )}
+
+              {/* Image Preview Box - Bấm thẳng vào ảnh cũng mở chọn ảnh từ máy */}
+              <div 
+                onClick={() => fileInputRef.current?.click()}
+                className="relative w-full h-36 rounded-2xl overflow-hidden border-2 border-dashed border-gray-300 hover:border-noti-500 bg-gray-100 group cursor-pointer transition-all shadow-2xs"
+                title="Bấm để thay ảnh mới từ máy tính / điện thoại"
+              >
                 <img 
                   src={formData.image} 
                   alt="Preview" 
-                  className="w-full h-full object-cover" 
+                  className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" 
                 />
-                <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-white px-2 py-0.5 rounded-full text-[10px] font-bold">
+                
+                {/* Discount Badge */}
+                <div className="absolute top-2 right-2 bg-red-600 text-white px-2 py-0.5 rounded-lg text-[10px] font-black shadow">
                   {calculateDiscount()}
+                </div>
+
+                {/* Hover / Overlay button: Bấm để đổi ảnh */}
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5 text-white font-bold text-xs backdrop-blur-2xs">
+                  <Upload className="w-4 h-4" />
+                  <span>Chạm để đổi ảnh từ máy</span>
+                </div>
+
+                <div className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-xs text-white text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                  <Camera className="w-2.5 h-2.5 text-yellow-300" />
+                  <span>Bấm vào đây để thay ảnh</span>
                 </div>
               </div>
 
               {/* Preset Photo Selector */}
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
-                {PHOTO_PRESETS.map((preset) => (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    onClick={() => setFormData({ ...formData, image: preset.url })}
-                    className={`flex-shrink-0 p-1 rounded-xl border text-[10px] font-bold flex items-center gap-1 transition-all ${
-                      formData.image === preset.url
-                        ? 'border-noti-600 bg-noti-50 text-noti-700 ring-1 ring-noti-500'
-                        : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
-                    }`}
-                  >
-                    <img src={preset.url} alt="" className="w-5 h-5 rounded-md object-cover" />
-                    <span>{preset.label}</span>
-                  </button>
-                ))}
+              <div className="space-y-1">
+                <span className="text-[10px] text-gray-500 font-semibold block">Hoặc chọn nhanh ảnh mẫu có sẵn:</span>
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+                  {PHOTO_PRESETS.map((preset) => (
+                    <button
+                      key={preset.id}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, image: preset.url })}
+                      className={`flex-shrink-0 p-1 rounded-xl border text-[10px] font-bold flex items-center gap-1 transition-all ${
+                        formData.image === preset.url
+                          ? 'border-noti-600 bg-noti-50 text-noti-700 ring-2 ring-noti-500/20'
+                          : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
+                      }`}
+                    >
+                      <img src={preset.url} alt="" className="w-5 h-5 rounded-md object-cover" />
+                      <span>{preset.label}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
