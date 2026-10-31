@@ -28,7 +28,7 @@ import {
 } from 'lucide-react';
 import { redeemVoucherBackend } from '../lib/supabase';
 
-export default function MerchantPortal({ onBackToHome, onOpenPostDeal }) {
+export default function MerchantPortal({ onBackToHome, onOpenPostDeal, onTriggerPushNoti }) {
   const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'deals' | 'scanner' | 'profile'
   const [verifyCode, setVerifyCode] = useState('');
   const [verifyResult, setVerifyResult] = useState(null);
@@ -141,12 +141,26 @@ export default function MerchantPortal({ onBackToHome, onOpenPostDeal }) {
           </div>
         </div>
 
-        <button
-          onClick={onBackToHome}
-          className="px-2 py-1 bg-white/15 hover:bg-white/25 rounded-lg text-[10px] font-bold flex-shrink-0"
-        >
-          Trang Khách
-        </button>
+        <div className="flex items-center space-x-1.5 flex-shrink-0">
+          <button
+            onClick={onOpenPostDeal}
+            className="px-2.5 py-1 bg-yellow-400 hover:bg-yellow-300 text-gray-950 rounded-lg text-[10px] font-black flex items-center gap-1 shadow-xs transition-transform active:scale-95"
+            title="Đăng deal mới và tự động gửi Push Notification"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>+ Đăng Deal</span>
+          </button>
+
+          {onTriggerPushNoti && (
+            <button
+              onClick={onTriggerPushNoti}
+              className="p-1 rounded-lg bg-white/20 hover:bg-white/30 text-white"
+              title="Bắn Push Notification thử nghiệm"
+            >
+              <Bell className="w-3.5 h-3.5 text-yellow-300 animate-bounce" />
+            </button>
+          )}
+        </div>
       </header>
 
       {/* 2. Top Horizontal Tab Switcher (Mobile Native - No broken sidebars!) */}
@@ -211,6 +225,30 @@ export default function MerchantPortal({ onBackToHome, onOpenPostDeal }) {
                   Số lượng khách hàng từ online đến trải nghiệm thực tế tại quán
                 </p>
               </div>
+            </div>
+
+            {/* Live Push Notification Banner */}
+            <div className="bg-gradient-to-r from-amber-50 to-emerald-50 border border-amber-200 rounded-2xl p-2.5 flex items-start justify-between gap-2 shadow-2xs">
+              <div className="flex items-start space-x-2 min-w-0">
+                <div className="w-7 h-7 rounded-xl bg-amber-400 text-gray-950 flex items-center justify-center flex-shrink-0 font-bold shadow-xs">
+                  <Bell className="w-4 h-4 text-gray-950" />
+                </div>
+                <div className="min-w-0">
+                  <h5 className="text-[11px] font-black text-gray-900 leading-tight">
+                    Hỗ Trợ Live Push Notification
+                  </h5>
+                  <p className="text-[10px] text-gray-600 leading-snug mt-0.5">
+                    Đăng deal sẽ bắn thông báo đẩy trực tiếp sang màn hình điện thoại khách hàng bên trái!
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={onOpenPostDeal}
+                className="px-2.5 py-1.5 bg-noti-600 hover:bg-noti-700 text-white rounded-xl font-bold text-[10px] whitespace-nowrap shadow-xs flex-shrink-0"
+              >
+                + Đăng Ngay
+              </button>
             </div>
 
             {/* 5 Core Impact Metrics (Grid 2-3 Columns for clean mobile display) */}
