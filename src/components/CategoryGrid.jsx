@@ -2,23 +2,23 @@ import React from 'react';
 import { CATEGORIES } from '../data/mockData';
 import { 
   Sparkles, 
-  Heart, 
+  Utensils, 
+  Coffee, 
+  Gamepad2, 
+  Film, 
   Shirt, 
-  Smile, 
-  Scissors, 
-  Crown, 
-  Activity,
+  Car,
   ShoppingBag
 } from 'lucide-react';
 
 const ICON_MAP = {
   Sparkles,
-  Heart,
+  Utensils,
+  Coffee,
+  Gamepad2,
+  Film,
   Shirt,
-  Smile,
-  Scissors,
-  Crown,
-  Activity,
+  Car,
   ShoppingBag
 };
 
@@ -27,10 +27,10 @@ export default function CategoryGrid({ activeCategory, onSelectCategory }) {
     <div className="px-3 mt-4">
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-sm font-black text-gray-900 tracking-tight">
-          Danh Mục Dịch Vụ
+          Danh Mục Quán Xá & Ưu Đãi
         </h2>
         <span className="text-[10px] text-gray-400">
-          Chọn để lọc nhanh
+          Tất cả ngành nghề
         </span>
       </div>
 

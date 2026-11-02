@@ -20,7 +20,7 @@ import {
 
 export default function DealFeed({ onSaveDeal, onSelectDeal, savedDealIds = [] }) {
   const [posts, setPosts] = useState([]);
-  const [activeFilter, setActiveFilter] = useState('all'); // 'all' | 'nearby' | 'spa' | 'fashion'
+  const [activeFilter, setActiveFilter] = useState('all'); // 'all' | 'nearby' | 'food' | 'entertainment'
   const [likedPosts, setLikedPosts] = useState({});
   const [openComments, setOpenComments] = useState({});
   const [newCommentText, setNewCommentText] = useState({});
@@ -53,7 +53,8 @@ export default function DealFeed({ onSaveDeal, onSelectDeal, savedDealIds = [] }
 
   const filteredPosts = posts.filter(p => {
     if (activeFilter === 'nearby') return p.location?.includes('Cách bạn');
-    if (activeFilter === 'spa') return p.tags?.some(t => t.toLowerCase().includes('spa') || t.toLowerCase().includes('chamsoc'));
+    if (activeFilter === 'food') return p.tags?.some(t => t.toLowerCase().includes('an') || t.toLowerCase().includes('lau') || t.toLowerCase().includes('bulgogi'));
+    if (activeFilter === 'billiards') return p.tags?.some(t => t.toLowerCase().includes('bida') || t.toLowerCase().includes('billiards') || t.toLowerCase().includes('phim'));
     if (activeFilter === 'fashion') return p.tags?.some(t => t.toLowerCase().includes('thoitrang') || t.toLowerCase().includes('dam'));
     return true;
   });
@@ -70,10 +71,10 @@ export default function DealFeed({ onSaveDeal, onSelectDeal, savedDealIds = [] }
             </div>
             <div>
               <h2 className="text-sm font-black text-gray-900 leading-tight">
-                Bảng Tin Săn Deal Địa Phương
+                Bảng Tin Săn Deal Quán Xá
               </h2>
               <p className="text-[10px] text-gray-500">
-                Ưu đãi và đánh giá từ các spa & cửa hàng làm đẹp chính thức
+                Ưu đãi và đánh giá thực tế từ các quán ăn, cafe, bida & rạp phim chính thức
               </p>
             </div>
           </div>
@@ -102,14 +103,24 @@ export default function DealFeed({ onSaveDeal, onSelectDeal, savedDealIds = [] }
             Gần vị trí của bạn
           </button>
           <button
-            onClick={() => setActiveFilter('spa')}
+            onClick={() => setActiveFilter('food')}
             className={`px-3 py-1 rounded-full whitespace-nowrap transition-all ${
-              activeFilter === 'spa'
+              activeFilter === 'food'
                 ? 'bg-noti-500 text-white shadow-2xs'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            Spa & Chăm sóc da
+            Ăn uống & F&B
+          </button>
+          <button
+            onClick={() => setActiveFilter('billiards')}
+            className={`px-3 py-1 rounded-full whitespace-nowrap transition-all ${
+              activeFilter === 'billiards'
+                ? 'bg-noti-500 text-white shadow-2xs'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            Billiards & Giải trí
           </button>
           <button
             onClick={() => setActiveFilter('fashion')}
@@ -119,7 +130,7 @@ export default function DealFeed({ onSaveDeal, onSelectDeal, savedDealIds = [] }
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            Showroom & Thời trang
+            Thời trang & Phụ kiện
           </button>
         </div>
       </div>
@@ -133,15 +144,15 @@ export default function DealFeed({ onSaveDeal, onSelectDeal, savedDealIds = [] }
           // Defensive fallbacks for Author profile
           const authorName = typeof post.author === 'object' && post.author?.name
             ? post.author.name
-            : (typeof post.author === 'string' && post.author.trim() ? post.author : (post.storeName || 'An Nhiên Beauty Spa'));
+            : (typeof post.author === 'string' && post.author.trim() ? post.author : (post.storeName || 'Bulgogi King Lẩu Nướng'));
           
           const authorAvatar = typeof post.author === 'object' && post.author?.avatar
             ? post.author.avatar
-            : (post.avatar || 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&auto=format&fit=crop&q=80');
+            : (post.avatar || 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&auto=format&fit=crop&q=80');
 
           const authorRole = typeof post.author === 'object' && post.author?.role
             ? post.author.role
-            : (post.role || 'Chủ Tiệm Spa (Đối tác xác thực)');
+            : (post.role || 'Chủ Quán Đối Tác (Xác Thực)');
 
           const isVerified = typeof post.author === 'object' ? post.author.isVerified !== false : true;
 

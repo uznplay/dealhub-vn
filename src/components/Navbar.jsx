@@ -7,7 +7,8 @@ import {
   Store, 
   Target,
   Gift,
-  Coins
+  Coins,
+  Crown
 } from 'lucide-react';
 import { CITIES } from '../data/mockData';
 
@@ -19,6 +20,8 @@ export default function Navbar({
   onOpenPassport,
   onOpenMissions,
   onOpenMerchantDashboard,
+  onOpenDealPass,
+  isSubscribed = false,
   savedDealsCount = 0,
   userPoints = 150
 }) {
@@ -38,20 +41,34 @@ export default function Navbar({
               DEAL<span className="text-yellow-300">HUB</span>
             </span>
             <span className="text-[9px] text-green-100 font-bold uppercase tracking-wider block">
-              Bản Đồ Deal Địa Phương
+              Bản Đồ Deal Quán Xá O2O
             </span>
           </div>
         </div>
 
-        {/* Right tools: Điểm thưởng đổi quà, Kho voucher & Kênh người bán */}
+        {/* Right tools: DealPass 49k, Điểm thưởng đổi quà, Kho voucher & Kênh người bán */}
         <div className="flex items-center space-x-1.5">
+          {/* DealPass 49k Member Button */}
+          <button
+            onClick={onOpenDealPass}
+            className={`flex items-center space-x-1 px-2 py-1.5 rounded-xl text-xs font-black transition-all shadow-xs border ${
+              isSubscribed
+                ? 'bg-amber-400 text-gray-950 border-yellow-200'
+                : 'bg-gradient-to-r from-amber-500 to-orange-500 text-white border-white/20 active:scale-95'
+            }`}
+            title="Gói hội viên DealPass 49k"
+          >
+            <Crown className="w-3.5 h-3.5 fill-current text-yellow-200" />
+            <span className="text-[11px]">{isSubscribed ? 'VIP Pass' : 'Pass 49k'}</span>
+          </button>
+
           {/* Điểm Thưởng & Đổi Quà Button */}
           <button
             onClick={() => onOpenMissions('rewards')}
-            className="flex items-center space-x-1 bg-amber-400 hover:bg-amber-300 text-gray-950 px-2 py-1.5 rounded-xl text-xs font-black transition-all shadow-xs"
+            className="flex items-center space-x-1 bg-white/20 hover:bg-white/30 text-white px-2 py-1.5 rounded-xl text-xs font-bold transition-all shadow-xs border border-white/20"
             title="Đổi quà từ điểm thưởng"
           >
-            <Coins className="w-3.5 h-3.5 text-amber-900" />
+            <Coins className="w-3.5 h-3.5 text-yellow-300" />
             <span className="text-[11px]">{userPoints}⭐</span>
           </button>
 
@@ -73,10 +90,10 @@ export default function Navbar({
           <button
             onClick={onOpenMerchantDashboard}
             className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors flex items-center gap-1 px-2 text-[10px] font-bold border border-white/20 shadow-xs"
-            title="Dành cho chủ cửa hàng"
+            title="Dành cho chủ quán"
           >
             <Store className="w-3.5 h-3.5 text-yellow-300" />
-            <span>Kênh bán</span>
+            <span>Quán</span>
           </button>
         </div>
       </div>
@@ -120,7 +137,7 @@ export default function Navbar({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Tìm spa, tiệm tóc, nail gần bạn..."
+            placeholder="Tìm quán ăn, cafe, bida, rạp phim gần bạn..."
             className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-white text-gray-900 placeholder-gray-400 text-xs focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-inner"
           />
           <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-2 pointer-events-none" />

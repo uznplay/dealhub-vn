@@ -34,13 +34,13 @@ export default function DealMissionModal({
   const MISSIONS = [
     {
       id: 'm1',
-      title: 'Khám phá 3 tiệm Spa & Làm đẹp trên bản đồ',
+      title: 'Khám phá 3 quán ăn & điểm vui chơi trên bản đồ',
       category: 'Bản đồ',
       icon: Sparkles,
       progress: 2,
       total: 3,
       rewardPoints: 50,
-      rewardText: '+50 Điểm Thưởng + Huy hiệu Làm Đẹp',
+      rewardText: '+50 Điểm Thưởng + Huy hiệu Khám Phá',
       color: 'text-noti-600 bg-green-50'
     },
     {
@@ -67,7 +67,7 @@ export default function DealMissionModal({
     },
     {
       id: 'm4',
-      title: 'Đánh giá 1 dịch vụ Spa / Salon sau trải nghiệm',
+      title: 'Đánh giá 1 trải nghiệm quán ăn hoặc quán cafe',
       category: 'Cộng đồng',
       icon: Trophy,
       progress: 0,
@@ -81,18 +81,18 @@ export default function DealMissionModal({
   // Danh mục voucher đổi quà bằng điểm thưởng
   const REWARD_ITEMS = [
     {
-      id: 'reward-spa-50k',
-      title: 'Voucher Giảm 50.000₫ Dịch Vụ Spa & Clinic',
-      storeName: 'An Nhiên Beauty & Clinic Spa',
-      category: 'Spa & Làm đẹp',
+      id: 'reward-food-50k',
+      title: 'Voucher Giảm 50.000₫ Set Lẩu Nướng',
+      storeName: 'Bulgogi King - Lẩu Nướng Hàn Quốc',
+      category: 'Ăn uống',
       pointCost: 50,
       salePrice: 0,
       originalPrice: 50000,
       discount: 'TẶNG 50K',
       address: '12 Liễu Giai, Ba Đình, Hà Nội',
-      condition: 'Áp dụng cho mọi hóa đơn Spa & Chăm sóc da từ 150.000₫',
+      condition: 'Áp dụng cho mọi hóa đơn lẩu nướng từ 150.000₫',
       expiresIn: 'Còn 30 ngày',
-      image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&auto=format&fit=crop&q=80'
+      image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&auto=format&fit=crop&q=80'
     },
     {
       id: 'reward-fashion-100k',
@@ -104,37 +104,23 @@ export default function DealMissionModal({
       originalPrice: 100000,
       discount: 'TẶNG 100K',
       address: '52 Chùa Bộc, Đống Đa, Hà Nội',
-      condition: 'Áp dụng cho đơn mua sắm váy đầm, blazer từ 300.000₫',
+      condition: 'Áp dụng cho đơn mua sắm từ 300.000₫',
       expiresIn: 'Còn 30 ngày',
       image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400&auto=format&fit=crop&q=80'
     },
     {
-      id: 'reward-goi-dau-free',
-      title: 'Miễn Phí Gội Đầu Dưỡng Sinh Thảo Dược 45 Phút',
-      storeName: 'Mộc Trà Dưỡng Sinh Spa',
-      category: 'Dưỡng sinh',
+      id: 'reward-billiards-free',
+      title: 'Miễn Phí 1 Giờ Chơi Billiards Máy Lạnh',
+      storeName: 'Ares Billiards & Lounge Club',
+      category: 'Giải trí',
       pointCost: 120,
       salePrice: 0,
-      originalPrice: 150000,
+      originalPrice: 80000,
       discount: '100% FREE',
       address: '157 Xuân Thủy, Cầu Giấy, Hà Nội',
-      condition: 'Miễn phí trọn gói trị liệu thư giãn gội đầu bấm huyệt',
-      expiresIn: 'Còn 15 ngày',
-      image: 'https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?w=400&auto=format&fit=crop&q=80'
-    },
-    {
-      id: 'reward-massage-free',
-      title: 'Gói Trị Liệu Massage Cổ Vai Gáy 30 Phút Miễn Phí',
-      storeName: 'Seoul Spa Trị Liệu & Phục Hồi',
-      category: 'Chăm sóc cá nhân',
-      pointCost: 150,
-      salePrice: 0,
-      originalPrice: 200000,
-      discount: '100% FREE',
-      address: '88 Nguyễn Thị Minh Khai, Q.3, TP.HCM',
-      condition: 'Trị liệu giảm đau nhức mỏi cổ vai gáy bằng thảo mộc tự nhiên',
-      expiresIn: 'Còn 20 ngày',
-      image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&auto=format&fit=crop&q=80'
+      condition: 'Áp dụng cho mọi bàn thi đấu Aileex tiêu chuẩn',
+      expiresIn: 'Còn 30 ngày',
+      image: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=400&auto=format&fit=crop&q=80'
     }
   ];
 

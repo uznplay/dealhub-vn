@@ -32,48 +32,48 @@ export default function MerchantImpactDashboard({ onClose, onOpenPostDeal }) {
   const [merchantDeals, setMerchantDeals] = useState([
     {
       id: 'm-deal-1',
-      title: 'Gói Chăm Sóc Da Y Khoa Chuyên Sâu 12 Bước',
-      category: 'Spa & Chăm sóc da',
-      originalPrice: 500000,
-      salePrice: 189000,
-      discount: '-62%',
+      title: 'Buffet Nướng Lẩu Bulgogi Thượng Hạng Giảm 50%',
+      category: 'Ăn uống',
+      originalPrice: 399000,
+      salePrice: 199000,
+      discount: '-50%',
       views: 1420,
       saves: 320,
       redemptions: 84,
-      revenue: '15.876.000₫',
+      revenue: '16.716.000₫',
       status: 'active'
     },
     {
       id: 'm-deal-2',
-      title: 'Triệt Lông Nách & Tay Công Nghệ Diode Laser Âm 5 Độ C',
-      category: 'Thẩm mỹ viện',
-      originalPrice: 800000,
-      salePrice: 299000,
-      discount: '-63%',
+      title: 'Combo 2 Giờ Chơi Billiards Máy Lạnh + 2 Lon Nước',
+      category: 'Billiards & Giải trí',
+      originalPrice: 160000,
+      salePrice: 89000,
+      discount: '-44%',
       views: 1030,
       saves: 260,
       redemptions: 58,
-      revenue: '17.342.000₫',
+      revenue: '5.162.000₫',
       status: 'active'
     },
     {
       id: 'm-deal-3',
-      title: 'Gội Đầu Dưỡng Sinh Thảo Dược 75 Phút',
-      category: 'Hair Salon',
-      originalPrice: 250000,
-      salePrice: 99000,
-      discount: '-60%',
+      title: 'Vé Xem Phim 2D + Bắp Rang Phô Mai CineStar',
+      category: 'Rạp chiếu phim',
+      originalPrice: 120000,
+      salePrice: 65000,
+      discount: '-46%',
       views: 890,
       saves: 195,
       redemptions: 45,
-      revenue: '4.455.000₫',
+      revenue: '2.925.000₫',
       status: 'paused'
     }
   ]);
 
   // Check-in history
   const [recentRedemptions, setRecentRedemptions] = useState([
-    { id: 'ck-1', code: 'DH-7828', customer: 'Ngọc Mai', service: 'Chăm Sóc Da Y Khoa 12 Bước', time: '10 phút trước', amount: '189.000₫' },
+    { id: 'ck-1', code: 'DH-7828', customer: 'Ngọc Mai', service: 'Buffet Nướng Lẩu Bulgogi Thượng Hạng', time: '10 phút trước', amount: '199.000₫' },
     { id: 'ck-2', code: 'DH-5058', customer: 'Thu Hương', service: 'Gội Đầu Dưỡng Sinh Thảo Dược', time: '35 phút trước', amount: '99.000₫' },
     { id: 'ck-3', code: 'DH-3435', customer: 'Thanh Hằng', service: 'Triệt Lông Diode Laser', time: '1 giờ trước', amount: '299.000₫' }
   ]);
@@ -95,7 +95,7 @@ export default function MerchantImpactDashboard({ onClose, onOpenPostDeal }) {
       id: `ck-${Date.now()}`,
       code: verifyCode.toUpperCase(),
       customer: 'Khách hàng DealHub',
-      service: 'Chăm Sóc Da Y Khoa 12 Bước',
+      service: 'Buffet Nướng Lẩu Bulgogi Thượng Hạng',
       time: 'Vừa xong',
       amount: '189.000₫'
     };
@@ -103,7 +103,7 @@ export default function MerchantImpactDashboard({ onClose, onOpenPostDeal }) {
     setVerifyResult({
       success: true,
       code: verifyCode.toUpperCase(),
-      service: 'Chăm Sóc Da Y Khoa 12 Bước',
+      service: 'Buffet Nướng Lẩu Bulgogi Thượng Hạng',
       discount: 'Giảm 62% - Khách thanh toán 189.000₫'
     });
 
@@ -126,12 +126,12 @@ export default function MerchantImpactDashboard({ onClose, onOpenPostDeal }) {
             <div>
               <div className="flex items-center space-x-2">
                 <h3 className="font-black text-lg text-white">KÊNH NGƯỜI BÁN DEALHUB</h3>
-                <span className="bg-rose-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase">
-                  Spa & Beauty Partner
+                <span className="bg-emerald-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase">
+                  Đối Tác Xác Thực O2O
                 </span>
               </div>
               <p className="text-xs text-gray-400">
-                Gian hàng: <b className="text-white">An Nhiên Beauty & Clinic Spa</b> • 12 Liễu Giai, Ba Đình
+                Gian hàng: <b className="text-white">Bulgogi King - Lẩu Nướng Hàn Quốc</b> • 12 Liễu Giai, Ba Đình
               </p>
             </div>
           </div>
@@ -507,7 +507,7 @@ export default function MerchantImpactDashboard({ onClose, onOpenPostDeal }) {
                   </div>
                   <div>
                     <div className="flex items-center gap-1.5">
-                      <h3 className="font-black text-base text-gray-900">An Nhiên Beauty & Clinic Spa</h3>
+                      <h3 className="font-black text-base text-gray-900">Bulgogi King - Lẩu Nướng Hàn Quốc</h3>
                       <ShieldCheck className="w-4 h-4 text-emerald-600" />
                     </div>
                     <p className="text-xs text-gray-500 mt-0.5 flex items-center gap-1">
@@ -519,14 +519,14 @@ export default function MerchantImpactDashboard({ onClose, onOpenPostDeal }) {
                         <Star className="w-3 h-3 fill-amber-500 text-amber-500" /> 5.0 (128 Đánh giá)
                       </span>
                       <span className="text-gray-400">•</span>
-                      <span className="text-emerald-600 font-semibold">Giờ mở cửa: 08:30 - 21:00</span>
+                      <span className="text-emerald-600 font-semibold">Giờ mở cửa: 10:00 - 23:00</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <span className="text-xs font-bold text-gray-500 block">Hotline đặt lịch</span>
-                  <b className="text-base font-black text-rose-600">0987 654 321</b>
+                  <span className="text-xs font-bold text-gray-500 block">Hotline đặt bàn</span>
+                  <b className="text-base font-black text-rose-600">0988 123 456</b>
                 </div>
               </div>
 
@@ -539,22 +539,22 @@ export default function MerchantImpactDashboard({ onClose, onOpenPostDeal }) {
                 <div className="space-y-3">
                   <div className="p-3.5 bg-white rounded-2xl border border-gray-200 text-xs space-y-1.5">
                     <div className="flex justify-between items-center">
-                      <span className="font-bold text-gray-900">Nguyễn Hải Yến (Đã dùng gói Chăm Sóc Da Y Khoa)</span>
+                      <span className="font-bold text-gray-900">Nguyễn Hải Yến (Buffet Nướng Lẩu Bulgogi)</span>
                       <div className="flex text-amber-400 text-xs">★★★★★</div>
                     </div>
                     <p className="text-gray-600">
-                      "Spa làm cực kỳ có tâm, nhân viên lấy nhân mụn rất nhẹ nhàng không bị sưng đỏ. Mình đặt qua DealHub được giảm hơn 60% mà chất lượng dịch vụ vẫn nguyên vẹn 100%!"
+                      "Quán phục vụ cực kỳ chu đáo, thịt bò Mỹ nướng mềm ngọt, panchan phong phú. Nhập mã DealHub được giảm hẳn 50% thanh toán tại quầy chỉ còn 199k, quá hời!"
                     </p>
                     <span className="text-[10px] text-gray-400 block">Đánh giá ngày 28/10/2026</span>
                   </div>
 
                   <div className="p-3.5 bg-white rounded-2xl border border-gray-200 text-xs space-y-1.5">
                     <div className="flex justify-between items-center">
-                      <span className="font-bold text-gray-900">Trần Phương Linh (Gói Gội Đầu Dưỡng Sinh)</span>
+                      <span className="font-bold text-gray-900">Trần Phương Linh (Combo 2H Bida Ares Club)</span>
                       <div className="flex text-amber-400 text-xs">★★★★★</div>
                     </div>
                     <p className="text-gray-600">
-                      "Nước gội thảo dược thơm dễ chịu, bài massage bấm huyệt cổ vai gáy làm xong nhẹ cả đầu. Chắc chắn sẽ tiếp tục ủng hộ tiệm."
+                      "Bàn bi-a Aileex siêu mượt, phòng lạnh mát rượi. Đưa mã 6 ký tự cho bạn thu ngân gõ 2 giây là xong, tiết kiệm được cả trăm nghìn."
                     </p>
                     <span className="text-[10px] text-gray-400 block">Đánh giá ngày 26/10/2026</span>
                   </div>

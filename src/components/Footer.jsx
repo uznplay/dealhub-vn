@@ -13,12 +13,12 @@ export default function Footer() {
           <span className="text-sm font-black text-white tracking-tight leading-none">
             DEAL<span className="text-yellow-400">HUB</span>
           </span>
-          <p className="text-[9px] text-gray-400 mt-0.5">Bản Đồ Deal Làm Đẹp & Dịch Vụ Địa Phương</p>
+          <p className="text-[9px] text-gray-400 mt-0.5">Bản Đồ Deal Quán Xá & Đời Sống Địa Phương</p>
         </div>
       </div>
 
       <p className="text-gray-400 text-[11px] leading-relaxed">
-        Nền tảng tổng hợp ưu đãi, voucher và khuyến mãi địa phương. Kết nối khách hàng với các cơ sở Spa, làm đẹp và cửa hàng chính hãng gần nhất.
+        Nền tảng hội viên DealPass tổng hợp ưu đãi, voucher và khuyến mãi địa phương. Kết nối khách hàng với các quán ăn uống, cafe, bida, rạp chiếu phim và dịch vụ đời sống gần nhất.
       </p>
 
       {/* Support Info */}

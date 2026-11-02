@@ -19,6 +19,7 @@ export default function DealPassportModal({
   savedDeals = [], 
   onRemoveDeal, 
   onMarkUsed, 
+  onUnmarkUsed,
   onClose,
   userPoints = 150,
   onOpenRewards
@@ -27,9 +28,12 @@ export default function DealPassportModal({
   const [activeQrDeal, setActiveQrDeal] = useState(null);
   const [copiedCode, setCopiedCode] = useState(null);
 
+  const isDealUsed = (deal) => Boolean(deal && (deal.isUsed || deal.is_used || deal.status === 'used'));
+
   const filtered = savedDeals.filter(deal => {
-    if (filterStatus === 'active') return !deal.isUsed;
-    if (filterStatus === 'used') return deal.isUsed;
+    const used = isDealUsed(deal);
+    if (filterStatus === 'active') return !used;
+    if (filterStatus === 'used') return used;
     return true;
   });
 
@@ -90,7 +94,7 @@ export default function DealPassportModal({
                   : 'bg-white text-gray-600 hover:bg-gray-100'
               }`}
             >
-              Chưa dùng ({savedDeals.filter(d => !d.isUsed).length})
+              Chưa dùng ({savedDeals.filter(d => !isDealUsed(d)).length})
             </button>
             <button
               onClick={() => setFilterStatus('used')}
@@ -100,7 +104,7 @@ export default function DealPassportModal({
                   : 'bg-white text-gray-600 hover:bg-gray-100'
               }`}
             >
-              Đã dùng ({savedDeals.filter(d => d.isUsed).length})
+              Đã dùng ({savedDeals.filter(d => isDealUsed(d)).length})
             </button>
           </div>
         </div>
@@ -137,19 +141,20 @@ export default function DealPassportModal({
               </div>
               <p className="font-bold text-gray-700 text-xs">Kho voucher đang trống</p>
               <p className="text-[11px] text-gray-400 mt-1 max-w-xs mx-auto">
-                Hãy lướt bản đồ hoặc bảng tin để lưu các voucher làm đẹp quanh bạn vào đây.
+                Hãy lướt bản đồ hoặc bảng tin để lưu các voucher ưu đãi quanh bạn vào đây.
               </p>
             </div>
           ) : (
             filtered.map((deal) => {
               const voucherCode = deal.code || `DH-${Math.abs(deal.id.split('').reduce((a, b) => (a << 5) - a + b.charCodeAt(0), 0) % 9000 + 1000)}`;
+              const used = isDealUsed(deal);
 
               return (
                 <div
                   key={deal.id}
                   className={`rounded-2xl border transition-all overflow-hidden ${
-                    deal.isUsed 
-                      ? 'bg-gray-50 border-gray-200 opacity-70' 
+                    used 
+                      ? 'bg-gray-50 border-gray-200 opacity-75' 
                       : 'bg-white border-green-200 shadow-2xs hover:border-noti-400'
                   }`}
                 >
@@ -160,12 +165,13 @@ export default function DealPassportModal({
                           <span className="text-[10px] font-bold text-noti-700 uppercase tracking-wider truncate">
                             {deal.storeName}
                           </span>
-                          {deal.isUsed ? (
-                            <span className="bg-gray-200 text-gray-600 text-[9px] font-black px-1.5 py-0.2 rounded">
-                              ĐÃ DÙNG
+                          {used ? (
+                            <span className="bg-gray-200 text-gray-700 text-[9px] font-black px-1.5 py-0.5 rounded flex items-center gap-0.5">
+                              <CheckCircle2 className="w-2.5 h-2.5 text-gray-600" />
+                              <span>ĐÃ DÙNG</span>
                             </span>
                           ) : (
-                            <span className="bg-green-100 text-noti-800 text-[9px] font-black px-1.5 py-0.2 rounded">
+                            <span className="bg-green-100 text-noti-800 text-[9px] font-black px-1.5 py-0.5 rounded">
                               CÒN HẠN
                             </span>
                           )}
@@ -213,14 +219,33 @@ export default function DealPassportModal({
                           <span>{copiedCode === voucherCode ? 'Đã chép' : 'Sao chép'}</span>
                         </button>
 
-                        {!deal.isUsed && (
+                        {used ? (
                           <button
-                            onClick={() => setActiveQrDeal({ ...deal, voucherCode })}
-                            className="px-2 py-0.5 bg-noti-500 hover:bg-noti-600 text-white rounded text-[10px] font-bold flex items-center gap-1 shadow-2xs"
+                            onClick={() => onUnmarkUsed && onUnmarkUsed(deal.id || voucherCode)}
+                            className="px-2 py-0.5 bg-white hover:bg-gray-100 text-gray-600 rounded text-[10px] font-bold border border-gray-200"
+                            title="Hoàn tác lại nếu bấm nhầm"
                           >
-                            <QrCode className="w-3 h-3" />
-                            <span>Mã QR</span>
+                            Hoàn tác
                           </button>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => onMarkUsed && onMarkUsed(deal.id || voucherCode)}
+                              className="px-2 py-0.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded text-[10px] font-bold border border-emerald-200 flex items-center gap-1"
+                              title="Đánh dấu đã dùng tại quầy"
+                            >
+                              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                              <span>Đã dùng</span>
+                            </button>
+
+                            <button
+                              onClick={() => setActiveQrDeal({ ...deal, voucherCode })}
+                              className="px-2 py-0.5 bg-noti-500 hover:bg-noti-600 text-white rounded text-[10px] font-bold flex items-center gap-1 shadow-2xs"
+                            >
+                              <QrCode className="w-3 h-3" />
+                              <span>Mã QR</span>
+                            </button>
+                          </>
                         )}
                       </div>
                     </div>
@@ -280,7 +305,7 @@ export default function DealPassportModal({
             <div className="mt-3 flex gap-2">
               <button
                 onClick={() => {
-                  if (onMarkUsed) onMarkUsed(activeQrDeal.id);
+                  if (onMarkUsed) onMarkUsed(activeQrDeal.id || activeQrDeal.voucherCode || activeQrDeal.code);
                   setActiveQrDeal(null);
                 }}
                 className="px-4 py-2 bg-noti-500 hover:bg-noti-600 text-white rounded-xl text-xs font-black shadow-sm"

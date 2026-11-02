@@ -51,10 +51,10 @@ export default function ClassifiedDealsSection({
         <div>
           <h2 className="text-sm font-black text-gray-900 tracking-tight flex items-center gap-1.5">
             <Store className="w-4 h-4 text-noti-600" />
-            <span>Ưu Đãi Làm Đẹp Mới Nhất</span>
+            <span>Ưu Đãi Quán Xá & Đời Sống Địa Phương</span>
           </h2>
           <p className="text-[10px] text-gray-400">
-            {filteredDeals.length} dịch vụ áp dụng voucher tại tiệm
+            {filteredDeals.length} quán áp dụng voucher độc quyền DealPass
           </p>
         </div>
 

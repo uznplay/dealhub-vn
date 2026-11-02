@@ -42,7 +42,8 @@ export default function MerchantPortal({
   deals = [],
   onUpdateDeal,
   onDeleteDeal,
-  onPreviewDeal 
+  onPreviewDeal,
+  onVoucherRedeemed
 }) {
   const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'deals' | 'scanner' | 'profile'
   const [verifyCode, setVerifyCode] = useState('');
@@ -70,22 +71,22 @@ export default function MerchantPortal({
 
   // Merge default deals with deals passed from App.jsx
   const merchantDeals = useMemo(() => {
-    // Collect all deals posted by An Nhiên Beauty Spa or user-created deals
+    // Collect all deals posted by Bulgogi King or user-created deals
     const customDeals = deals.map(d => ({
       id: d.id,
       title: d.title,
-      category: d.category || 'Spa & Chăm sóc da',
-      originalPrice: d.originalPrice || 500000,
-      salePrice: d.salePrice || 189000,
+      category: d.category || 'Ăn uống',
+      originalPrice: d.originalPrice || 399000,
+      salePrice: d.salePrice || 199000,
       discount: d.discount || '-50%',
-      image: d.image || 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&auto=format&fit=crop&q=80',
+      image: d.image || 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&auto=format&fit=crop&q=80',
       views: d.views || 450,
       saves: d.saves || 95,
       redemptions: d.redemptions || 28,
       status: localStatuses[d.id] || d.status || 'active',
       description: d.description || '',
       address: d.address || '12 Liễu Giai, Ba Đình, Hà Nội',
-      storeName: d.storeName || 'An Nhiên Beauty & Clinic Spa'
+      storeName: d.storeName || 'Bulgogi King - Lẩu Nướng Hàn Quốc'
     }));
 
     if (customDeals.length > 0) {
@@ -95,57 +96,57 @@ export default function MerchantPortal({
     return [
       {
         id: 'm-deal-1',
-        title: 'Gói Chăm Sóc Da Y Khoa Chuyên Sâu 12 Bước',
-        category: 'Spa & Chăm sóc da',
-        originalPrice: 500000,
-        salePrice: 189000,
-        discount: '-62%',
-        image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&auto=format&fit=crop&q=80',
+        title: 'Buffet Nướng Lẩu Bulgogi Thượng Hạng Giảm 50%',
+        category: 'Ăn uống',
+        originalPrice: 399000,
+        salePrice: 199000,
+        discount: '-50%',
+        image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&auto=format&fit=crop&q=80',
         views: 1420,
         saves: 320,
         redemptions: 84,
-        revenue: '15.876.000₫',
+        revenue: '16.716.000₫',
         status: localStatuses['m-deal-1'] || 'active',
-        description: 'Quy trình chuẩn y khoa loại bỏ bụi bẩn, cồi mụn sâu và cấp ẩm tầng sâu.'
+        description: 'Set buffet bò Mỹ hảo hạng kèm lẩu kim chi, tặng kèm món tráng miệng.'
       },
       {
         id: 'm-deal-2',
-        title: 'Triệt Lông Nách & Tay Diode Laser Âm 5 Độ C',
-        category: 'Thẩm mỹ viện',
-        originalPrice: 800000,
-        salePrice: 299000,
-        discount: '-63%',
-        image: 'https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=400&auto=format&fit=crop&q=80',
+        title: 'Combo 2 Giờ Chơi Billiards Máy Lạnh + 2 Lon Nước',
+        category: 'Billiards & Giải trí',
+        originalPrice: 160000,
+        salePrice: 89000,
+        discount: '-44%',
+        image: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=400&auto=format&fit=crop&q=80',
         views: 1030,
         saves: 260,
         redemptions: 58,
-        revenue: '17.342.000₫',
+        revenue: '5.162.000₫',
         status: localStatuses['m-deal-2'] || 'active',
-        description: 'Công nghệ Diode Laser lạnh không đau rát, bảo hành 3 năm.'
+        description: 'Bàn Aileex thi đấu tiêu chuẩn quốc tế, máy lạnh 24/7 không giới hạn.'
       },
       {
         id: 'm-deal-3',
-        title: 'Gội Đầu Dưỡng Sinh Thảo Dược 75 Phút',
-        category: 'Hair Salon',
-        originalPrice: 250000,
-        salePrice: 99000,
-        discount: '-60%',
-        image: 'https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=400&auto=format&fit=crop&q=80',
+        title: 'Vé Xem Phim 2D + Bắp Rang Phô Mai CineStar',
+        category: 'Rạp chiếu phim',
+        originalPrice: 120000,
+        salePrice: 65000,
+        discount: '-46%',
+        image: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&auto=format&fit=crop&q=80',
         views: 890,
         saves: 195,
         redemptions: 45,
-        revenue: '4.455.000₫',
+        revenue: '2.925.000₫',
         status: localStatuses['m-deal-3'] || 'paused',
-        description: 'Massage bấm huyệt cổ vai gáy thảo dược tự nhiên.'
+        description: 'Áp dụng cho mọi suất chiếu phim bom tấn trong tuần.'
       }
     ];
   }, [deals, localStatuses]);
 
   // Real-time checkin history
   const [recentRedemptions, setRecentRedemptions] = useState([
-    { id: 'ck-1', code: 'DH-7828', customer: 'Ngọc Mai', service: 'Chăm Sóc Da Y Khoa 12 Bước', time: '10 phút trước', amount: '189.000₫' },
-    { id: 'ck-2', code: 'DH-5058', customer: 'Thu Hương', service: 'Gội Đầu Dưỡng Sinh Thảo Dược', time: '35 phút trước', amount: '99.000₫' },
-    { id: 'ck-3', code: 'DH-3435', customer: 'Thanh Hằng', service: 'Triệt Lông Diode Laser', time: '1 giờ trước', amount: '299.000₫' }
+    { id: 'ck-1', code: 'DH-7828', customer: 'Ngọc Mai', service: 'Buffet Nướng Lẩu Thượng Hạng', time: '10 phút trước', amount: '199.000₫' },
+    { id: 'ck-2', code: 'DH-5058', customer: 'Hoàng Nam', service: 'Combo 2H Bida Máy Lạnh + Nước', time: '35 phút trước', amount: '89.000₫' },
+    { id: 'ck-3', code: 'DH-3435', customer: 'Thanh Hằng', service: 'Vé Phim 2D + Bắp Phô Mai', time: '1 giờ trước', amount: '65.000₫' }
   ]);
 
   const toggleDealStatus = (id) => {
@@ -193,6 +194,9 @@ export default function MerchantPortal({
       });
       setRecentRedemptions([res.record, ...recentRedemptions]);
       setVerifyCode('');
+      if (onVoucherRedeemed) {
+        onVoucherRedeemed(res.voucher, res.allVouchers);
+      }
     } else {
       setVerifyResult({
         success: false,
@@ -223,7 +227,7 @@ export default function MerchantPortal({
               </span>
             </div>
             <p className="text-[10px] text-green-200 truncate mt-0.5">
-              An Nhiên Beauty Spa • 12 Liễu Giai
+              Bulgogi King • 12 Liễu Giai
             </p>
           </div>
         </div>
@@ -609,11 +613,12 @@ export default function MerchantPortal({
                         onChange={(e) => setEditingDeal({ ...editingDeal, category: e.target.value })}
                         className="w-full px-2.5 py-1.5 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-noti-500 bg-white"
                       >
-                        <option value="Spa & Chăm sóc da">Spa & Chăm sóc da</option>
-                        <option value="Thẩm mỹ viện">Thẩm mỹ viện y khoa</option>
-                        <option value="Hair Salon">Hair Salon tóc</option>
-                        <option value="Nail & Eyelash">Nail & Mi nghệ thuật</option>
-                        <option value="Thời trang & Phụ kiện">Showroom & Thời trang</option>
+                        <option value="food">Ăn uống & Nhà hàng</option>
+                        <option value="coffee">Cafe & Trà sữa</option>
+                        <option value="billiards">Billiards & Giải trí</option>
+                        <option value="cinema">Rạp phim & Vé</option>
+                        <option value="fashion">Thời trang & Mua sắm</option>
+                        <option value="services">Dịch vụ đời sống</option>
                       </select>
                     </div>
 
@@ -784,7 +789,7 @@ export default function MerchantPortal({
             <div className="space-y-2 text-[11px] text-gray-700">
               <div>
                 <span className="text-gray-400 block text-[10px]">Tên cửa hàng</span>
-                <span className="font-bold">An Nhiên Beauty & Clinic Spa</span>
+                <span className="font-bold">Bulgogi King - Lẩu Nướng Hàn Quốc</span>
               </div>
               <div>
                 <span className="text-gray-400 block text-[10px]">Địa chỉ thực tế</span>
@@ -792,17 +797,17 @@ export default function MerchantPortal({
               </div>
               <div>
                 <span className="text-gray-400 block text-[10px]">Giờ mở cửa</span>
-                <span className="font-bold">08:30 - 21:00 hàng ngày</span>
+                <span className="font-bold">10:00 - 23:00 hàng ngày</span>
               </div>
               <div>
-                <span className="text-gray-400 block text-[10px]">Hotline đặt hẹn</span>
+                <span className="text-gray-400 block text-[10px]">Hotline đặt bàn</span>
                 <span className="font-bold">0988 123 456</span>
               </div>
             </div>
 
             <div className="p-2.5 bg-green-50 rounded-xl border border-green-200 text-[10px] text-noti-800 font-semibold flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-noti-600 flex-shrink-0" />
-              <span>Gian hàng đã được xác minh y khoa & giấy phép kinh doanh</span>
+              <span>Quán đối tác chính thức DealHub & giấy phép kinh doanh O2O</span>
             </div>
           </div>
         )}

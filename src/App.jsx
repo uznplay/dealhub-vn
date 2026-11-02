@@ -11,6 +11,7 @@ import DealDetailModal from './components/DealDetailModal';
 import PostDealModal from './components/PostDealModal';
 import DealPassportModal from './components/DealPassportModal';
 import DealMissionModal from './components/DealMissionModal';
+import DealPassModal from './components/DealPassModal';
 import PhoneLockScreen from './components/PhoneLockScreen';
 import InAppPushBanner from './components/InAppPushBanner';
 import MerchantPortal from './pages/MerchantPortal';
@@ -20,6 +21,7 @@ import {
   fetchVouchersBackend, 
   saveVoucherBackend, 
   removeVoucherBackend,
+  markVoucherUsedBackend,
   createNewDealBackend,
   createFeedPostBackend,
   updateDealBackend,
@@ -86,6 +88,16 @@ export default function App() {
   const [showKhoVoucherModal, setShowKhoVoucherModal] = useState(false);
   const [showMissionModal, setShowMissionModal] = useState(false);
   const [missionModalInitialTab, setMissionModalInitialTab] = useState('missions');
+  const [showDealPassModal, setShowDealPassModal] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(() => {
+    return localStorage.getItem('dealhub_dealpass_active') === 'true';
+  });
+
+  const handleSubscribeSuccess = () => {
+    setIsSubscribed(true);
+    localStorage.setItem('dealhub_dealpass_active', 'true');
+    showToast('🎉 Chúc mừng bạn đã là hội viên VIP DealPass!');
+  };
 
   // User Reward Points state (Tích điểm & Đổi voucher)
   const [userPoints, setUserPoints] = useState(() => {
@@ -112,10 +124,21 @@ export default function App() {
     setTimeout(() => setToastMessage(null), 3500);
   };
 
-  // Initialize from backend (Supabase / Local persistence)
+  // Initialize from backend (Supabase / Local persistence) & sync events
   useEffect(() => {
     fetchDealsFromBackend().then(d => setDeals(d || []));
     fetchVouchersBackend().then(v => setSavedDeals(v || []));
+
+    const handleVoucherSync = () => {
+      fetchVouchersBackend().then(v => setSavedDeals(v || []));
+    };
+
+    window.addEventListener('dealhub:voucher_updated', handleVoucherSync);
+    window.addEventListener('storage', handleVoucherSync);
+    return () => {
+      window.removeEventListener('dealhub:voucher_updated', handleVoucherSync);
+      window.removeEventListener('storage', handleVoucherSync);
+    };
   }, []);
 
   const handleSaveDeal = async (dealToSave) => {
@@ -134,9 +157,16 @@ export default function App() {
     showToast('Đã xóa voucher khỏi Kho Voucher.');
   };
 
-  const handleMarkUsed = (dealId) => {
-    setSavedDeals(savedDeals.map(d => d.id === dealId ? { ...d, isUsed: true } : d));
+  const handleMarkUsed = async (dealIdOrCode) => {
+    const updated = await markVoucherUsedBackend(dealIdOrCode, true);
+    setSavedDeals(updated);
     showToast('Đã đánh dấu voucher đã sử dụng!');
+  };
+
+  const handleUnmarkUsed = async (dealIdOrCode) => {
+    const updated = await markVoucherUsedBackend(dealIdOrCode, false);
+    setSavedDeals(updated);
+    showToast('Đã chuyển voucher về mục chưa dùng.');
   };
 
   // Khi Người Bán tạo deal mới -> Tự động xuất bản lên Sàn, Bản Đồ, Bảng Tin & Push Notification
@@ -362,6 +392,8 @@ export default function App() {
                     onOpenPassport={() => setShowKhoVoucherModal(true)}
                     onOpenMissions={handleOpenMissions}
                     onOpenMerchantDashboard={() => setDeviceViewMode('merchant')}
+                    onOpenDealPass={() => setShowDealPassModal(true)}
+                    isSubscribed={isSubscribed}
                     savedDealsCount={savedDeals.filter(d => !d.isUsed).length}
                     userPoints={userPoints}
                   />
@@ -411,6 +443,7 @@ export default function App() {
                       <HeroBanner 
                         onViewFeed={() => setUserTab('feed')}
                         onViewMap={() => setUserTab('map')}
+                        onOpenDealPass={() => setShowDealPassModal(true)}
                       />
                       <SmartDealFinder
                         allDeals={deals}
@@ -500,9 +533,9 @@ export default function App() {
                   >
                     <Ticket className="w-5 h-5 mb-0.5 text-yellow-600" />
                     <span>Kho voucher</span>
-                    {savedDeals.filter(d => !d.isUsed).length > 0 && (
+                    {savedDeals.filter(d => !Boolean(d.isUsed || d.is_used || d.status === 'used')).length > 0 && (
                       <span className="absolute -top-1 right-2 w-3.5 h-3.5 bg-red-500 text-white rounded-full text-[8px] font-black flex items-center justify-center">
-                        {savedDeals.filter(d => !d.isUsed).length}
+                        {savedDeals.filter(d => !Boolean(d.isUsed || d.is_used || d.status === 'used')).length}
                       </span>
                     )}
                   </button>
@@ -516,6 +549,8 @@ export default function App() {
                     onOpenRewards={() => handleOpenMissions('rewards')}
                     onRemoveDeal={handleRemoveSavedDeal}
                     onMarkUsed={handleMarkUsed}
+                    onUnmarkUsed={handleUnmarkUsed}
+                    onRefresh={() => fetchVouchersBackend().then(v => setSavedDeals(v || []))}
                     onClose={() => setShowKhoVoucherModal(false)}
                   />
                 )}
@@ -529,6 +564,15 @@ export default function App() {
                     onClose={() => setShowMissionModal(false)}
                     onOpenPassport={() => setShowKhoVoucherModal(true)}
                     showToast={showToast}
+                  />
+                )}
+
+                {showDealPassModal && (
+                  <DealPassModal
+                    isOpen={showDealPassModal}
+                    onClose={() => setShowDealPassModal(false)}
+                    isSubscribed={isSubscribed}
+                    onSubscribeSuccess={handleSubscribeSuccess}
                   />
                 )}
 
@@ -569,13 +613,20 @@ export default function App() {
               {/* Merchant Portal Content */}
               <div className="flex-1 flex flex-col overflow-y-auto">
                 <MerchantPortal
-                  onBackToHome={() => setDeviceViewMode('consumer')}
+                  onBackToHome={() => {
+                    setDeviceViewMode('consumer');
+                    fetchVouchersBackend().then(v => setSavedDeals(v || []));
+                  }}
                   onOpenPostDeal={() => setShowPostDealModal(true)}
                   onTriggerPushNoti={handleTriggerDemoPush}
                   deals={deals}
                   onUpdateDeal={handleUpdateDeal}
                   onDeleteDeal={handleDeleteDeal}
                   onPreviewDeal={(deal) => setSelectedDeal(deal)}
+                  onVoucherRedeemed={(voucher, allVouchers) => {
+                    if (allVouchers) setSavedDeals(allVouchers);
+                    else fetchVouchersBackend().then(v => setSavedDeals(v || []));
+                  }}
                 />
               </div>
 

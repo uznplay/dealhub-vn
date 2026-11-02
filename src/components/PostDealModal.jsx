@@ -20,33 +20,33 @@ import {
 const PHOTO_PRESETS = [
   {
     id: 'p1',
-    label: 'Chăm sóc da',
-    url: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&auto=format&fit=crop&q=80'
+    label: 'Lẩu nướng BBQ',
+    url: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80'
   },
   {
     id: 'p2',
-    label: 'Gội dưỡng sinh',
-    url: 'https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?w=600&auto=format&fit=crop&q=80'
+    label: 'Billiards Club',
+    url: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=600&auto=format&fit=crop&q=80'
   },
   {
     id: 'p3',
-    label: 'Triệt lông Laser',
-    url: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&auto=format&fit=crop&q=80'
+    label: 'Rạp Phim Cinema',
+    url: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&auto=format&fit=crop&q=80'
   },
   {
     id: 'p4',
-    label: 'Massage trị liệu',
-    url: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&auto=format&fit=crop&q=80'
+    label: 'Cafe & Trà Sữa',
+    url: 'https://images.unsplash.com/photo-1558857563-b371033873b8?w=600&auto=format&fit=crop&q=80'
   },
   {
     id: 'p5',
-    label: 'Thời trang Showroom',
+    label: 'Thời Trang Boutique',
     url: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&auto=format&fit=crop&q=80'
   },
   {
     id: 'p6',
-    label: 'Làm Nail / Mi',
-    url: 'https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=600&auto=format&fit=crop&q=80'
+    label: 'Chăm Sóc Rửa Xe',
+    url: 'https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?w=600&auto=format&fit=crop&q=80'
   }
 ];
 
@@ -57,20 +57,20 @@ export default function PostDealModal({ onClose, onAddDeal }) {
 
   // Tiệm mặc định gắn liền hồ sơ đối tác
   const storeProfile = {
-    storeName: 'An Nhiên Beauty & Clinic Spa',
+    storeName: 'Bulgogi King - Lẩu Nướng Hàn Quốc',
     address: '12 Liễu Giai, Ba Đình, Hà Nội',
     city: 'Hà Nội',
-    avatar: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&auto=format&fit=crop&q=80',
+    avatar: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&auto=format&fit=crop&q=80',
     lat: 21.0335,
     lng: 105.8145
   };
 
   const [formData, setFormData] = useState({
-    title: 'Gói Chăm Sóc Da Y Khoa Chuyên Sâu 12 Bước + Chiếu Ánh Sáng Sinh Học',
-    category: 'Spa & Chăm sóc da',
-    originalPrice: '500000',
-    salePrice: '189000',
-    postContent: 'Ưu đãi giờ vàng dành riêng cho khách hàng DealHub! Giảm ngay 62% cho 20 khách hàng đầu tiên đặt lịch trải nghiệm liệu trình chuẩn y khoa tuần này. Cam kết không phát sinh phụ phí!',
+    title: 'Set Lẩu Nướng Bò Mỹ Thượng Hạng 4 Người + Nước Ngọt Thả Ga',
+    category: 'Ăn uống & Nhà hàng',
+    originalPrice: '650000',
+    salePrice: '289000',
+    postContent: 'Ưu đãi giờ vàng dành riêng cho hội viên DealPass! Giảm ngay 55% cho 30 bàn đầu tiên đặt chỗ tuần này. Thịt bò Mỹ nhập khẩu mềm ngọt, panchan rau nấm và nước ngọt gọi thả ga không phụ thu 1 đồng!',
     image: PHOTO_PRESETS[0].url
   });
 
@@ -149,10 +149,10 @@ export default function PostDealModal({ onClose, onAddDeal }) {
       author: {
         name: storeProfile.storeName,
         avatar: storeProfile.avatar,
-        role: 'Chủ Tiệm Spa (Đối tác xác thực)',
+        role: 'Chủ Quán Đối Tác (Xác Thực)',
         isVerified: true
       },
-      role: 'Chủ Tiệm Spa (Đối tác xác thực)',
+      role: 'Chủ Quán Đối Tác (Xác Thực)',
       avatar: storeProfile.avatar,
       time: 'Vừa xong',
       location: storeProfile.address,
@@ -245,7 +245,7 @@ export default function PostDealModal({ onClose, onAddDeal }) {
                 required
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder="Ví dụ: Gói Chăm Sóc Da Y Khoa Chuyên Sâu 12 Bước"
+                placeholder="Ví dụ: Set Buffet Lẩu Nướng Bulgogi Giảm 50%"
                 className="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl font-medium focus:ring-2 focus:ring-noti-500 outline-none text-xs"
               />
             </div>

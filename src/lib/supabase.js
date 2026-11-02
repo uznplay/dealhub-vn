@@ -6,13 +6,35 @@ export const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_fsjJScmTzob2VhkvDhSS5w_8
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-// Local storage keys for hybrid persistence
+// Local storage keys for hybrid persistence (v4 for full multi-category retail & O2O deals)
 const STORAGE_KEYS = {
-  DEALS: 'dealhub_local_deals',
-  VOUCHERS: 'dealhub_local_vouchers',
-  POSTS: 'dealhub_local_posts',
-  REDEMPTIONS: 'dealhub_local_redemptions'
+  DEALS: 'dealhub_local_deals_v4',
+  VOUCHERS: 'dealhub_local_vouchers_v4',
+  POSTS: 'dealhub_local_posts_v4',
+  REDEMPTIONS: 'dealhub_local_redemptions_v4'
 };
+
+// Auto purge obsolete spa cache in client browser
+if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+  try {
+    const legacyKeys = [
+      'dealhub_local_deals',
+      'dealhub_local_vouchers',
+      'dealhub_local_posts',
+      'dealhub_local_redemptions',
+      'dealhub_local_deals_v2',
+      'dealhub_local_vouchers_v2'
+    ];
+    legacyKeys.forEach(k => {
+      const v = localStorage.getItem(k);
+      if (v && (v.includes('spa') || v.includes('Spa') || v.includes('chăm sóc da') || v.includes('Beauty'))) {
+        localStorage.removeItem(k);
+      }
+    });
+  } catch (e) {
+    // ignore
+  }
+}
 
 // Seed initial data if localStorage is empty
 const getInitialVouchers = () => {
@@ -21,11 +43,11 @@ const getInitialVouchers = () => {
       id: 'vouch-1',
       dealId: 'flash-1',
       code: 'DH-7828',
-      title: 'Chăm Sóc Da Y Khoa Chuyên Sâu 12 Bước',
-      storeName: 'An Nhiên Beauty & Clinic Spa',
-      salePrice: 189000,
-      originalPrice: 500000,
-      discount: '-62%',
+      title: 'Set Lẩu Nướng Bò Mỹ Thượng Hạng 4 Người',
+      storeName: 'Bulgogi King - Lẩu Nướng Hàn Quốc',
+      salePrice: 289000,
+      originalPrice: 650000,
+      discount: '-55%',
       address: '12 Liễu Giai, Ba Đình, Hà Nội',
       isUsed: false,
       savedAt: 'Hôm nay',
@@ -33,13 +55,13 @@ const getInitialVouchers = () => {
     },
     {
       id: 'vouch-2',
-      dealId: 'flash-4',
+      dealId: 'flash-2',
       code: 'DH-5058',
-      title: 'Gội Đầu Dưỡng Sinh Thảo Dược 75 Phút',
-      storeName: 'Mộc Trà Dưỡng Sinh Spa',
+      title: 'Gói Chơi Billiards Máy Lạnh 3 Giờ + 2 Cafe Muối',
+      storeName: 'Ares Billiards & Lounge Club',
       salePrice: 99000,
-      originalPrice: 250000,
-      discount: '-60%',
+      originalPrice: 240000,
+      discount: '-59%',
       address: '157 Xuân Thủy, Cầu Giấy, Hà Nội',
       isUsed: false,
       savedAt: 'Hôm qua',
@@ -61,16 +83,21 @@ export async function fetchDealsFromBackend() {
     console.warn('Supabase deals table not ready, using local data store:', err);
   }
 
-  // Fallback to localStorage or mockData
-  const stored = localStorage.getItem(STORAGE_KEYS.DEALS);
-  if (stored) {
-    try {
-      return JSON.parse(stored);
-    } catch (e) {
-      console.error(e);
+  // Fallback to localStorage or mockData (auto-purging obsolete data)
+  if (typeof localStorage !== 'undefined') {
+    const stored = localStorage.getItem(STORAGE_KEYS.DEALS);
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length >= 6 && !stored.includes('Spa') && !stored.includes('chăm sóc da')) {
+          return parsed;
+        }
+      } catch (e) {
+        console.error(e);
+      }
     }
+    localStorage.setItem(STORAGE_KEYS.DEALS, JSON.stringify(ALL_DEALS));
   }
-  localStorage.setItem(STORAGE_KEYS.DEALS, JSON.stringify(ALL_DEALS));
   return ALL_DEALS;
 }
 
@@ -105,6 +132,30 @@ export async function createNewDealBackend(newDeal) {
   return updated;
 }
 
+// Helper to normalize voucher schema between Supabase snake_case and Frontend camelCase
+export function normalizeVoucher(v) {
+  if (!v) return null;
+  const isUsed = Boolean(v.isUsed || v.is_used || v.status === 'used');
+  const code = (v.code || v.voucher_code || '').trim().toUpperCase();
+  return {
+    id: v.id || v.deal_id || `vouch-${code || Date.now()}`,
+    dealId: v.dealId || v.deal_id || v.id,
+    code: code,
+    voucherCode: code,
+    title: v.title || v.deal_title || 'Ưu đãi DealHub',
+    storeName: v.storeName || v.store_name || 'Quán Đối Tác',
+    salePrice: Number(v.salePrice ?? v.sale_price ?? 0),
+    originalPrice: Number(v.originalPrice ?? v.original_price ?? 0),
+    discount: v.discount || '-50%',
+    address: v.address || 'Quận trung tâm, Hà Nội',
+    isUsed: isUsed,
+    is_used: isUsed,
+    savedAt: v.savedAt || v.saved_at || 'Hôm nay',
+    expiresAt: v.expiresAt || v.expires_at || 'Còn 30 ngày',
+    usedAt: v.usedAt || v.used_at || ''
+  };
+}
+
 // ========================
 // 2. KHO VOUCHER API
 // ========================
@@ -112,7 +163,9 @@ export async function fetchVouchersBackend() {
   try {
     const { data, error } = await supabase.from('vouchers').select('*');
     if (!error && data && data.length > 0) {
-      return data;
+      const normalized = data.map(normalizeVoucher);
+      localStorage.setItem(STORAGE_KEYS.VOUCHERS, JSON.stringify(normalized));
+      return normalized;
     }
   } catch (err) {
     console.warn('Supabase vouchers table not ready, using local data store');
@@ -121,12 +174,15 @@ export async function fetchVouchersBackend() {
   const stored = localStorage.getItem(STORAGE_KEYS.VOUCHERS);
   if (stored) {
     try {
-      return JSON.parse(stored);
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed.map(normalizeVoucher);
+      }
     } catch (e) {
       console.error(e);
     }
   }
-  const initial = getInitialVouchers();
+  const initial = getInitialVouchers().map(normalizeVoucher);
   localStorage.setItem(STORAGE_KEYS.VOUCHERS, JSON.stringify(initial));
   return initial;
 }
@@ -196,7 +252,11 @@ export async function removeVoucherBackend(voucherId) {
 export async function redeemVoucherBackend(code) {
   const cleanCode = code.trim().toUpperCase();
   const current = await fetchVouchersBackend();
-  const index = current.findIndex(v => v.code === cleanCode);
+  const index = current.findIndex(v => 
+    v.code === cleanCode || 
+    (v.voucher_code && v.voucher_code.trim().toUpperCase() === cleanCode) || 
+    v.id === cleanCode
+  );
 
   if (index === -1) {
     return {
@@ -205,7 +265,7 @@ export async function redeemVoucherBackend(code) {
     };
   }
 
-  if (current[index].isUsed) {
+  if (current[index].isUsed || current[index].is_used) {
     return {
       success: false,
       message: `Mã "${cleanCode}" đã được sử dụng trước đó!`,
@@ -215,6 +275,7 @@ export async function redeemVoucherBackend(code) {
 
   // Mark as used
   current[index].isUsed = true;
+  current[index].is_used = true;
   current[index].usedAt = 'Vừa xong';
   localStorage.setItem(STORAGE_KEYS.VOUCHERS, JSON.stringify(current));
 
@@ -234,7 +295,7 @@ export async function redeemVoucherBackend(code) {
   localStorage.setItem(STORAGE_KEYS.REDEMPTIONS, JSON.stringify(updatedRedemptions));
 
   try {
-    await supabase.from('vouchers').update({ is_used: true }).eq('voucher_code', cleanCode);
+    await supabase.from('vouchers').update({ is_used: true }).or(`voucher_code.eq.${cleanCode},id.eq.${current[index].id}`);
     await supabase.from('redemptions').insert([{
       id: redemptionRecord.id,
       voucher_code: cleanCode,
@@ -247,6 +308,13 @@ export async function redeemVoucherBackend(code) {
     console.warn('Supabase redemption sync fallback:', err);
   }
 
+  // Broadcast sync event to notify any open UI components
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('dealhub:voucher_updated', {
+      detail: { voucher: current[index], allVouchers: current }
+    }));
+  }
+
   return {
     success: true,
     message: `Xác nhận thành công voucher ${cleanCode}`,
@@ -254,6 +322,39 @@ export async function redeemVoucherBackend(code) {
     record: redemptionRecord,
     allVouchers: current
   };
+}
+
+// Mark voucher as used / unused from customer wallet
+export async function markVoucherUsedBackend(idOrCode, markAs = true) {
+  const clean = String(idOrCode).trim().toUpperCase();
+  const current = await fetchVouchersBackend();
+  const updated = current.map(v => {
+    if (v.id === idOrCode || v.code === clean || v.dealId === idOrCode) {
+      return {
+        ...v,
+        isUsed: markAs,
+        is_used: markAs,
+        usedAt: markAs ? 'Vừa xong' : null
+      };
+    }
+    return v;
+  });
+
+  localStorage.setItem(STORAGE_KEYS.VOUCHERS, JSON.stringify(updated));
+
+  try {
+    await supabase.from('vouchers').update({ is_used: markAs }).or(`id.eq.${idOrCode},voucher_code.eq.${clean}`);
+  } catch (err) {
+    console.warn('Supabase mark voucher used fallback:', err);
+  }
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('dealhub:voucher_updated', {
+      detail: { idOrCode, markAs, allVouchers: updated }
+    }));
+  }
+
+  return updated;
 }
 
 // ========================

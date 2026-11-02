@@ -159,10 +159,10 @@ export default function PhoneLockScreen({
           <div>
             <h4 className="text-xs font-bold text-white flex items-center gap-1">
               <Flame className="w-3.5 h-3.5 text-amber-400" />
-              12 Ưu đãi Spa & Làm đẹp mới quanh bạn!
+              12 Ưu đãi Ăn uống & Giải trí mới quanh bạn!
             </h4>
             <p className="text-[11px] text-emerald-50 mt-0.5 line-clamp-2 leading-relaxed">
-              Các tiệm gần bạn đang giảm giá tới <strong>-62%</strong>. Chạm để mở bản đồ săn deal ngay.
+              Các quán ăn, cafe, bida gần bạn đang giảm giá tới <strong>-59%</strong>. Chạm để mở bản đồ săn deal ngay.
             </p>
           </div>
         </div>
@@ -175,7 +175,7 @@ export default function PhoneLockScreen({
             </div>
             <div>
               <p className="text-[11px] font-bold text-white">Kho Voucher của bạn</p>
-              <p className="text-[10px] text-emerald-100">Đang có 2 ưu đãi sẵn sàng xuất trình tại tiệm</p>
+              <p className="text-[10px] text-emerald-100">Đang có 2 ưu đãi sẵn sàng xuất trình tại quán</p>
             </div>
           </div>
           <span className="text-[10px] font-bold text-yellow-300 bg-yellow-400/20 px-2 py-0.5 rounded-full border border-yellow-300/30">
